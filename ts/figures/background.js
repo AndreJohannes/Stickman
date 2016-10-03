@@ -1,4 +1,4 @@
-/// <reference path="./articulate.ts" />
+/// <reference path="./node.ts" />
 /// <reference path="../primitives/rectangle.ts" />
 var Background = (function () {
     function Background() {

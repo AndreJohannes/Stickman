@@ -15,23 +15,47 @@ var mouseEventHandler = function($element: JQuery, callback, activator, deactiva
 
 var FrameHandler = function() {
 	var frameNumber = 1;
+	var callbacks = [];
 	let $btnUp = $("#btnFrameUp");
 	let $btnDown = $("#btnFrameDown");
 	let $iptFrame = $("#iptFrame");
+	var setFrameNumber = function(frame: number) {
+		frameNumber = frame > 0 ? frame : frameNumber;
+		$iptFrame.val(frameNumber);
+		for (var callback of callbacks)
+			callback(frameNumber);
+	}
+	$btnUp.click(function() { setFrameNumber(frameNumber + 1) });
+	$btnDown.click(function() { setFrameNumber(frameNumber - 1) });
+	$iptFrame.change(function() { var val = $iptFrame.val(); if ($.isNumeric(val)) 
+		{ setFrameNumber(Math.round(val)) } });
+	this.addCallback = function(cb) {
+		callbacks.push(cb);
+	}
+	this.getFrame = function(){
+		return frameNumber;
+	}
+	this.setFrame = function(frame: number){
+		setFrameNumber(frame);
+	}
 
-
-
-	$btnUp.click(function() { frameNumber++; $iptFrame.val(frameNumber) });
-	$btnDown.click(function() { frameNumber--; frameNumber = frameNumber < 1 ? 1 : frameNumber; $iptFrame.val(frameNumber) });
-	$iptFrame.change(function() { var val = $iptFrame.val(); if ($.isNumeric(val)) { frameNumber = Math.round(val); } $iptFrame.val(frameNumber) });
 }
 
 var TimelineHandler = function() {
-	var frame = 1;
+	//var frame = 1;
+	let callbacks = [];
 	let $timeline = $("#timeline");
 	let $trFirst = $timeline.find("tr").first();
 	let $table = $("table");
 	let trList = [];
+	let click = function(){
+		var frame = $(this).data("index");
+		$("th").css("background-color", "");
+		$(this).css("background-color", "red");
+		for(let callback of callbacks){
+			callback(frame);
+		}
+	}
 	for (i = 0; i < 5; i++) {
 		var $tr = $("<tr></tr>");
 		trList.push($tr);
@@ -39,6 +63,8 @@ var TimelineHandler = function() {
 	}
 	for (var i = 1; i < 50; i++) {
 		var $th = $("<th>" + i + "</th>");
+		$th.data("index",i);
+		$th.click(click);
 		$trFirst.append($th);
 		for (let $tr of trList) {
 			var $td = $("<td><div class=\"brick\"></div></td>");
@@ -48,8 +74,12 @@ var TimelineHandler = function() {
 
 	this.setFrame = function(frame: number) {
 		$("th").css("background-color", "");
-		this.frame = frame;
-		$($("th").get(frame-1)).css("background-color", "red");
+		//this.frame = frame;
+		$($("th").get(frame - 1)).css("background-color", "red");
+	}
+
+	this.addCallback = function(cb){
+		callbacks.push(cb);
 	}
 
 	this.setFrame(1);
@@ -88,21 +118,29 @@ $(document).ready(function() {
 	let $canvas = $(renderer.getDom());
 	let roots: Node_[] = [background.getRoot(), stickman.getRoot()];
 	var activeNode = null;
+	let frameHandler = new FrameHandler();
+	let timelineHandler = new TimelineHandler();
+	frameHandler.addCallback(timelineHandler.setFrame);
+	frameHandler.addCallback(function(frame: number){for(var root of roots){root.draw(frame);} renderer.update()});
+	timelineHandler.addCallback(frameHandler.setFrame);
+	timelineHandler.addCallback(function(frame: number){for(var root of roots){root.draw(frame);} renderer.update()});
 	mouseEventHandler($canvas, function(x, y) {
 		if (activeNode != null) {
+			var frame = frameHandler.getFrame();
 			let xOffset = activeNode.pivot.x;
 			let yOffset = activeNode.pivot.y;
 			if (activeNode.node.isRoot()) {
-				activeNode.node.setPosition(x, y);
+				activeNode.node.setPosition(x, y, frame);
 			} else {
-				activeNode.node.setAlpha(Math.atan2(-x + xOffset, -y + yOffset) - activeNode.alpha);
+				activeNode.node.setAlpha(Math.atan2(-x + xOffset, -y + yOffset) - activeNode.alpha, frame);
 			}
-			console.log(xOffset, yOffset);
+			activeNode.node.draw(frame);
 			renderer.update();
 		}
 	}, function(x, y) {
+		var frame = frameHandler.getFrame();
 		for (var root of roots) {
-			var node = root.getProximityNodes(1000, new THREE.Vector2(x, y));
+			var node = root.getProximityNodes(frame, 1000, new THREE.Vector2(x, y));
 			activeNode = activeNode == null ? node : (activeNode.distance > node.distance ? node : activeNode);
 		}
 		if (activeNode != null) {
@@ -116,10 +154,7 @@ $(document).ready(function() {
 			renderer.update();
 		}
 	});
-	let frameHandler = FrameHandler();
 	$frame.append($canvas);
-	let timelineHandler = new TimelineHandler();
-	timelineHandler.setFrame(12);
 	$('div.split-pane').splitPane();
 	canvasResizer(renderer);
 	//var i =0;

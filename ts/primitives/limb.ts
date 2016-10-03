@@ -16,7 +16,7 @@ class Limb {
 			color: 0xffffff,
 			map: texture,
 			transparent: true,
-			opacity: 0.2
+			opacity: 0.5
 			//	depthWrite: false
 		});
 		let mesh = new THREE.Mesh(this.makeGeometry(), material);
