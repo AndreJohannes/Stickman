@@ -27,9 +27,12 @@ var FrameHandler = function () {
     };
     $btnUp.click(function () { setFrameNumber(frameNumber + 1); });
     $btnDown.click(function () { setFrameNumber(frameNumber - 1); });
-    $iptFrame.change(function () { var val = $iptFrame.val(); if ($.isNumeric(val)) {
-        setFrameNumber(Math.round(val));
-    } });
+    $iptFrame.change(function () {
+        var val = $iptFrame.val();
+        if ($.isNumeric(val)) {
+            setFrameNumber(Math.round(val));
+        }
+    });
     this.addCallback = function (cb) {
         callbacks.push(cb);
     };

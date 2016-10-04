@@ -34,7 +34,7 @@ class Node_ {
 	public draw(frame: number) {
 		if (this._isRoot) {
 			var position = this.position.get(frame);
-			this.visual.position.set(position.x, -position.y, 0);
+			this.visual.position(position.x, -position.y);
 		}
 		else
 			this.visual.rotate(this.alpha.get(frame));
@@ -51,16 +51,17 @@ class Node_ {
 		}
 	}
 
-	public addVisual(visual: THREE.Object3D) {
+	public addVisual(object: THREE.Object3D, phantom: THREE.Object3D) {
 		if (this.parent_ != null && this.parent_.visual != null) {
 			//this.parent_._addVisual(visual);
-			this.visual.add(visual);
+			this.visual.addPrimary(object);
+			this.visual.addSecondary(phantom);
 			//this.visual.rotation.set(0, 0, this.alpha);
 		}
 	}
 
 	public getVisual(): THREE.Object3D {
-		return this.visual;
+		return this.visual.getPrimary();
 	}
 
 	public setAlpha(alpha: number, frame: number) {
@@ -117,14 +118,11 @@ class Node_ {
 		return retValue;
 	}
 
-	private _addVisual(visual: THREE.Object3D) {
-		if (this._isRoot) {
-			this.visual.add(visual);
-		} else {
-			var object = new THREE.Object3D();
-			object.position.set(0, this.length, 0);
-			object.add(visual);
-			this.visual.add(object);
+	private _addVisual(visual: Visual) {
+		this.visual.add(visual);
+		if(!this._isRoot){
+			visual.position(0, this.length);
+			visual.position(0, this.length, true);
 		}
 	}
 

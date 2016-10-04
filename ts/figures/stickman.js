@@ -24,16 +24,16 @@ var Stickman = (function () {
         leg_2.addChild(shin_2);
         arm_1.addChild(lower_arm_1);
         arm_2.addChild(lower_arm_2);
-        torso.addVisual((new Limb(60)).getObject());
-        leg_1.addVisual((new Limb(50)).getObject());
-        leg_2.addVisual((new Limb(50)).getObject());
-        shin_1.addVisual((new Limb(50)).getObject());
-        shin_2.addVisual((new Limb(50)).getObject());
-        arm_1.addVisual((new Limb(40)).getObject());
-        arm_2.addVisual((new Limb(40)).getObject());
-        lower_arm_1.addVisual((new Limb(40)).getObject());
-        lower_arm_2.addVisual((new Limb(40)).getObject());
-        head.addVisual((new Head(35)).getObject());
+        torso.addVisual((new Limb(60)).getObject(), (new Limb(60)).getObject());
+        leg_1.addVisual((new Limb(50)).getObject(), (new Limb(50)).getObject());
+        leg_2.addVisual((new Limb(50)).getObject(), (new Limb(50)).getObject());
+        shin_1.addVisual((new Limb(50)).getObject(), (new Limb(50)).getObject());
+        shin_2.addVisual((new Limb(50)).getObject(), (new Limb(50)).getObject());
+        arm_1.addVisual((new Limb(40)).getObject(), (new Limb(40)).getObject());
+        arm_2.addVisual((new Limb(40)).getObject(), (new Limb(40)).getObject());
+        lower_arm_1.addVisual((new Limb(40)).getObject(), (new Limb(40)).getObject());
+        lower_arm_2.addVisual((new Limb(40)).getObject(), (new Limb(40)).getObject());
+        head.addVisual((new Head(35)).getObject(), (new Head(35)).getObject());
         this.root = root;
     }
     Stickman.prototype.getObject = function () {

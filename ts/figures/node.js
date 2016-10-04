@@ -24,7 +24,7 @@ var Node_ = (function () {
     Node_.prototype.draw = function (frame) {
         if (this._isRoot) {
             var position = this.position.get(frame);
-            this.visual.position.set(position.x, -position.y, 0);
+            this.visual.position(position.x, -position.y);
         }
         else
             this.visual.rotate(this.alpha.get(frame));
@@ -40,14 +40,15 @@ var Node_ = (function () {
             this._addVisual(node.visual);
         }
     };
-    Node_.prototype.addVisual = function (visual) {
+    Node_.prototype.addVisual = function (object, phantom) {
         if (this.parent_ != null && this.parent_.visual != null) {
             //this.parent_._addVisual(visual);
-            this.visual.add(visual);
+            this.visual.addPrimary(object);
+            this.visual.addSecondary(phantom);
         }
     };
     Node_.prototype.getVisual = function () {
-        return this.visual;
+        return this.visual.getPrimary();
     };
     Node_.prototype.setAlpha = function (alpha, frame) {
         if (this._isRoot)
@@ -99,14 +100,10 @@ var Node_ = (function () {
         return retValue;
     };
     Node_.prototype._addVisual = function (visual) {
-        if (this._isRoot) {
-            this.visual.add(visual);
-        }
-        else {
-            var object = new THREE.Object3D();
-            object.position.set(0, this.length, 0);
-            object.add(visual);
-            this.visual.add(object);
+        this.visual.add(visual);
+        if (!this._isRoot) {
+            visual.position(0, this.length);
+            visual.position(0, this.length, true);
         }
     };
     return Node_;
