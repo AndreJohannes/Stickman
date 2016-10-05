@@ -11,7 +11,7 @@ class Player {
 	}
 
 	public play(nodes: Node_[]) {
-		this._play(1, 50, nodes)();
+		this._play(1, 100, nodes)();
 	}
 
 	private _play(frame: number, stopFrame: number, nodes: Node_[]) {
@@ -21,7 +21,7 @@ class Player {
 				return;
 			setTimeout(that._play(frame + 1, stopFrame, nodes), 33);
 			for (let node of nodes) {
-				node.draw(frame);
+				node.draw(Math.round(frame/2));
 			}
 			that.renderer.update();
 		}

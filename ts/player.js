@@ -6,7 +6,7 @@ var Player = (function () {
         this.renderer = renderer;
     }
     Player.prototype.play = function (nodes) {
-        this._play(1, 50, nodes)();
+        this._play(1, 100, nodes)();
     };
     Player.prototype._play = function (frame, stopFrame, nodes) {
         var that = this;
@@ -16,7 +16,7 @@ var Player = (function () {
             setTimeout(that._play(frame + 1, stopFrame, nodes), 33);
             for (var _i = 0, nodes_1 = nodes; _i < nodes_1.length; _i++) {
                 var node = nodes_1[_i];
-                node.draw(frame);
+                node.draw(Math.round(frame / 2));
             }
             that.renderer.update();
         };

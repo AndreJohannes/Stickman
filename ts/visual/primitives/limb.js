@@ -17,6 +17,7 @@ var Limb = (function () {
         });
         var mesh = new THREE.Mesh(this.makeGeometry(this.phantom), material);
         mesh.position.set(-this.width / 2, 0, 0);
+        mesh.renderOrder = this.phantom ? -1 : 0;
         this.object.add(mesh);
     }
     Limb.prototype.getObject = function () {

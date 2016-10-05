@@ -39,12 +39,12 @@ class Node_ {
 		if (this._isRoot) {
 			var position = this.position.get(frame);
 			this.visual.position(position.x, -position.y);
-			position = this.position.get(frame - 1);
+			position = this.position.get(frame - 1 > 0 ? frame -1 : 1);
 			this.visual.position(position.x, -position.y, true);
 		}
 		else {
 			this.visual.rotate(this.alpha.get(frame));
-			this.visual.rotate(this.alpha.get(frame - 1), true);
+			this.visual.rotate(this.alpha.get(frame - 1 > 0 ? frame -1 : 1), true);
 		}
 		for (var child of this.children) {
 			child.draw(frame);
@@ -159,7 +159,7 @@ class Node_ {
 		this.position = FSArray.deserialize<THREE.Vector2>(object["position"]);
 		for(var child of object["children"]){
 			let childNode = new Node_(child, this);
-			this.children.push(childNode);
+			//this.children.push(childNode);
 			this.addChild(childNode);
 		}
 	}
@@ -197,5 +197,10 @@ class FSArray<T>{
 		return retObject;
 	}
 
+}
+
+enum NodeMode{
+	Edit, 
+	Play
 }
 

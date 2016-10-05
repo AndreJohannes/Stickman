@@ -101,6 +101,7 @@ html, body {
   height: 20em;
   background-color: #141414;
   padding-top: 10px;
+  min-height: 100px;
 }
 
 #left-component {

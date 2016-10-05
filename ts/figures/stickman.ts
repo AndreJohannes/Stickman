@@ -7,6 +7,9 @@ class Stickman {
 	private root: Node_;
 
 	constructor() {
+		this.root = new Node_(localStorage.getItem("stickman"));
+		return
+
 		let root: Node_ = new Node_(new THREE.Vector2(0, 0));
 		let torso: Node_ = new Node_(60, 0);
 		let leg_1: Node_ = new Node_(50, Math.PI * 3 / 4);

@@ -1,4 +1,5 @@
 /// <reference path="definitions/jquery.d.ts" />
+/// <reference path="definitions/splitpane.d.ts" />
 /// <reference path="renderer.ts" />
 /// <reference path="figures/stickman.ts" />
 /// <reference path="figures/background.ts" />
@@ -105,18 +106,32 @@ var canvasResizer = function (renderer) {
         }
     });
 };
+var canvasResizer2 = function () {
+    var $horizontalSplit = $("div.split-pane").eq(0);
+    var $verticalSplit = $("div.split-pane").eq(1);
+    this.expand = function () {
+        $verticalSplit.splitPane("lastComponentSize", 1300);
+        $horizontalSplit.splitPane("firstComponentSize", 721);
+        $verticalSplit.splitPane("lastComponentSize", 1280);
+    };
+};
 $(document).ready(function () {
     var stickman = new Stickman();
     var background = new Background();
     var $frame = $("#frame");
     var $timeline = $("#timeline");
+    var $play = $("#btnPlay");
+    var $resize = $("#btnResize");
+    var resizer = new canvasResizer2();
     var renderer = new GLRenderer();
     var player = new Player(renderer);
     renderer.addObject(stickman.getObject());
     renderer.addObject(stickman.getPhantom());
-    renderer.addObject(background.getObject());
+    //renderer.addObject(background.getObject());
     var $canvas = $(renderer.getDom());
-    var roots = [background.getRoot(), stickman.getRoot()];
+    var roots = [stickman.getRoot()];
+    $play.click(function () { player.play(roots); });
+    $resize.click(function () { resizer.expand(); });
     window["roots"] = roots;
     window["player"] = player;
     var activeNode = null;

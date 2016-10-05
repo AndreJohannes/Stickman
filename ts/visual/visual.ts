@@ -11,6 +11,7 @@ class Visual {
 	private dot: THREE.Object3D;
 	private dot_active: THREE.Object3D;
 	private isVisual: Boolean = true;
+	private mode: NodeMode = NodeMode.Edit;
 
 	constructor() {
 		this.primary = new THREE.Object3D();

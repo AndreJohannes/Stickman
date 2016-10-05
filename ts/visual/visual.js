@@ -4,6 +4,7 @@
 var Visual = (function () {
     function Visual() {
         this.isVisual = true;
+        this.mode = NodeMode.Edit;
         this.primary = new THREE.Object3D();
         this.secondary = new THREE.Object3D();
         this.dot = new Dot(Color.Blue).getObject();

@@ -31,12 +31,12 @@ var Node_ = (function () {
         if (this._isRoot) {
             var position = this.position.get(frame);
             this.visual.position(position.x, -position.y);
-            position = this.position.get(frame - 1);
+            position = this.position.get(frame - 1 > 0 ? frame - 1 : 1);
             this.visual.position(position.x, -position.y, true);
         }
         else {
             this.visual.rotate(this.alpha.get(frame));
-            this.visual.rotate(this.alpha.get(frame - 1), true);
+            this.visual.rotate(this.alpha.get(frame - 1 > 0 ? frame - 1 : 1), true);
         }
         for (var _i = 0, _a = this.children; _i < _a.length; _i++) {
             var child = _a[_i];
@@ -143,7 +143,7 @@ var Node_ = (function () {
         for (var _i = 0, _a = object["children"]; _i < _a.length; _i++) {
             var child = _a[_i];
             var childNode = new Node_(child, this);
-            this.children.push(childNode);
+            //this.children.push(childNode);
             this.addChild(childNode);
         }
     };
@@ -174,3 +174,8 @@ var FSArray = (function () {
     };
     return FSArray;
 }());
+var NodeMode;
+(function (NodeMode) {
+    NodeMode[NodeMode["Edit"] = 0] = "Edit";
+    NodeMode[NodeMode["Play"] = 1] = "Play";
+})(NodeMode || (NodeMode = {}));

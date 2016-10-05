@@ -3,6 +3,8 @@
 /// <reference path="../visual/primitives/head.ts" />
 var Stickman = (function () {
     function Stickman() {
+        this.root = new Node_(localStorage.getItem("stickman"));
+        return;
         var root = new Node_(new THREE.Vector2(0, 0));
         var torso = new Node_(60, 0);
         var leg_1 = new Node_(50, Math.PI * 3 / 4);

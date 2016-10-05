@@ -1,4 +1,5 @@
 /// <reference path="definitions/jquery.d.ts" />
+/// <reference path="definitions/splitpane.d.ts" />
 /// <reference path="renderer.ts" />
 /// <reference path="figures/stickman.ts" />
 /// <reference path="figures/background.ts" />
@@ -28,15 +29,17 @@ var FrameHandler = function() {
 	}
 	$btnUp.click(function() { setFrameNumber(frameNumber + 1) });
 	$btnDown.click(function() { setFrameNumber(frameNumber - 1) });
-	$iptFrame.change(function() { var val = $iptFrame.val(); if ($.isNumeric(val)) 
-		{ setFrameNumber(Math.round(val)) } });
+	$iptFrame.change(function() {
+		var val = $iptFrame.val(); if ($.isNumeric(val))
+		{ setFrameNumber(Math.round(val)) }
+	});
 	this.addCallback = function(cb) {
 		callbacks.push(cb);
 	}
-	this.getFrame = function(){
+	this.getFrame = function() {
 		return frameNumber;
 	}
-	this.setFrame = function(frame: number){
+	this.setFrame = function(frame: number) {
 		setFrameNumber(frame);
 	}
 
@@ -49,11 +52,11 @@ var TimelineHandler = function() {
 	let $trFirst = $timeline.find("tr").first();
 	let $table = $("table");
 	let trList = [];
-	let click = function(){
+	let click = function() {
 		var frame = $(this).data("index");
 		$("th").css("background-color", "");
 		$(this).css("background-color", "red");
-		for(let callback of callbacks){
+		for (let callback of callbacks) {
 			callback(frame);
 		}
 	}
@@ -64,7 +67,7 @@ var TimelineHandler = function() {
 	}
 	for (var i = 1; i < 50; i++) {
 		var $th = $("<th>" + i + "</th>");
-		$th.data("index",i);
+		$th.data("index", i);
 		$th.click(click);
 		$trFirst.append($th);
 		for (let $tr of trList) {
@@ -79,7 +82,7 @@ var TimelineHandler = function() {
 		$($("th").get(frame - 1)).css("background-color", "red");
 	}
 
-	this.addCallback = function(cb){
+	this.addCallback = function(cb) {
 		callbacks.push(cb);
 	}
 
@@ -106,28 +109,44 @@ var canvasResizer = function(renderer: GLRenderer) {
 	});
 }
 
+var canvasResizer2 = function() {
+	let $horizontalSplit = $("div.split-pane").eq(0);
+	let $verticalSplit = $("div.split-pane").eq(1);
+	this.expand = function() {
+		$verticalSplit.splitPane("lastComponentSize", 1300);
+		$horizontalSplit.splitPane("firstComponentSize", 721);
+		$verticalSplit.splitPane("lastComponentSize", 1280);
+	};
+
+}
+
 
 $(document).ready(function() {
 	let stickman = new Stickman();
 	let background = new Background();
 	let $frame = $("#frame");
 	let $timeline = $("#timeline");
+	let $play = $("#btnPlay");
+	let $resize = $("#btnResize"); 
+	let resizer = 	 new canvasResizer2();
 	let renderer = new GLRenderer();
 	let player = new Player(renderer);
 	renderer.addObject(stickman.getObject());
 	renderer.addObject(stickman.getPhantom());
-	renderer.addObject(background.getObject());
+	//renderer.addObject(background.getObject());
 	let $canvas = $(renderer.getDom());
-	let roots: Node_[] = [background.getRoot(), stickman.getRoot()];
-	window["roots"]=roots;
-	window["player"]=player;
+	let roots: Node_[] = [/*background.getRoot(),*/ stickman.getRoot()];
+	$play.click(function() { player.play(roots); });
+	$resize.click(function(){ resizer.expand()});
+	window["roots"] = roots;
+	window["player"] = player;
 	var activeNode = null;
 	let frameHandler = new FrameHandler();
 	let timelineHandler = new TimelineHandler();
 	frameHandler.addCallback(timelineHandler.setFrame);
-	frameHandler.addCallback(function(frame: number){for(var root of roots){root.draw(frame);} renderer.update()});
+	frameHandler.addCallback(function(frame: number) { for (var root of roots) { root.draw(frame); } renderer.update() });
 	timelineHandler.addCallback(frameHandler.setFrame);
-	timelineHandler.addCallback(function(frame: number){for(var root of roots){root.draw(frame);} renderer.update()});
+	timelineHandler.addCallback(function(frame: number) { for (var root of roots) { root.draw(frame); } renderer.update() });
 	mouseEventHandler($canvas, function(x, y) {
 		if (activeNode != null) {
 			var frame = frameHandler.getFrame();
