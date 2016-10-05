@@ -1,12 +1,13 @@
-/// <reference path="../definitions/three.d.ts" />
-/// <reference path="./textures.ts" />
+/// <reference path="../../definitions/three.d.ts" />
+/// <reference path="../textures.ts" />
+/// <reference path="./factory.ts" />
 
-class Head {
+class Head implements IPrimitives {
 
 	private object: THREE.Object3D = new THREE.Object3D();
 	private size;
 
-	constructor(size: number) {
+	constructor(size: number, phantom?: boolean) {
 		this.size = size;
 		let texture = TextureHandler.getTexture(TextureHandler.Texture.Stickman1);
 		texture.minFilter = THREE.LinearFilter;
@@ -25,6 +26,10 @@ class Head {
 
 	public getObject(): THREE.Object3D {
 		return this.object;
+	}
+
+	public serialize() {
+		return this._serialize();
 	}
 
 	private makeGeometry(): THREE.Geometry {
@@ -48,6 +53,11 @@ class Head {
 
 		return geometry;
 	}
+
+	private _serialize() {
+		return { "name": "head", "size": this.size, "phantom": false }
+	}
+
 
 
 }

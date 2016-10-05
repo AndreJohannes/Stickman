@@ -1,5 +1,5 @@
 /// <reference path="../definitions/three.d.ts" />
-/// <reference path="../primitives/visual.ts" />
+/// <reference path="../visual/visual.ts" />
 
 class Node_ {
 
@@ -11,18 +11,22 @@ class Node_ {
 	private children: Node_[] = [];
 	private visual: Visual;
 
-	constructor(pointOrLength?: any, alpha?: number) { // TypeScripts way of constructor overloading
-		if (pointOrLength.isVector2 == true) {
-			this.position = new FSArray(pointOrLength);
+	constructor(firstArg?: any, secondArg?: any) { // TypeScripts way of constructor overloading
+		if (typeof firstArg == "string") {
+			this.deserialize(JSON.parse(firstArg));
+		}else if(firstArg.isRoot!=null){
+			this.deserialize(firstArg);
+		}else if (firstArg.isVector2 == true) {
+			this.position = new FSArray<THREE.Vector2>(firstArg);
 			this._isRoot = true;
 			this.alpha = null;
 			this.visual = new Visual();
 		} else {
-			this.length = pointOrLength;
-			this.alpha = new FSArray(alpha);
+			this.length = firstArg;
+			this.alpha = new FSArray<number>(secondArg);
 			this._isRoot = false;
 			this.visual = new Visual();
-			this.visual.rotate(alpha);
+			this.visual.rotate(secondArg);
 			this.visual.setDotPosition(0, this.length);
 		}
 	}
@@ -35,9 +39,13 @@ class Node_ {
 		if (this._isRoot) {
 			var position = this.position.get(frame);
 			this.visual.position(position.x, -position.y);
+			position = this.position.get(frame - 1);
+			this.visual.position(position.x, -position.y, true);
 		}
-		else
+		else {
 			this.visual.rotate(this.alpha.get(frame));
+			this.visual.rotate(this.alpha.get(frame - 1), true);
+		}
 		for (var child of this.children) {
 			child.draw(frame);
 		}
@@ -51,7 +59,7 @@ class Node_ {
 		}
 	}
 
-	public addVisual(object: THREE.Object3D, phantom: THREE.Object3D) {
+	public addVisual(object: IPrimitives, phantom: IPrimitives) {
 		if (this.parent_ != null && this.parent_.visual != null) {
 			//this.parent_._addVisual(visual);
 			this.visual.addPrimary(object);
@@ -60,8 +68,11 @@ class Node_ {
 		}
 	}
 
-	public getVisual(): THREE.Object3D {
-		return this.visual.getPrimary();
+	public getVisual(secondary?: Boolean): THREE.Object3D {
+		if (secondary)
+			return this.visual.getSecondary();
+		else
+			return this.visual.getPrimary();
 	}
 
 	public setAlpha(alpha: number, frame: number) {
@@ -120,9 +131,36 @@ class Node_ {
 
 	private _addVisual(visual: Visual) {
 		this.visual.add(visual);
-		if(!this._isRoot){
+		if (!this._isRoot) {
 			visual.position(0, this.length);
 			visual.position(0, this.length, true);
+		}
+	}
+
+	private serialize() {
+		let retObject = {};
+		retObject["isRoot"] = this._isRoot;
+		retObject["position"] = this.position != null ? this.position.serialize() : null;
+		retObject["length"] = this.length;
+		retObject["alpha"] = this.alpha != null ? this.alpha.serialize() : null;
+		retObject["visual"] = this.visual.serialize();
+		var children = [];
+		for (var child of this.children)
+			children.push(child.serialize());
+		retObject["children"] = children;
+		return retObject;
+	}
+
+	private deserialize(object) {
+		this._isRoot = object["isRoot"];
+		this.length = object["length"];
+		this.visual = Visual.deserialize(object["visual"]);
+		this.alpha = FSArray.deserialize<number>(object["alpha"]);
+		this.position = FSArray.deserialize<THREE.Vector2>(object["position"]);
+		for(var child of object["children"]){
+			let childNode = new Node_(child, this);
+			this.children.push(childNode);
+			this.addChild(childNode);
 		}
 	}
 
@@ -145,6 +183,18 @@ class FSArray<T>{
 
 	public set(i: number, value: T) {
 		this.array[i] = value;
+	}
+
+	public serialize(): T[] {
+		return this.array;
+	}
+
+	static deserialize<T>(array: T[]) : FSArray<T>{
+		if(array==null)
+			return null;
+		let retObject =  new FSArray<T>(null);
+		retObject.array = array;
+		return retObject;
 	}
 
 }

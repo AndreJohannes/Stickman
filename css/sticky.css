@@ -149,3 +149,11 @@ th{
   cursor: pointer;
 }
 
+.navbar-custom{
+  background-color: #444444;
+}
+
+.btn-custom{
+  background-color: grey;
+}
+

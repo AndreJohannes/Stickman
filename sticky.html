@@ -15,22 +15,24 @@
   <script src="./js/three.min.js"></script>
   <script src="./ts/sticky.js"></script>
   <script src="./ts/renderer.js"></script>
-  <script src="./ts/primitives/limb.js"></script>
-  <script src="./ts/primitives/head.js"></script>
-  <script src="./ts/primitives/rectangle.js"></script>
-  <script src="./ts/primitives/visual.js"></script>
+  <script src="./ts/visual/primitives/limb.js"></script>
+  <script src="./ts/visual/primitives/head.js"></script>
+  <script src="./ts/visual/primitives/rectangle.js"></script>
+  <script src="./ts/visual/visual.js"></script>
   <script src="./ts/figures/node.js"></script>
   <script src="./ts/figures/stickman.js"></script>
   <script src="./ts/figures/background.js"></script>
-  <script src="./ts/primitives/textures.js"></script>
-  <script src="./ts/primitives/dots.js"></script>
-    <script src="./js/split-pane.js"></script>
+  <script src="./ts/visual/textures.js"></script>
+  <script src="./ts/visual/dots.js"></script>
+  <script src="./js/split-pane.js"></script>
+  <script src="./ts/visual/primitives/factory.js"></script>
+  <script src="./ts/player.js"></script>
 </head>
 
 
 <body>
 
-  <nav class="navbar navbar-default" id="nav">
+  <nav class="navbar navbar-custom" id="nav">
      <div class="container-fluid">
         <!-- Brand and toggle get grouped for better mobile display -->
         <div class="navbar-header">
@@ -92,15 +94,23 @@
   <div class="form-group">
      <input type="text" class="form-control" placeholder="Search">
  </div>
- <button type="submit" class="btn btn-default">Submit</button>
+ <button type="submit" class="btn">Submit</button>
 </form>
+ <div class="nav navbar-nav">
+<button type="button" id="button_fbw" class="btn navbar-btn" onclick='buttonRewindPress()'>
+      <i class="fa fa-fast-backward"></i>
+    </button>
+        <button type="button" id="button_play" class="btn navbar-btn" onclick='buttonPlayPress()'>
+      <i class="fa fa-play"></i>
+    </button>
+</div>
 <ul class="nav navbar-nav navbar-right">
   <p class="navbar-text">Frame:</p>
   <div class="input-group spinner">
      <input type="text" class="form-control" value="1" id="iptFrame">
      <div class="input-group-btn-vertical">
-      <button class="btn btn-default" type="button" id="btnFrameUp"><i class="fa fa-caret-up"></i></button>
-      <button class="btn btn-default" type="button" id="btnFrameDown"><i class="fa fa-caret-down"></i></button>
+      <button class="btn btn-custom" type="button" id="btnFrameUp"><i class="fa fa-caret-up"></i></button>
+      <button class="btn btn-custom" type="button" id="btnFrameDown"><i class="fa fa-caret-down"></i></button>
   </div>
 </div>
 </ul>

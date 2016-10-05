@@ -1,13 +1,16 @@
-/// <reference path="../definitions/three.d.ts" />
-/// <reference path="./textures.ts" />
+/// <reference path="../../definitions/three.d.ts" />
+/// <reference path="./factory.ts" />
+/// <reference path="../textures.ts" />
 
-class Limb {
+class Limb implements IPrimitives{
 
 	private object: THREE.Object3D = new THREE.Object3D();
-	private width: number = 8;
+	private width: number = 9;
 	private length: number;
+	private phantom: boolean;
 
-	constructor(length: number) {
+	constructor(length: number, phantom?: boolean) {
+		this.phantom = phantom!=null ? phantom : false;
 		this.length = length;
 		let texture = TextureHandler.getTexture(TextureHandler.Texture.Stickman1);
 		texture.minFilter = THREE.LinearFilter;
@@ -15,11 +18,10 @@ class Limb {
 		let material = new THREE.MeshBasicMaterial({
 			color: 0xffffff,
 			map: texture,
-			transparent: true,
-			opacity: 0.5
+			transparent: true
 			//	depthWrite: false
 		});
-		let mesh = new THREE.Mesh(this.makeGeometry(), material);
+		let mesh = new THREE.Mesh(this.makeGeometry(this.phantom), material);
 		mesh.position.set(-this.width / 2, 0, 0);
 		this.object.add(mesh);
 	}
@@ -28,7 +30,11 @@ class Limb {
 		return this.object;
 	}
 
-	private makeGeometry(): THREE.Geometry {
+	public serialize(){
+		return this._serialize();
+	}
+
+	private makeGeometry(phantom: boolean): THREE.Geometry {
 
 		let geometry = new THREE.Geometry();
 		let wd = this.width;
@@ -49,15 +55,16 @@ class Limb {
 		geometry.faces.push(new THREE.Face3(4, 5, 6));
 		geometry.faces.push(new THREE.Face3(7, 6, 5));
 
-		let vertexUvs0 = new THREE.Vector2(1 / 512, 1 - 1 / 512);
-		let vertexUvs1 = new THREE.Vector2(51 / 512, 1 - 1 / 512);
-		let vertexUvs2 = new THREE.Vector2(1 / 512, 1 - 26 / 512);
-		let vertexUvs3 = new THREE.Vector2(51 / 512, 1 - 26 / 512);
+		let xOffset = phantom ? 10 : 0;
+		let vertexUvs0 = new THREE.Vector2((0+xOffset) / 512, 1 - 55.5 / 512);
+		let vertexUvs1 = new THREE.Vector2((9+xOffset) / 512, 1 - 55.5 / 512);
+		let vertexUvs2 = new THREE.Vector2((0+xOffset) / 512, 1 - 60 / 512);
+		let vertexUvs3 = new THREE.Vector2((9+xOffset) / 512, 1 - 60 / 512);
 
-		let vertexUvs4 = new THREE.Vector2(1 / 512, 1 - 27 / 512);
-		let vertexUvs5 = new THREE.Vector2(51 / 512, 1 - 27 / 512);
-		let vertexUvs6 = new THREE.Vector2(1 / 512, 1 - 52 / 512);
-		let vertexUvs7 = new THREE.Vector2(51 / 512, 1 - 52 / 512);
+		let vertexUvs4 = new THREE.Vector2((0+xOffset) / 512, 1 - 100 / 512);
+		let vertexUvs5 = new THREE.Vector2((9+xOffset) / 512, 1 - 100 / 512);
+		let vertexUvs6 = new THREE.Vector2((0+xOffset) / 512, 1 - 104.5 / 512);
+		let vertexUvs7 = new THREE.Vector2((9+xOffset) / 512, 1 - 104.5 / 512);
 
 		geometry.faceVertexUvs[0].push([vertexUvs0, vertexUvs1, vertexUvs2]);
 		geometry.faceVertexUvs[0].push([vertexUvs3, vertexUvs2, vertexUvs1]);
@@ -68,6 +75,9 @@ class Limb {
 		return geometry;
 	}
 
+	private _serialize(){
+		return {"name": "limb", "length": this.length, "phantom": this.phantom}
+	}
 
 }
 

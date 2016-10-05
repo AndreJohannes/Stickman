@@ -1,7 +1,8 @@
-/// <reference path="../definitions/three.d.ts" />
-/// <reference path="./textures.ts" />
+/// <reference path="../../definitions/three.d.ts" />
+/// <reference path="../textures.ts" />
+/// <reference path="./factory.ts" />
 
-class Rectangle {
+class Rectangle implements IPrimitives {
 
 	private object: THREE.Object3D = new THREE.Object3D();
 	private width: number;
@@ -29,6 +30,10 @@ class Rectangle {
 		return this.object;
 	}
 
+	public serialize() {
+		return this._serialize();
+	}
+
 	private makeGeometry(): THREE.Geometry {
 
 		let geometry = new THREE.Geometry();
@@ -53,5 +58,8 @@ class Rectangle {
 		return geometry;
 	}
 
+	private _serialize(){
+		return {"name": "rectangle", "phantom": false}
+	}
 
 }

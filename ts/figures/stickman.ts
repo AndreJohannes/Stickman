@@ -1,6 +1,6 @@
 /// <reference path="./node.ts" />
-/// <reference path="../primitives/limb.ts" />
-/// <reference path="../primitives/head.ts" />
+/// <reference path="../visual/primitives/limb.ts" />
+/// <reference path="../visual/primitives/head.ts" />
 
 class Stickman {
 
@@ -13,11 +13,11 @@ class Stickman {
 		let leg_2: Node_ = new Node_(50, -Math.PI * 3 / 4);
 		let shin_1: Node_ = new Node_(50, Math.PI * 1 / 4);
 		let shin_2: Node_ = new Node_(50, -Math.PI * 1 / 4);
-		let arm_1: Node_ = new Node_(40, Math.PI * 3/4);
-		let arm_2: Node_ = new Node_(40, -Math.PI * 3/4);
-		let lower_arm_1: Node_ = new Node_(40, Math.PI * 1/4);
-		let lower_arm_2: Node_ = new Node_(40, -Math.PI * 1/4);
-		let head: Node_ = new Node_(31, 0);
+		let arm_1: Node_ = new Node_(40, Math.PI * 3 / 4);
+		let arm_2: Node_ = new Node_(40, -Math.PI * 3 / 4);
+		let lower_arm_1: Node_ = new Node_(40, Math.PI * 1 / 4);
+		let lower_arm_2: Node_ = new Node_(40, -Math.PI * 1 / 4);
+		let head: Node_ = new Node_(35, 0);
 		root.addChild(torso);
 		root.addChild(leg_1);
 		root.addChild(leg_2);
@@ -28,21 +28,25 @@ class Stickman {
 		leg_2.addChild(shin_2);
 		arm_1.addChild(lower_arm_1);
 		arm_2.addChild(lower_arm_2);
-		torso.addVisual((new Limb(60)).getObject(), (new Limb(60)).getObject());
-		leg_1.addVisual((new Limb(50)).getObject(), (new Limb(50)).getObject());
-		leg_2.addVisual((new Limb(50)).getObject(), (new Limb(50)).getObject());
-		shin_1.addVisual((new Limb(50)).getObject(), (new Limb(50)).getObject());
-		shin_2.addVisual((new Limb(50)).getObject(), (new Limb(50)).getObject());
-		arm_1.addVisual((new Limb(40)).getObject(), (new Limb(40)).getObject());
-		arm_2.addVisual((new Limb(40)).getObject(), (new Limb(40)).getObject());
-		lower_arm_1.addVisual((new Limb(40)).getObject(), (new Limb(40)).getObject());
-		lower_arm_2.addVisual((new Limb(40)).getObject(), (new Limb(40)).getObject());
-		head.addVisual((new Head(35)).getObject(), (new Head(35)).getObject());
+		torso.addVisual(new Limb(60), new Limb(60, true));
+		leg_1.addVisual(new Limb(50), new Limb(50, true));
+		leg_2.addVisual(new Limb(50), new Limb(50, true));
+		shin_1.addVisual(new Limb(50), new Limb(50, true));
+		shin_2.addVisual(new Limb(50), new Limb(50, true));
+		arm_1.addVisual(new Limb(40), new Limb(40, true));
+		arm_2.addVisual(new Limb(40), new Limb(40, true));
+		lower_arm_1.addVisual(new Limb(40), new Limb(40, true));
+		lower_arm_2.addVisual(new Limb(40), new Limb(40, true));
+		head.addVisual(new Head(35), new Head(35, true));
 		this.root = root;
 	}
 
 	public getObject(): THREE.Object3D {
 		return this.root.getVisual();
+	}
+
+	public getPhantom(): THREE.Object3D {
+		return this.root.getVisual(true);
 	}
 
 	public getRoot(): Node_ {

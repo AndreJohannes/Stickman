@@ -2,6 +2,7 @@
 /// <reference path="renderer.ts" />
 /// <reference path="figures/stickman.ts" />
 /// <reference path="figures/background.ts" />
+/// <reference path="player.ts" />
 
 var mouseEventHandler = function($element: JQuery, callback, activator, deactivator) {
 	var selectedNode: Node_ = null;
@@ -109,14 +110,17 @@ var canvasResizer = function(renderer: GLRenderer) {
 $(document).ready(function() {
 	let stickman = new Stickman();
 	let background = new Background();
-	window["stickman"] = stickman;
 	let $frame = $("#frame");
 	let $timeline = $("#timeline");
 	let renderer = new GLRenderer();
+	let player = new Player(renderer);
 	renderer.addObject(stickman.getObject());
+	renderer.addObject(stickman.getPhantom());
 	renderer.addObject(background.getObject());
 	let $canvas = $(renderer.getDom());
 	let roots: Node_[] = [background.getRoot(), stickman.getRoot()];
+	window["roots"]=roots;
+	window["player"]=player;
 	var activeNode = null;
 	let frameHandler = new FrameHandler();
 	let timelineHandler = new TimelineHandler();

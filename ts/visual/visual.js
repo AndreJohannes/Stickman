@@ -1,5 +1,6 @@
 /// <reference path="../definitions/three.d.ts" />
-/// <reference path="../primitives/dots.ts" />
+/// <reference path="../visual/dots.ts" />
+/// <reference path="./primitives/factory.ts" />
 var Visual = (function () {
     function Visual() {
         this.isVisual = true;
@@ -35,15 +36,37 @@ var Visual = (function () {
     Visual.prototype.getPrimary = function () {
         return this.primary;
     };
+    Visual.prototype.getSecondary = function () {
+        return this.secondary;
+    };
+    Visual.prototype.showSecondary = function (show) {
+        this.secondary.visible = show;
+    };
     Visual.prototype.add = function (visual) {
         this.primary.add(visual.primary);
         this.secondary.add(visual.secondary);
     };
     Visual.prototype.addPrimary = function (object) {
-        this.primary.add(object);
+        this.primary.add(object.getObject());
+        this.primaryPrimitive = object;
     };
     Visual.prototype.addSecondary = function (object) {
-        this.secondary.add(object);
+        this.secondary.add(object.getObject());
+        this.secondaryPrimitive = object;
+    };
+    Visual.prototype.serialize = function () {
+        return {
+            "primary": this.primaryPrimitive != null ? this.primaryPrimitive.serialize() : null,
+            "secondary": this.secondaryPrimitive != null ? this.secondaryPrimitive.serialize() : null
+        };
+    };
+    Visual.deserialize = function (object) {
+        var retObject = new Visual();
+        if (object["primary"] != null)
+            retObject.addPrimary(Primitives.getPrimitive(object["primary"]["name"], object["primary"]));
+        if (object["secondary"] != null)
+            retObject.addSecondary(Primitives.getPrimitive(object["secondary"]["name"], object["secondary"]));
+        return retObject;
     };
     return Visual;
 }());

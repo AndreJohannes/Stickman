@@ -1,5 +1,5 @@
 /// <reference path="./definitions/three.d.ts" />
-/// <reference path="./primitives/limb.ts" />
+/// <reference path="./visual/primitives/limb.ts" />
 
 class GLRenderer {
 

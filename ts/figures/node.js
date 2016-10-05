@@ -1,20 +1,26 @@
 /// <reference path="../definitions/three.d.ts" />
-/// <reference path="../primitives/visual.ts" />
+/// <reference path="../visual/visual.ts" />
 var Node_ = (function () {
-    function Node_(pointOrLength, alpha) {
+    function Node_(firstArg, secondArg) {
         this.children = [];
-        if (pointOrLength.isVector2 == true) {
-            this.position = new FSArray(pointOrLength);
+        if (typeof firstArg == "string") {
+            this.deserialize(JSON.parse(firstArg));
+        }
+        else if (firstArg.isRoot != null) {
+            this.deserialize(firstArg);
+        }
+        else if (firstArg.isVector2 == true) {
+            this.position = new FSArray(firstArg);
             this._isRoot = true;
             this.alpha = null;
             this.visual = new Visual();
         }
         else {
-            this.length = pointOrLength;
-            this.alpha = new FSArray(alpha);
+            this.length = firstArg;
+            this.alpha = new FSArray(secondArg);
             this._isRoot = false;
             this.visual = new Visual();
-            this.visual.rotate(alpha);
+            this.visual.rotate(secondArg);
             this.visual.setDotPosition(0, this.length);
         }
     }
@@ -25,9 +31,13 @@ var Node_ = (function () {
         if (this._isRoot) {
             var position = this.position.get(frame);
             this.visual.position(position.x, -position.y);
+            position = this.position.get(frame - 1);
+            this.visual.position(position.x, -position.y, true);
         }
-        else
+        else {
             this.visual.rotate(this.alpha.get(frame));
+            this.visual.rotate(this.alpha.get(frame - 1), true);
+        }
         for (var _i = 0, _a = this.children; _i < _a.length; _i++) {
             var child = _a[_i];
             child.draw(frame);
@@ -47,8 +57,11 @@ var Node_ = (function () {
             this.visual.addSecondary(phantom);
         }
     };
-    Node_.prototype.getVisual = function () {
-        return this.visual.getPrimary();
+    Node_.prototype.getVisual = function (secondary) {
+        if (secondary)
+            return this.visual.getSecondary();
+        else
+            return this.visual.getPrimary();
     };
     Node_.prototype.setAlpha = function (alpha, frame) {
         if (this._isRoot)
@@ -106,6 +119,34 @@ var Node_ = (function () {
             visual.position(0, this.length, true);
         }
     };
+    Node_.prototype.serialize = function () {
+        var retObject = {};
+        retObject["isRoot"] = this._isRoot;
+        retObject["position"] = this.position != null ? this.position.serialize() : null;
+        retObject["length"] = this.length;
+        retObject["alpha"] = this.alpha != null ? this.alpha.serialize() : null;
+        retObject["visual"] = this.visual.serialize();
+        var children = [];
+        for (var _i = 0, _a = this.children; _i < _a.length; _i++) {
+            var child = _a[_i];
+            children.push(child.serialize());
+        }
+        retObject["children"] = children;
+        return retObject;
+    };
+    Node_.prototype.deserialize = function (object) {
+        this._isRoot = object["isRoot"];
+        this.length = object["length"];
+        this.visual = Visual.deserialize(object["visual"]);
+        this.alpha = FSArray.deserialize(object["alpha"]);
+        this.position = FSArray.deserialize(object["position"]);
+        for (var _i = 0, _a = object["children"]; _i < _a.length; _i++) {
+            var child = _a[_i];
+            var childNode = new Node_(child, this);
+            this.children.push(childNode);
+            this.addChild(childNode);
+        }
+    };
     return Node_;
 }());
 var FSArray = (function () {
@@ -120,6 +161,16 @@ var FSArray = (function () {
     };
     FSArray.prototype.set = function (i, value) {
         this.array[i] = value;
+    };
+    FSArray.prototype.serialize = function () {
+        return this.array;
+    };
+    FSArray.deserialize = function (array) {
+        if (array == null)
+            return null;
+        var retObject = new FSArray(null);
+        retObject.array = array;
+        return retObject;
     };
     return FSArray;
 }());

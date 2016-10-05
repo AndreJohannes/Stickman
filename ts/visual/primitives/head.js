@@ -1,7 +1,8 @@
-/// <reference path="../definitions/three.d.ts" />
-/// <reference path="./textures.ts" />
+/// <reference path="../../definitions/three.d.ts" />
+/// <reference path="../textures.ts" />
+/// <reference path="./factory.ts" />
 var Head = (function () {
-    function Head(size) {
+    function Head(size, phantom) {
         this.object = new THREE.Object3D();
         this.size = size;
         var texture = TextureHandler.getTexture(TextureHandler.Texture.Stickman1);
@@ -20,6 +21,9 @@ var Head = (function () {
     Head.prototype.getObject = function () {
         return this.object;
     };
+    Head.prototype.serialize = function () {
+        return this._serialize();
+    };
     Head.prototype.makeGeometry = function () {
         var geometry = new THREE.Geometry();
         var wd = this.size;
@@ -36,6 +40,9 @@ var Head = (function () {
         geometry.faceVertexUvs[0].push([vertexUvs0, vertexUvs1, vertexUvs2]);
         geometry.faceVertexUvs[0].push([vertexUvs3, vertexUvs2, vertexUvs1]);
         return geometry;
+    };
+    Head.prototype._serialize = function () {
+        return { "name": "head", "size": this.size, "phantom": false };
     };
     return Head;
 }());

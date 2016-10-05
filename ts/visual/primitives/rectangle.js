@@ -1,5 +1,6 @@
-/// <reference path="../definitions/three.d.ts" />
-/// <reference path="./textures.ts" />
+/// <reference path="../../definitions/three.d.ts" />
+/// <reference path="../textures.ts" />
+/// <reference path="./factory.ts" />
 var Rectangle = (function () {
     function Rectangle() {
         this.object = new THREE.Object3D();
@@ -21,6 +22,9 @@ var Rectangle = (function () {
     Rectangle.prototype.getObject = function () {
         return this.object;
     };
+    Rectangle.prototype.serialize = function () {
+        return this._serialize();
+    };
     Rectangle.prototype.makeGeometry = function () {
         var geometry = new THREE.Geometry();
         var wd = this.width;
@@ -38,6 +42,9 @@ var Rectangle = (function () {
         geometry.faceVertexUvs[0].push([vertexUvs0, vertexUvs1, vertexUvs2]);
         geometry.faceVertexUvs[0].push([vertexUvs3, vertexUvs2, vertexUvs1]);
         return geometry;
+    };
+    Rectangle.prototype._serialize = function () {
+        return { "name": "rectangle", "phantom": false };
     };
     return Rectangle;
 }());
