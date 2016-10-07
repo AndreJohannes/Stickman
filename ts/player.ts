@@ -1,6 +1,6 @@
-/// <reference path="definitions/jquery.d.ts" />
 /// <reference path="renderer.ts" />
 /// <reference path="./figures/node.ts" />
+/// <reference path="./figures/ifigure.ts" />
 
 class Player {
 
@@ -10,20 +10,30 @@ class Player {
 		this.renderer = renderer;
 	}
 
-	public play(nodes: Node_[]) {
-		this._play(1, 100, nodes)();
+	public play(figures: IFigure[], callback) {
+		this.setMode(figures, NodeMode.Play);
+		this._play(1, 100, figures, callback)();
 	}
 
-	private _play(frame: number, stopFrame: number, nodes: Node_[]) {
+	private _play(frame: number, stopFrame: number, figures: IFigure[], callback) {
 		var that = this;
 		return function() {
-			if (frame > stopFrame)
+			if (frame > stopFrame){
+				that.setMode(figures, NodeMode.Edit);
+				callback();
 				return;
-			setTimeout(that._play(frame + 1, stopFrame, nodes), 33);
-			for (let node of nodes) {
-				node.draw(Math.round(frame/2));
+			}
+			setTimeout(that._play(frame + 1, stopFrame, figures, callback), 33);
+			for (let figure of figures) {
+				figure.getRoot().draw(Math.round(frame / 1));
 			}
 			that.renderer.update();
+		}
+	}
+
+	public setMode(figures: IFigure[], mode : NodeMode){
+		for(let figure of figures){
+			figure.getRoot().setMode(mode);
 		}
 	}
 

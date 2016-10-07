@@ -32,7 +32,7 @@ class GLRenderer {
 		//object1.add(object2);
 		//this.scene.add(object1);
 
-		this.renderer = new THREE.WebGLRenderer( { alpha: false, antialias: false });
+		this.renderer = new THREE.WebGLRenderer( {preserveDrawingBuffer: true , alpha: false, antialias: false });
 		//this.renderer.setClearColor(0xffffff, 0)
 		this.renderer.setSize(this.resolution[0], this.resolution[1]);
 

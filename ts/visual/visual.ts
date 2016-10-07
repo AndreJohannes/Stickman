@@ -1,6 +1,7 @@
 /// <reference path="../definitions/three.d.ts" />
 /// <reference path="../visual/dots.ts" />
 /// <reference path="./primitives/factory.ts" />
+/// <reference path="../figures/node.ts" />
 
 class Visual {
 
@@ -20,6 +21,23 @@ class Visual {
 		this.dot_active = new Dot(Color.Red).getObject();
 		this.primary.add(this.dot);
 		this.primary.add(this.dot_active);
+	}
+
+	public setMode(mode: NodeMode) {
+		switch(mode){
+			case NodeMode.Play:
+				this.secondary.visible = false;
+				this.primary.visible = true;
+				this.dot.visible = false;
+				this.dot_active.visible = false;
+				break;
+			case NodeMode.Edit:
+				this.secondary.visible = true;
+				this.primary.visible = true;
+				this.dot.visible = true;
+				this.dot_active.visible = false;
+				break;
+		}
 	}
 
 	public activate() {

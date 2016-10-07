@@ -1,6 +1,7 @@
 /// <reference path="../definitions/three.d.ts" />
 /// <reference path="../visual/dots.ts" />
 /// <reference path="./primitives/factory.ts" />
+/// <reference path="../figures/node.ts" />
 var Visual = (function () {
     function Visual() {
         this.isVisual = true;
@@ -12,6 +13,22 @@ var Visual = (function () {
         this.primary.add(this.dot);
         this.primary.add(this.dot_active);
     }
+    Visual.prototype.setMode = function (mode) {
+        switch (mode) {
+            case NodeMode.Play:
+                this.secondary.visible = false;
+                this.primary.visible = true;
+                this.dot.visible = false;
+                this.dot_active.visible = false;
+                break;
+            case NodeMode.Edit:
+                this.secondary.visible = true;
+                this.primary.visible = true;
+                this.dot.visible = true;
+                this.dot_active.visible = false;
+                break;
+        }
+    };
     Visual.prototype.activate = function () {
         this.dot_active.visible = true;
     };

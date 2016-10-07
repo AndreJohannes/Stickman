@@ -50,9 +50,27 @@ var Node_ = (function () {
             this._addVisual(node.visual);
         }
     };
+    Node_.prototype.setMode = function (mode) {
+        this.applyToTree(function (mode) { this.visual.setMode(mode); }, mode);
+    };
+    Node_.prototype.manifest = function (frame) {
+        if (this._isRoot)
+            this.position.set(frame, this.position.get(frame));
+        else
+            this.alpha.set(frame, this.alpha.get(frame));
+        this.applyToTree(function () {
+            this.alpha.set(frame, this.alpha.get(frame));
+        }, null);
+    };
+    Node_.prototype.applyToTree = function (func, arg) {
+        for (var _i = 0, _a = this.children; _i < _a.length; _i++) {
+            var child = _a[_i];
+            child.applyToTree(func, arg);
+        }
+        func.call(this, arg);
+    };
     Node_.prototype.addVisual = function (object, phantom) {
         if (this.parent_ != null && this.parent_.visual != null) {
-            //this.parent_._addVisual(visual);
             this.visual.addPrimary(object);
             this.visual.addSecondary(phantom);
         }
@@ -72,6 +90,11 @@ var Node_ = (function () {
         if (this.isRoot) {
             this.position.set(frame, new THREE.Vector2(x, y));
         }
+    };
+    Node_.prototype.getRoot = function () {
+        if (this._isRoot)
+            return this;
+        return this.parent_.getRoot();
     };
     Node_.prototype.getChild = function (idx) {
         return this.children[idx];
@@ -143,7 +166,6 @@ var Node_ = (function () {
         for (var _i = 0, _a = object["children"]; _i < _a.length; _i++) {
             var child = _a[_i];
             var childNode = new Node_(child, this);
-            //this.children.push(childNode);
             this.addChild(childNode);
         }
     };
@@ -161,6 +183,9 @@ var FSArray = (function () {
     };
     FSArray.prototype.set = function (i, value) {
         this.array[i] = value;
+    };
+    FSArray.prototype.has = function (i) {
+        return this.array[i] != null;
     };
     FSArray.prototype.serialize = function () {
         return this.array;

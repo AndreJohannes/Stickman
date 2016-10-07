@@ -14,6 +14,10 @@
     <script src="./js/jquery.js"></script>
     <script src="./js/bootstrap.min.js"></script>
     <script src="./js/three.min.js"></script>
+    <script src="./js/FileSaver.min.js"></script>
+    <script src="./js/jszip.min.js"></script>
+    <script src="./js/split-pane.js"></script>
+    <!--<script src="./js/sticky.js"></script>-->
     <script src="./ts/sticky.js"></script>
     <script src="./ts/renderer.js"></script>
     <script src="./ts/visual/primitives/limb.js"></script>
@@ -25,9 +29,10 @@
     <script src="./ts/figures/background.js"></script>
     <script src="./ts/visual/textures.js"></script>
     <script src="./ts/visual/dots.js"></script>
-    <script src="./js/split-pane.js"></script>
     <script src="./ts/visual/primitives/factory.js"></script>
+    <script src="./ts/handlers/timeline.js"></script>
     <script src="./ts/player.js"></script>
+    <script src="./ts/download.js"></script>
 </head>
 
 <body>
@@ -49,37 +54,37 @@
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">File <span class="caret"></span></a>
                         <ul class="dropdown-menu">
-                            <li><a href="#">Action</a></li>
-                            <li><a href="#">Another action</a></li>
-                            <li><a href="#">Something else here</a></li>
+                            <li><a href="#">Save</a></li>
+                            <li><a href="#">Not Used</a></li>
+                            <li><a href="#">Not Used</a></li>
                             <li role="separator" class="divider"></li>
-                            <li><a href="#">Separated link</a></li>
+                            <li><a href="#">Not Used</a></li>
                             <li role="separator" class="divider"></li>
-                            <li><a href="#">One more separated link</a></li>
+                            <li><a href="#">Not Used</a></li>
                         </ul>
                     </li>
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Edit <span class="caret"></span></a>
                         <ul class="dropdown-menu">
-                            <li><a href="#">Action</a></li>
-                            <li><a href="#">Another action</a></li>
-                            <li><a href="#">Something else here</a></li>
+                            <li><a href="#">Not Used</a></li>
+                            <li><a href="#">Not Used</a></li>
+                            <li><a href="#">Not Used</a></li>
                             <li role="separator" class="divider"></li>
-                            <li><a href="#">Separated link</a></li>
+                            <li><a href="#">Not Used</a></li>
                             <li role="separator" class="divider"></li>
-                            <li><a href="#">One more separated link</a></li>
+                            <li><a href="#">Not Used</a></li>
                         </ul>
                     </li>
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">View <span class="caret"></span></a>
                         <ul class="dropdown-menu">
-                            <li><a href="#">Action</a></li>
-                            <li><a href="#">Another action</a></li>
-                            <li><a href="#">Something else here</a></li>
+                            <li><a href="#">Not Used</a></li>
+                            <li><a href="#">Not Used</a></li>
+                            <li><a href="#">Not Used</a></li>
                             <li role="separator" class="divider"></li>
-                            <li><a href="#">Separated link</a></li>
+                            <li><a href="#">Not Used</a></li>
                             <li role="separator" class="divider"></li>
-                            <li><a href="#">One more separated link</a></li>
+                            <li><a href="#">Not Used</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -99,20 +104,28 @@
                         </div>
                     </div>
                 </ul>
-                <div class="nav navbar-nav navbar-right">
-                    <button type="button" id="button_fbw" class="btn navbar-btn" onclick='buttonRewindPress()'>
+                <div class="nav navbar-nav navbar-right" style="margin-right:15px">
+                    <button type="button" id="btnDownload" class="btn navbar-btn">
+                        <i class="fa fa-download"></i>
+                    </button>
+                </div>
+                <div class="nav navbar-nav navbar-right" style="margin-right:15px">
+                    <button type="button" id="button_fbw" class="btn navbar-btn">
                         <i class="fa fa-fast-backward"></i>
                     </button>
                     <button type="button" id="btnPlay" class="btn navbar-btn">
                         <i class="fa fa-play"></i>
                     </button>
-                </div>
-                <div class="nav navbar-nav navbar-right">
-                    <button type="button" id="btnResize" class="btn navbar-btn">
-                        <i class="fa fa-arrows-alt"></i>
+                    <button type="button" id="btnPlay" class="btn navbar-btn">
+                        <i class="fa fa-stop"></i>
                     </button>
                     <button type="button" id="btnPlay" class="btn navbar-btn">
-                        <span class="glyphicon glyphicon-fullscreen"></i>
+                        <i class="fa fa-fast-forward"></i>
+                    </button>
+                </div>
+                <div class="nav navbar-nav navbar-right" style="margin-right:15px">
+                    <button type="button" id="btnResize" class="btn navbar-btn">
+                        <i class="fa fa-arrows-alt"></i>
                     </button>
                 </div>
             </div>
@@ -127,13 +140,13 @@
                 <div class="split-pane fixed-left" id="split-pane-2">
                     <div class="split-pane-component" id="left-component">
                         <div class="pretty-split-pane-component-inner" id="collection">
+                            <img src="./images/stickman1.png"></img>
                             <!-- This div is added for styling purposes only. It's not part of the split-pane plugin. -->
                         </div>
                     </div>
                     <div class="split-pane-divider" id="vertical-divider"></div>
                     <div class="split-pane-component" id="right-component">
                         <div class="pretty-split-pane-component-inner" id="frame">
-                            <!-- This div is added for styling purposes only. It's not part of the split-pane plugin. -->
                         </div>
                     </div>
                 </div>
@@ -141,7 +154,6 @@
             <div class="split-pane-divider" id="horizontal-divider"></div>
             <div class="split-pane-component" id="bottom-component">
                 <div class="pretty-split-pane-component-inner" id="timeline">
-                    <!-- This div is added for styling purposes only. It's not part of the split-pane plugin. -->
                     <table>
                         <tr></tr>
                     </table>

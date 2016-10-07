@@ -1,15 +1,17 @@
 /// <reference path="./node.ts" />
+/// <reference path="./ifigure.ts" />
 /// <reference path="../visual/primitives/limb.ts" />
 /// <reference path="../visual/primitives/head.ts" />
 
-class Stickman {
+class Stickman implements IFigure {
 
 	private root: Node_;
+	private name: string;
 
-	constructor() {
-		this.root = new Node_(localStorage.getItem("stickman"));
-		return
-
+	constructor(name: string) {
+		//this.root = new Node_(localStorage.getItem("stickman"));
+		//return
+		this.name = name;
 		let root: Node_ = new Node_(new THREE.Vector2(0, 0));
 		let torso: Node_ = new Node_(60, 0);
 		let leg_1: Node_ = new Node_(50, Math.PI * 3 / 4);
@@ -44,7 +46,7 @@ class Stickman {
 		this.root = root;
 	}
 
-	public getObject(): THREE.Object3D {
+	public getVisual(): THREE.Object3D {
 		return this.root.getVisual();
 	}
 
@@ -54,6 +56,10 @@ class Stickman {
 
 	public getRoot(): Node_ {
 		return this.root;
+	}
+
+	public getName(): string {
+		return this.name
 	}
 
 }

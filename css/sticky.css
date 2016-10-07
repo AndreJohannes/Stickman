@@ -79,6 +79,14 @@ td{
   background-color: blue;
 }
 
+.brick-nd{
+  background-color: yellow;
+}
+
+.brick-nv{
+  background-color: darkgrey;
+}
+
 
 html, body {
   height: 100%;

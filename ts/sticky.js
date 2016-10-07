@@ -2,8 +2,11 @@
 /// <reference path="definitions/splitpane.d.ts" />
 /// <reference path="renderer.ts" />
 /// <reference path="figures/stickman.ts" />
+/// <reference path="figures/ifigure.ts" />
 /// <reference path="figures/background.ts" />
 /// <reference path="player.ts" />
+/// <reference path="download.ts" />
+/// <reference path="handlers/timeline.ts" />
 var mouseEventHandler = function ($element, callback, activator, deactivator) {
     var selectedNode = null;
     $element.mousedown(function (e) { activator(e.offsetX - 1280 / 2, e.offsetY - 720 / 2); });
@@ -45,48 +48,6 @@ var FrameHandler = function () {
         setFrameNumber(frame);
     };
 };
-var TimelineHandler = function () {
-    //var frame = 1;
-    var callbacks = [];
-    var $timeline = $("#timeline");
-    var $trFirst = $timeline.find("tr").first();
-    var $table = $("table");
-    var trList = [];
-    var click = function () {
-        var frame = $(this).data("index");
-        $("th").css("background-color", "");
-        $(this).css("background-color", "red");
-        for (var _i = 0, callbacks_2 = callbacks; _i < callbacks_2.length; _i++) {
-            var callback = callbacks_2[_i];
-            callback(frame);
-        }
-    };
-    for (i = 0; i < 5; i++) {
-        var $tr = $("<tr></tr>");
-        trList.push($tr);
-        $table.append($tr);
-    }
-    for (var i = 1; i < 50; i++) {
-        var $th = $("<th>" + i + "</th>");
-        $th.data("index", i);
-        $th.click(click);
-        $trFirst.append($th);
-        for (var _i = 0, trList_1 = trList; _i < trList_1.length; _i++) {
-            var $tr_1 = trList_1[_i];
-            var $td = $("<td><div class=\"brick\"></div></td>");
-            $tr_1.append($td);
-        }
-    }
-    this.setFrame = function (frame) {
-        $("th").css("background-color", "");
-        //this.frame = frame;
-        $($("th").get(frame - 1)).css("background-color", "red");
-    };
-    this.addCallback = function (cb) {
-        callbacks.push(cb);
-    };
-    this.setFrame(1);
-};
 var canvasResizer = function (renderer) {
     var $div = $("#right-component");
     var hasResized = false;
@@ -116,37 +77,36 @@ var canvasResizer2 = function () {
     };
 };
 $(document).ready(function () {
-    var stickman = new Stickman();
-    var background = new Background();
+    var stickman1 = new Stickman("Smart");
+    var stickman2 = new Stickman("Dumb");
+    //let background: IFigure = new Background();
+    var figures = [stickman1, stickman2];
     var $frame = $("#frame");
     var $timeline = $("#timeline");
     var $play = $("#btnPlay");
     var $resize = $("#btnResize");
+    var $download = $("#btnDownload");
     var resizer = new canvasResizer2();
     var renderer = new GLRenderer();
     var player = new Player(renderer);
-    renderer.addObject(stickman.getObject());
-    renderer.addObject(stickman.getPhantom());
+    var download = new Download(renderer);
+    var frameHandler = new FrameHandler();
+    var timelineHandler = new TimelineHandler(figures);
+    window["timelineHandler"] = timelineHandler;
+    renderer.addObject(stickman1.getVisual());
+    renderer.addObject(stickman1.getPhantom());
+    renderer.addObject(stickman2.getVisual());
+    renderer.addObject(stickman2.getPhantom());
     //renderer.addObject(background.getObject());
     var $canvas = $(renderer.getDom());
-    var roots = [stickman.getRoot()];
-    $play.click(function () { player.play(roots); });
+    $play.click(function () { player.play(figures, function () { $.each(figures, function (index, figure) { figure.getRoot().draw(frameHandler.getFrame()); }); }); });
     $resize.click(function () { resizer.expand(); });
-    window["roots"] = roots;
-    window["player"] = player;
-    var activeNode = null;
-    var frameHandler = new FrameHandler();
-    var timelineHandler = new TimelineHandler();
+    $download.click(function () { download.zipAndSave(figures); $.each(figures, function (index, figure) { figure.getRoot().draw(frameHandler.getFrame()); }); });
     frameHandler.addCallback(timelineHandler.setFrame);
-    frameHandler.addCallback(function (frame) { for (var _i = 0, roots_1 = roots; _i < roots_1.length; _i++) {
-        var root = roots_1[_i];
-        root.draw(frame);
-    } renderer.update(); });
+    frameHandler.addCallback(function (frame) { $.each(figures, function (index, figure) { figure.getRoot().draw(frame); }); renderer.update(); });
     timelineHandler.addCallback(frameHandler.setFrame);
-    timelineHandler.addCallback(function (frame) { for (var _i = 0, roots_2 = roots; _i < roots_2.length; _i++) {
-        var root = roots_2[_i];
-        root.draw(frame);
-    } renderer.update(); });
+    timelineHandler.addCallback(function (frame) { $.each(figures, function (index, figure) { figure.getRoot().draw(frame); }); renderer.update(); });
+    var activeNode = null;
     mouseEventHandler($canvas, function (x, y) {
         if (activeNode != null) {
             var frame = frameHandler.getFrame();
@@ -160,16 +120,18 @@ $(document).ready(function () {
             }
             activeNode.node.draw(frame);
             renderer.update();
+            timelineHandler.updateFrame(frame);
         }
     }, function (x, y) {
         var frame = frameHandler.getFrame();
-        for (var _i = 0, roots_3 = roots; _i < roots_3.length; _i++) {
-            var root = roots_3[_i];
-            var node = root.getProximityNodes(frame, 1000, new THREE.Vector2(x, y));
+        for (var _i = 0, figures_1 = figures; _i < figures_1.length; _i++) {
+            var figure = figures_1[_i];
+            var node = figure.getRoot().getProximityNodes(frame, 1000, new THREE.Vector2(x, y));
             activeNode = activeNode == null ? node : (activeNode.distance > node.distance ? node : activeNode);
         }
         if (activeNode != null) {
             activeNode.node.activate();
+            activeNode.node.getRoot().manifest(frame);
             renderer.update();
         }
     }, function () {
@@ -181,8 +143,7 @@ $(document).ready(function () {
     });
     $frame.append($canvas);
     $('div.split-pane').splitPane();
-    canvasResizer(renderer);
-    //var i =0;
-    //renderer.animate()
-    //setInterval(function(){roots[0].setPosition((i+1280/2)%1280-1280/2,0);i+=55 ;},33/2);
+    //roots[0].draw(1);
+    renderer.update();
+    //canvasResizer(renderer);
 });

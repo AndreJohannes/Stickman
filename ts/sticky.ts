@@ -2,8 +2,11 @@
 /// <reference path="definitions/splitpane.d.ts" />
 /// <reference path="renderer.ts" />
 /// <reference path="figures/stickman.ts" />
+/// <reference path="figures/ifigure.ts" />
 /// <reference path="figures/background.ts" />
 /// <reference path="player.ts" />
+/// <reference path="download.ts" />
+/// <reference path="handlers/timeline.ts" />
 
 var mouseEventHandler = function($element: JQuery, callback, activator, deactivator) {
 	var selectedNode: Node_ = null;
@@ -42,52 +45,6 @@ var FrameHandler = function() {
 	this.setFrame = function(frame: number) {
 		setFrameNumber(frame);
 	}
-
-}
-
-var TimelineHandler = function() {
-	//var frame = 1;
-	let callbacks = [];
-	let $timeline = $("#timeline");
-	let $trFirst = $timeline.find("tr").first();
-	let $table = $("table");
-	let trList = [];
-	let click = function() {
-		var frame = $(this).data("index");
-		$("th").css("background-color", "");
-		$(this).css("background-color", "red");
-		for (let callback of callbacks) {
-			callback(frame);
-		}
-	}
-	for (i = 0; i < 5; i++) {
-		var $tr = $("<tr></tr>");
-		trList.push($tr);
-		$table.append($tr);
-	}
-	for (var i = 1; i < 50; i++) {
-		var $th = $("<th>" + i + "</th>");
-		$th.data("index", i);
-		$th.click(click);
-		$trFirst.append($th);
-		for (let $tr of trList) {
-			var $td = $("<td><div class=\"brick\"></div></td>");
-			$tr.append($td);
-		}
-	}
-
-	this.setFrame = function(frame: number) {
-		$("th").css("background-color", "");
-		//this.frame = frame;
-		$($("th").get(frame - 1)).css("background-color", "red");
-	}
-
-	this.addCallback = function(cb) {
-		callbacks.push(cb);
-	}
-
-	this.setFrame(1);
-
 }
 
 var canvasResizer = function(renderer: GLRenderer) {
@@ -122,31 +79,36 @@ var canvasResizer2 = function() {
 
 
 $(document).ready(function() {
-	let stickman = new Stickman();
-	let background = new Background();
+	let stickman1: IFigure = new Stickman("Smart");
+	let stickman2: IFigure = new Stickman("Dumb");
+	//let background: IFigure = new Background();
+	let figures: IFigure[] = [stickman1, stickman2];
 	let $frame = $("#frame");
 	let $timeline = $("#timeline");
 	let $play = $("#btnPlay");
-	let $resize = $("#btnResize"); 
-	let resizer = 	 new canvasResizer2();
+	let $resize = $("#btnResize");
+	let $download = $("#btnDownload");
+	let resizer = new canvasResizer2();
 	let renderer = new GLRenderer();
 	let player = new Player(renderer);
-	renderer.addObject(stickman.getObject());
-	renderer.addObject(stickman.getPhantom());
+	let download = new Download(renderer);
+	let frameHandler = new FrameHandler();
+	let timelineHandler = new TimelineHandler(figures);
+	window["timelineHandler"] = timelineHandler;
+	renderer.addObject(stickman1.getVisual());
+	renderer.addObject(stickman1.getPhantom());
+	renderer.addObject(stickman2.getVisual());
+	renderer.addObject(stickman2.getPhantom());
 	//renderer.addObject(background.getObject());
 	let $canvas = $(renderer.getDom());
-	let roots: Node_[] = [/*background.getRoot(),*/ stickman.getRoot()];
-	$play.click(function() { player.play(roots); });
-	$resize.click(function(){ resizer.expand()});
-	window["roots"] = roots;
-	window["player"] = player;
-	var activeNode = null;
-	let frameHandler = new FrameHandler();
-	let timelineHandler = new TimelineHandler();
+	$play.click(function() { player.play(figures, function() { $.each(figures, function(index, figure) { figure.getRoot().draw(frameHandler.getFrame()) }) }); });
+	$resize.click(function() { resizer.expand() });
+	$download.click(function() { download.zipAndSave(figures); $.each(figures, function(index, figure) { figure.getRoot().draw(frameHandler.getFrame()) }) });
 	frameHandler.addCallback(timelineHandler.setFrame);
-	frameHandler.addCallback(function(frame: number) { for (var root of roots) { root.draw(frame); } renderer.update() });
+	frameHandler.addCallback(function(frame: number) { $.each(figures, function(index, figure) { figure.getRoot().draw(frame); }); renderer.update() });
 	timelineHandler.addCallback(frameHandler.setFrame);
-	timelineHandler.addCallback(function(frame: number) { for (var root of roots) { root.draw(frame); } renderer.update() });
+	timelineHandler.addCallback(function(frame: number) { $.each(figures, function(index, figure) { figure.getRoot().draw(frame); }); renderer.update() });
+	var activeNode = null;
 	mouseEventHandler($canvas, function(x, y) {
 		if (activeNode != null) {
 			var frame = frameHandler.getFrame();
@@ -159,15 +121,17 @@ $(document).ready(function() {
 			}
 			activeNode.node.draw(frame);
 			renderer.update();
+			timelineHandler.updateFrame(frame);
 		}
 	}, function(x, y) {
 		var frame = frameHandler.getFrame();
-		for (var root of roots) {
-			var node = root.getProximityNodes(frame, 1000, new THREE.Vector2(x, y));
+		for (var figure of figures) {
+			var node = figure.getRoot().getProximityNodes(frame, 1000, new THREE.Vector2(x, y));
 			activeNode = activeNode == null ? node : (activeNode.distance > node.distance ? node : activeNode);
 		}
 		if (activeNode != null) {
 			activeNode.node.activate();
+			activeNode.node.getRoot().manifest(frame);
 			renderer.update();
 		}
 	}, function() {
@@ -179,8 +143,7 @@ $(document).ready(function() {
 	});
 	$frame.append($canvas);
 	$('div.split-pane').splitPane();
-	canvasResizer(renderer);
-	//var i =0;
-	//renderer.animate()
-	//setInterval(function(){roots[0].setPosition((i+1280/2)%1280-1280/2,0);i+=55 ;},33/2);
+	//roots[0].draw(1);
+	renderer.update();
+	//canvasResizer(renderer);
 });

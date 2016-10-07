@@ -14,9 +14,9 @@ class Node_ {
 	constructor(firstArg?: any, secondArg?: any) { // TypeScripts way of constructor overloading
 		if (typeof firstArg == "string") {
 			this.deserialize(JSON.parse(firstArg));
-		}else if(firstArg.isRoot!=null){
+		} else if (firstArg.isRoot != null) {
 			this.deserialize(firstArg);
-		}else if (firstArg.isVector2 == true) {
+		} else if (firstArg.isVector2 == true) {
 			this.position = new FSArray<THREE.Vector2>(firstArg);
 			this._isRoot = true;
 			this.alpha = null;
@@ -39,12 +39,12 @@ class Node_ {
 		if (this._isRoot) {
 			var position = this.position.get(frame);
 			this.visual.position(position.x, -position.y);
-			position = this.position.get(frame - 1 > 0 ? frame -1 : 1);
+			position = this.position.get(frame - 1 > 0 ? frame - 1 : 1);
 			this.visual.position(position.x, -position.y, true);
 		}
 		else {
 			this.visual.rotate(this.alpha.get(frame));
-			this.visual.rotate(this.alpha.get(frame - 1 > 0 ? frame -1 : 1), true);
+			this.visual.rotate(this.alpha.get(frame - 1 > 0 ? frame - 1 : 1), true);
 		}
 		for (var child of this.children) {
 			child.draw(frame);
@@ -59,12 +59,31 @@ class Node_ {
 		}
 	}
 
+	public setMode(mode: NodeMode) {
+		this.applyToTree(function(mode) { this.visual.setMode(mode) }, mode);
+	}
+
+	public manifest(frame: number) {
+		if(this._isRoot)
+			this.position.set(frame, this.position.get(frame))
+		else
+			this.alpha.set(frame,this.alpha.get(frame))
+		this.applyToTree(function() {
+			this.alpha.set(frame, this.alpha.get(frame));
+		}, null);
+	}
+
+	public applyToTree(func, arg) {
+		for (let child of this.children) {
+			child.applyToTree(func, arg);
+		}
+		func.call(this, arg);
+	}
+
 	public addVisual(object: IPrimitives, phantom: IPrimitives) {
 		if (this.parent_ != null && this.parent_.visual != null) {
-			//this.parent_._addVisual(visual);
 			this.visual.addPrimary(object);
 			this.visual.addSecondary(phantom);
-			//this.visual.rotation.set(0, 0, this.alpha);
 		}
 	}
 
@@ -85,6 +104,12 @@ class Node_ {
 		if (this.isRoot) {
 			this.position.set(frame, new THREE.Vector2(x, y));
 		}
+	}
+
+	public getRoot(): Node_ {
+		if (this._isRoot)
+			return this;
+		return this.parent_.getRoot();
 	}
 
 	public getChild(idx: number) {
@@ -157,9 +182,8 @@ class Node_ {
 		this.visual = Visual.deserialize(object["visual"]);
 		this.alpha = FSArray.deserialize<number>(object["alpha"]);
 		this.position = FSArray.deserialize<THREE.Vector2>(object["position"]);
-		for(var child of object["children"]){
+		for (var child of object["children"]) {
 			let childNode = new Node_(child, this);
-			//this.children.push(childNode);
 			this.addChild(childNode);
 		}
 	}
@@ -185,22 +209,26 @@ class FSArray<T>{
 		this.array[i] = value;
 	}
 
+	public has(i: number): boolean {
+		return this.array[i] != null
+	}
+
 	public serialize(): T[] {
 		return this.array;
 	}
 
-	static deserialize<T>(array: T[]) : FSArray<T>{
-		if(array==null)
+	static deserialize<T>(array: T[]): FSArray<T> {
+		if (array == null)
 			return null;
-		let retObject =  new FSArray<T>(null);
+		let retObject = new FSArray<T>(null);
 		retObject.array = array;
 		return retObject;
 	}
 
 }
 
-enum NodeMode{
-	Edit, 
+enum NodeMode {
+	Edit,
 	Play
 }
 

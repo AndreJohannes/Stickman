@@ -1,10 +1,12 @@
 /// <reference path="./node.ts" />
+/// <reference path="./ifigure.ts" />
 /// <reference path="../visual/primitives/limb.ts" />
 /// <reference path="../visual/primitives/head.ts" />
 var Stickman = (function () {
-    function Stickman() {
-        this.root = new Node_(localStorage.getItem("stickman"));
-        return;
+    function Stickman(name) {
+        //this.root = new Node_(localStorage.getItem("stickman"));
+        //return
+        this.name = name;
         var root = new Node_(new THREE.Vector2(0, 0));
         var torso = new Node_(60, 0);
         var leg_1 = new Node_(50, Math.PI * 3 / 4);
@@ -38,7 +40,7 @@ var Stickman = (function () {
         head.addVisual(new Head(35), new Head(35, true));
         this.root = root;
     }
-    Stickman.prototype.getObject = function () {
+    Stickman.prototype.getVisual = function () {
         return this.root.getVisual();
     };
     Stickman.prototype.getPhantom = function () {
@@ -46,6 +48,9 @@ var Stickman = (function () {
     };
     Stickman.prototype.getRoot = function () {
         return this.root;
+    };
+    Stickman.prototype.getName = function () {
+        return this.name;
     };
     return Stickman;
 }());
