@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="./css/split-pane.css" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="./js/jquery.js"></script>
+    <script src="./js/jquery.validate.min.js"></script>
     <script src="./js/bootstrap.min.js"></script>
     <script src="./js/three.min.js"></script>
     <script src="./js/FileSaver.min.js"></script>
@@ -24,18 +25,80 @@
     <script src="./ts/visual/primitives/head.js"></script>
     <script src="./ts/visual/primitives/rectangle.js"></script>
     <script src="./ts/visual/visual.js"></script>
+    <script src="./ts/figures/ifigure.js"></script>
     <script src="./ts/figures/node.js"></script>
     <script src="./ts/figures/stickman.js"></script>
     <script src="./ts/figures/background.js"></script>
+    <script src="./ts/project/project.js"></script>
+    <script src="./ts/project/storage.js"></script>
     <script src="./ts/visual/textures.js"></script>
     <script src="./ts/visual/dots.js"></script>
     <script src="./ts/visual/primitives/factory.js"></script>
     <script src="./ts/handlers/timeline.js"></script>
+    <script src="./ts/handlers/menu.js"></script>
+    <script src="./ts/handlers/frame.js"></script>
     <script src="./ts/player.js"></script>
     <script src="./ts/download.js"></script>
 </head>
 
 <body>
+    <!-- Modal -->
+    <div class="modal fade" id="saveFileModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">Save Project</h4>
+                </div>
+                <div class="modal-body">
+                    <table class="table table-hover" id="tblProjectSave">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-body">
+                    <p>Project</p>
+                    <input id="iptProjectSave"></input>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button id="btnSaveProject" type="button" class="btn btn-primary" data-dismiss="modal">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="openFileModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">Open Project</h4>
+                </div>
+                <div class="modal-body">
+                    <table class="table table-hover" id="tblProjectLoad">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Open Project</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <nav class="navbar navbar-custom" id="nav">
         <div class="container-fluid">
             <!-- Brand and toggle get grouped for better mobile display -->
@@ -54,11 +117,11 @@
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">File <span class="caret"></span></a>
                         <ul class="dropdown-menu">
-                            <li><a href="#">Save</a></li>
-                            <li><a href="#">Not Used</a></li>
-                            <li><a href="#">Not Used</a></li>
+                            <li><a id="btnOpen" data-toggle="modal" data-target="#openFileModal" href="#">Open</a></li>
+                            <li><a id="btnSave" data-toggle="modal" data-target="#saveFileModal" href="#">Save</a></li>
                             <li role="separator" class="divider"></li>
-                            <li><a href="#">Not Used</a></li>
+                            <li><a id="mnuExport" href="#">Export</a></li>
+                            <li><a id="mnuImport" href="#">Import</a></li>
                             <li role="separator" class="divider"></li>
                             <li><a href="#">Not Used</a></li>
                         </ul>

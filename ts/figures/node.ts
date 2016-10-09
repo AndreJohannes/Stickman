@@ -64,20 +64,19 @@ class Node_ {
 	}
 
 	public manifest(frame: number) {
-		if(this._isRoot)
+		if (this._isRoot)
 			this.position.set(frame, this.position.get(frame))
 		else
-			this.alpha.set(frame,this.alpha.get(frame))
+			this.alpha.set(frame, this.alpha.get(frame))
 		this.applyToTree(function() {
 			this.alpha.set(frame, this.alpha.get(frame));
 		}, null);
 	}
 
-	public applyToTree(func, arg) {
-		for (let child of this.children) {
-			child.applyToTree(func, arg);
-		}
-		func.call(this, arg);
+	public serialize(): Object{
+		if(!this._isRoot)
+			throw new Error("This method should only be called for the root Node");
+		return this._serialize();
 	}
 
 	public addVisual(object: IPrimitives, phantom: IPrimitives) {
@@ -162,7 +161,7 @@ class Node_ {
 		}
 	}
 
-	private serialize() {
+	private _serialize(): Object {
 		let retObject = {};
 		retObject["isRoot"] = this._isRoot;
 		retObject["position"] = this.position != null ? this.position.serialize() : null;
@@ -171,12 +170,12 @@ class Node_ {
 		retObject["visual"] = this.visual.serialize();
 		var children = [];
 		for (var child of this.children)
-			children.push(child.serialize());
+			children.push(child._serialize());
 		retObject["children"] = children;
 		return retObject;
 	}
 
-	private deserialize(object) {
+	private deserialize(object: Object) {
 		this._isRoot = object["isRoot"];
 		this.length = object["length"];
 		this.visual = Visual.deserialize(object["visual"]);
@@ -186,6 +185,13 @@ class Node_ {
 			let childNode = new Node_(child, this);
 			this.addChild(childNode);
 		}
+	}
+
+	private applyToTree(func, arg) {
+		for (let child of this.children) {
+			child.applyToTree(func, arg);
+		}
+		func.call(this, arg);
 	}
 
 }

@@ -62,12 +62,10 @@ var Node_ = (function () {
             this.alpha.set(frame, this.alpha.get(frame));
         }, null);
     };
-    Node_.prototype.applyToTree = function (func, arg) {
-        for (var _i = 0, _a = this.children; _i < _a.length; _i++) {
-            var child = _a[_i];
-            child.applyToTree(func, arg);
-        }
-        func.call(this, arg);
+    Node_.prototype.serialize = function () {
+        if (!this._isRoot)
+            throw new Error("This method should only be called for the root Node");
+        return this._serialize();
     };
     Node_.prototype.addVisual = function (object, phantom) {
         if (this.parent_ != null && this.parent_.visual != null) {
@@ -142,7 +140,7 @@ var Node_ = (function () {
             visual.position(0, this.length, true);
         }
     };
-    Node_.prototype.serialize = function () {
+    Node_.prototype._serialize = function () {
         var retObject = {};
         retObject["isRoot"] = this._isRoot;
         retObject["position"] = this.position != null ? this.position.serialize() : null;
@@ -152,7 +150,7 @@ var Node_ = (function () {
         var children = [];
         for (var _i = 0, _a = this.children; _i < _a.length; _i++) {
             var child = _a[_i];
-            children.push(child.serialize());
+            children.push(child._serialize());
         }
         retObject["children"] = children;
         return retObject;
@@ -168,6 +166,13 @@ var Node_ = (function () {
             var childNode = new Node_(child, this);
             this.addChild(childNode);
         }
+    };
+    Node_.prototype.applyToTree = function (func, arg) {
+        for (var _i = 0, _a = this.children; _i < _a.length; _i++) {
+            var child = _a[_i];
+            child.applyToTree(func, arg);
+        }
+        func.call(this, arg);
     };
     return Node_;
 }());

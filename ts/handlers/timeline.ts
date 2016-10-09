@@ -7,17 +7,17 @@ class TimelineHandler {
 	private $timeline: JQuery;
 	private $trFirst: JQuery;
 	private $table: JQuery;
-	private figures: IFigure[];
+	private project: Project;
 	private max_frame = 50;
 
-	constructor(figures: IFigure[]) {
+	constructor(project: Project) {
 		this.callbacks = [];
-		this.figures = figures
+		this.project = project;
 		this.$timeline = $("#timeline");
 		this.$trFirst = this.$timeline.find("tr").first();
 		this.$table = $("table");
 		let trList = [];
-		for (i = 0; i < figures.length; i++) {
+		for (i = 0; i < project.getFigures().length; i++) {
 			var $tr = $("<tr></tr>");
 			trList.push($tr);
 			this.$table.append($tr);
@@ -47,15 +47,15 @@ class TimelineHandler {
 		this.callbacks.push(cb);
 	}
 
-	public updateFrame(frame){
-		$.each(this.figures, function(index, value){
-			var div = $("tr").eq(index + 1).find("td").eq(frame-1).find("div");
-			if(value.getRoot()["position"].has(frame)){
+	public updateFrame(frame) {
+		$.each(this.project.getFigures(), function(index, value) {
+			var div = $("tr").eq(index + 1).find("td").eq(frame - 1).find("div");
+			if (value.getRoot()["position"].has(frame)) {
 				div.removeClass("brick-nd");
-			}else{
+			} else {
 				div.addClass("brick-nd");
 			}
-		})		
+		})
 	}
 
 	private getClick(): Function {
@@ -70,13 +70,13 @@ class TimelineHandler {
 		}
 	}
 
-	private addFrames(count: number){
-		var $trList = $("tr").not(":first"); 
-		for(var i=this.max_frame+1; i<=this.max_frame+count; i++){
+	private addFrames(count: number) {
+		var $trList = $("tr").not(":first");
+		for (var i = this.max_frame + 1; i <= this.max_frame + count; i++) {
 			var $th = $("<th/>");
 			$th.text(i);
 			this.$trFirst.append($th);
-			$.each(this.figures, function(index, figure){
+			$.each(this.project.getFigures(), function(index, figure) {
 				var $td = $("<td><div class=\"brick\"></div></td>");
 				$trList.eq(index).append($td);
 			});

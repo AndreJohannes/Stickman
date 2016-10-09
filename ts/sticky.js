@@ -7,6 +7,9 @@
 /// <reference path="player.ts" />
 /// <reference path="download.ts" />
 /// <reference path="handlers/timeline.ts" />
+/// <reference path="handlers/menu.ts" />
+/// <reference path="handlers/frame.ts" />
+/// <reference path="project/project.ts" />
 var mouseEventHandler = function ($element, callback, activator, deactivator) {
     var selectedNode = null;
     $element.mousedown(function (e) { activator(e.offsetX - 1280 / 2, e.offsetY - 720 / 2); });
@@ -16,134 +19,102 @@ var mouseEventHandler = function ($element, callback, activator, deactivator) {
         callback(e.offsetX - 1280 / 2, e.offsetY - 720 / 2);
     });
 };
-var FrameHandler = function () {
-    var frameNumber = 1;
-    var callbacks = [];
-    var $btnUp = $("#btnFrameUp");
-    var $btnDown = $("#btnFrameDown");
-    var $iptFrame = $("#iptFrame");
-    var setFrameNumber = function (frame) {
-        frameNumber = frame > 0 ? frame : frameNumber;
-        $iptFrame.val(frameNumber);
-        for (var _i = 0, callbacks_1 = callbacks; _i < callbacks_1.length; _i++) {
-            var callback = callbacks_1[_i];
-            callback(frameNumber);
-        }
+var CanvasResizer = (function () {
+    function CanvasResizer() {
+        this.$horizontalSplit = $("div.split-pane").eq(0);
+        this.$verticalSplit = $("div.split-pane").eq(1);
+    }
+    CanvasResizer.prototype.expand = function () {
+        this.$verticalSplit.splitPane("lastComponentSize", 1300);
+        this.$horizontalSplit.splitPane("firstComponentSize", 721);
+        this.$verticalSplit.splitPane("lastComponentSize", 1280);
     };
-    $btnUp.click(function () { setFrameNumber(frameNumber + 1); });
-    $btnDown.click(function () { setFrameNumber(frameNumber - 1); });
-    $iptFrame.change(function () {
-        var val = $iptFrame.val();
-        if ($.isNumeric(val)) {
-            setFrameNumber(Math.round(val));
-        }
-    });
-    this.addCallback = function (cb) {
-        callbacks.push(cb);
-    };
-    this.getFrame = function () {
-        return frameNumber;
-    };
-    this.setFrame = function (frame) {
-        setFrameNumber(frame);
-    };
-};
-var canvasResizer = function (renderer) {
-    var $div = $("#right-component");
-    var hasResized = false;
-    var aspectRation = 1280 / 720;
-    $(".split-pane").on('splitpaneresize', function () { hasResized = true; });
-    $(window).mouseup(function () {
-        if (hasResized && false) {
-            hasResized = false;
-            var height = $div.height() - 1;
-            var width = $div.width() - 1;
-            if (width / height > aspectRation) {
-                renderer.resize(aspectRation * height, height);
+    return CanvasResizer;
+}());
+var Sticky = (function () {
+    function Sticky() {
+        var project = new Project("testProject");
+        project.addFigure(new Stickman("Smart"));
+        project.addFigure(new Stickman("Dumb"));
+        this.project = project;
+        this.resizer = new CanvasResizer();
+        this.renderer = new GLRenderer();
+        this.player = new Player(this.renderer);
+        this.download = new Download(this.renderer);
+        this.frameHandler = new FrameHandler();
+        this.timelineHandler = new TimelineHandler(project);
+        this.menuHandler = new MenuHandler(project);
+        var $frame = $("#frame");
+        var $timeline = $("#timeline");
+        var $play = $("#btnPlay");
+        var $resize = $("#btnResize");
+        var $download = $("#btnDownload");
+        var that = this;
+        this.menuHandler.addCallback(function (project) { that.project = project; });
+        $.each(that.project.getFigures(), function (index, figure) { that.renderer.addObject(figure.getVisual()); that.renderer.addObject(figure.getPhantom()); });
+        var $canvas = $(this.renderer.getDom());
+        $play.click(function () {
+            that.player.play(that.project.getFigures(), function () {
+                $.each(that.project.getFigures(), function (index, figure) { figure.getRoot().draw(that.frameHandler.getFrame()); });
+            });
+        });
+        $resize.click(function () { that.resizer.expand(); });
+        $download.click(function () {
+            that.download.zipAndSave(that.project.getFigures());
+            $.each(that.project.getFigures(), function (index, figure) { figure.getRoot().draw(that.frameHandler.getFrame()); });
+        });
+        this.frameHandler.addCallback(that.timelineHandler.setFrame);
+        this.frameHandler.addCallback(function (frame) {
+            $.each(that.project.getFigures(), function (index, figure) { figure.getRoot().draw(frame); });
+            that.renderer.update();
+        });
+        this.timelineHandler.addCallback(that.frameHandler.setFrame);
+        this.timelineHandler.addCallback(function (frame) {
+            $.each(that.project.getFigures(), function (index, figure) { figure.getRoot().draw(frame); });
+            that.renderer.update();
+        });
+        var activeNode = null;
+        mouseEventHandler($canvas, function (x, y) {
+            if (activeNode != null) {
+                var frame = that.frameHandler.getFrame();
+                var xOffset = activeNode.pivot.x;
+                var yOffset = activeNode.pivot.y;
+                if (activeNode.node.isRoot()) {
+                    activeNode.node.setPosition(x, y, frame);
+                }
+                else {
+                    activeNode.node.setAlpha(Math.atan2(-x + xOffset, -y + yOffset) - activeNode.alpha, frame);
+                }
+                activeNode.node.draw(frame);
+                that.renderer.update();
+                that.timelineHandler.updateFrame(frame);
             }
-            else {
-                renderer.resize(width, width / aspectRation);
+        }, function (x, y) {
+            var frame = that.frameHandler.getFrame();
+            for (var _i = 0, _a = that.project.getFigures(); _i < _a.length; _i++) {
+                var figure = _a[_i];
+                var node = figure.getRoot().getProximityNodes(frame, 1000, new THREE.Vector2(x, y));
+                activeNode = activeNode == null ? node : (activeNode.distance > node.distance ? node : activeNode);
             }
-        }
-    });
-};
-var canvasResizer2 = function () {
-    var $horizontalSplit = $("div.split-pane").eq(0);
-    var $verticalSplit = $("div.split-pane").eq(1);
-    this.expand = function () {
-        $verticalSplit.splitPane("lastComponentSize", 1300);
-        $horizontalSplit.splitPane("firstComponentSize", 721);
-        $verticalSplit.splitPane("lastComponentSize", 1280);
-    };
-};
+            if (activeNode != null) {
+                activeNode.node.activate();
+                activeNode.node.getRoot().manifest(frame);
+                that.renderer.update();
+            }
+        }, function () {
+            if (activeNode != null) {
+                activeNode.node.deactivate();
+                activeNode = null;
+                that.renderer.update();
+            }
+        });
+        $frame.append($canvas);
+        $('div.split-pane').splitPane();
+        //roots[0].draw(1);
+        this.renderer.update();
+    }
+    return Sticky;
+}());
 $(document).ready(function () {
-    var stickman1 = new Stickman("Smart");
-    var stickman2 = new Stickman("Dumb");
-    //let background: IFigure = new Background();
-    var figures = [stickman1, stickman2];
-    var $frame = $("#frame");
-    var $timeline = $("#timeline");
-    var $play = $("#btnPlay");
-    var $resize = $("#btnResize");
-    var $download = $("#btnDownload");
-    var resizer = new canvasResizer2();
-    var renderer = new GLRenderer();
-    var player = new Player(renderer);
-    var download = new Download(renderer);
-    var frameHandler = new FrameHandler();
-    var timelineHandler = new TimelineHandler(figures);
-    window["timelineHandler"] = timelineHandler;
-    renderer.addObject(stickman1.getVisual());
-    renderer.addObject(stickman1.getPhantom());
-    renderer.addObject(stickman2.getVisual());
-    renderer.addObject(stickman2.getPhantom());
-    //renderer.addObject(background.getObject());
-    var $canvas = $(renderer.getDom());
-    $play.click(function () { player.play(figures, function () { $.each(figures, function (index, figure) { figure.getRoot().draw(frameHandler.getFrame()); }); }); });
-    $resize.click(function () { resizer.expand(); });
-    $download.click(function () { download.zipAndSave(figures); $.each(figures, function (index, figure) { figure.getRoot().draw(frameHandler.getFrame()); }); });
-    frameHandler.addCallback(timelineHandler.setFrame);
-    frameHandler.addCallback(function (frame) { $.each(figures, function (index, figure) { figure.getRoot().draw(frame); }); renderer.update(); });
-    timelineHandler.addCallback(frameHandler.setFrame);
-    timelineHandler.addCallback(function (frame) { $.each(figures, function (index, figure) { figure.getRoot().draw(frame); }); renderer.update(); });
-    var activeNode = null;
-    mouseEventHandler($canvas, function (x, y) {
-        if (activeNode != null) {
-            var frame = frameHandler.getFrame();
-            var xOffset = activeNode.pivot.x;
-            var yOffset = activeNode.pivot.y;
-            if (activeNode.node.isRoot()) {
-                activeNode.node.setPosition(x, y, frame);
-            }
-            else {
-                activeNode.node.setAlpha(Math.atan2(-x + xOffset, -y + yOffset) - activeNode.alpha, frame);
-            }
-            activeNode.node.draw(frame);
-            renderer.update();
-            timelineHandler.updateFrame(frame);
-        }
-    }, function (x, y) {
-        var frame = frameHandler.getFrame();
-        for (var _i = 0, figures_1 = figures; _i < figures_1.length; _i++) {
-            var figure = figures_1[_i];
-            var node = figure.getRoot().getProximityNodes(frame, 1000, new THREE.Vector2(x, y));
-            activeNode = activeNode == null ? node : (activeNode.distance > node.distance ? node : activeNode);
-        }
-        if (activeNode != null) {
-            activeNode.node.activate();
-            activeNode.node.getRoot().manifest(frame);
-            renderer.update();
-        }
-    }, function () {
-        if (activeNode != null) {
-            activeNode.node.deactivate();
-            activeNode = null;
-            renderer.update();
-        }
-    });
-    $frame.append($canvas);
-    $('div.split-pane').splitPane();
-    //roots[0].draw(1);
-    renderer.update();
-    //canvasResizer(renderer);
+    window["sticky"] = new Sticky();
 });

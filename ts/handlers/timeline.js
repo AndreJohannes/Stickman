@@ -1,15 +1,15 @@
 /// <reference path="../definitions/jquery.d.ts" />
 /// <reference path="../figures/ifigure.ts" />
 var TimelineHandler = (function () {
-    function TimelineHandler(figures) {
+    function TimelineHandler(project) {
         this.max_frame = 50;
         this.callbacks = [];
-        this.figures = figures;
+        this.project = project;
         this.$timeline = $("#timeline");
         this.$trFirst = this.$timeline.find("tr").first();
         this.$table = $("table");
         var trList = [];
-        for (i = 0; i < figures.length; i++) {
+        for (i = 0; i < project.getFigures().length; i++) {
             var $tr = $("<tr></tr>");
             trList.push($tr);
             this.$table.append($tr);
@@ -38,7 +38,7 @@ var TimelineHandler = (function () {
         this.callbacks.push(cb);
     };
     TimelineHandler.prototype.updateFrame = function (frame) {
-        $.each(this.figures, function (index, value) {
+        $.each(this.project.getFigures(), function (index, value) {
             var div = $("tr").eq(index + 1).find("td").eq(frame - 1).find("div");
             if (value.getRoot()["position"].has(frame)) {
                 div.removeClass("brick-nd");
@@ -66,7 +66,7 @@ var TimelineHandler = (function () {
             var $th = $("<th/>");
             $th.text(i);
             this.$trFirst.append($th);
-            $.each(this.figures, function (index, figure) {
+            $.each(this.project.getFigures(), function (index, figure) {
                 var $td = $("<td><div class=\"brick\"></div></td>");
                 $trList.eq(index).append($td);
             });
