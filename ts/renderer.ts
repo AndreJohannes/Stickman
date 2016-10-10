@@ -6,6 +6,7 @@ class GLRenderer {
 	private scene: THREE.Scene;
 	private camera: THREE.Camera;
 	private renderer: THREE.Renderer;
+	private background: THREE.Object3D;
 
 	private resolution: number[] = [1280, 720]
 
@@ -20,8 +21,8 @@ class GLRenderer {
 
 		var geometry: THREE.Geometry = new THREE.PlaneGeometry(1280, 720);//THREE.BoxGeometry( 200, 1024, 200 );
 		var material = new THREE.MeshBasicMaterial({ color: 0xFFFFFF });
-		var mesh = new THREE.Mesh(geometry, material);
-		this.scene.add(mesh);
+		this.background = new THREE.Mesh(geometry, material);
+		this.scene.add(this.background);
 
 		//var object1 = (new Limb()).getObject();	
 		//var object2 = (new Limb()).getObject();
@@ -42,6 +43,13 @@ class GLRenderer {
 
 	public addObject(object: THREE.Object3D) {
 		this.scene.add(object);
+	}
+
+	public clearScene(){
+		while(this.scene.children.length>0){
+			this.scene.children.pop();
+		}
+		this.scene.add(this.background);
 	}
 
 	public getDom() {

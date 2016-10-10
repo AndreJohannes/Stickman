@@ -9,8 +9,8 @@ var GLRenderer = (function () {
         this.camera.position.z = 1024 / 2;
         var geometry = new THREE.PlaneGeometry(1280, 720); //THREE.BoxGeometry( 200, 1024, 200 );
         var material = new THREE.MeshBasicMaterial({ color: 0xFFFFFF });
-        var mesh = new THREE.Mesh(geometry, material);
-        this.scene.add(mesh);
+        this.background = new THREE.Mesh(geometry, material);
+        this.scene.add(this.background);
         //var object1 = (new Limb()).getObject();	
         //var object2 = (new Limb()).getObject();
         //object2.position.set(0,50,0);
@@ -25,6 +25,12 @@ var GLRenderer = (function () {
     }
     GLRenderer.prototype.addObject = function (object) {
         this.scene.add(object);
+    };
+    GLRenderer.prototype.clearScene = function () {
+        while (this.scene.children.length > 0) {
+            this.scene.children.pop();
+        }
+        this.scene.add(this.background);
     };
     GLRenderer.prototype.getDom = function () {
         return this.renderer.domElement;

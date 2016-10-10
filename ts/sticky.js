@@ -50,7 +50,11 @@ var Sticky = (function () {
         var $resize = $("#btnResize");
         var $download = $("#btnDownload");
         var that = this;
-        this.menuHandler.addCallback(function (project) { that.project = project; });
+        this.menuHandler.addCallback(function (project) {
+            that.project = project;
+            that.renderer.clearScene();
+            $.each(that.project.getFigures(), function (index, figure) { that.renderer.addObject(figure.getVisual()); that.renderer.addObject(figure.getPhantom()); });
+        });
         $.each(that.project.getFigures(), function (index, figure) { that.renderer.addObject(figure.getVisual()); that.renderer.addObject(figure.getPhantom()); });
         var $canvas = $(this.renderer.getDom());
         $play.click(function () {

@@ -1,5 +1,6 @@
 /// <reference path="../definitions/jquery.d.ts" />
 /// <reference path="../figures/ifigure.ts" />
+/// <reference path="../project/project.ts" />
 var TimelineHandler = (function () {
     function TimelineHandler(project) {
         this.max_frame = 50;
@@ -7,7 +8,7 @@ var TimelineHandler = (function () {
         this.project = project;
         this.$timeline = $("#timeline");
         this.$trFirst = this.$timeline.find("tr").first();
-        this.$table = $("table");
+        this.$table = this.$timeline.find("table");
         var trList = [];
         for (i = 0; i < project.getFigures().length; i++) {
             var $tr = $("<tr></tr>");
@@ -30,8 +31,8 @@ var TimelineHandler = (function () {
         }
     }
     TimelineHandler.prototype.setFrame = function (frame) {
-        $("th").css("background-color", "");
-        $("th").eq(frame - 1).css("background-color", "red");
+        $("#timeline th").css("background-color", "");
+        $("#timeline th").eq(frame - 1).css("background-color", "red");
         // TODO: if the current frame is close to the max frame, add more frames to the timeline
     };
     TimelineHandler.prototype.addCallback = function (cb) {
@@ -39,7 +40,7 @@ var TimelineHandler = (function () {
     };
     TimelineHandler.prototype.updateFrame = function (frame) {
         $.each(this.project.getFigures(), function (index, value) {
-            var div = $("tr").eq(index + 1).find("td").eq(frame - 1).find("div");
+            var div = $("#timeline tr").eq(index + 1).find("td").eq(frame - 1).find("div");
             if (value.getRoot()["position"].has(frame)) {
                 div.removeClass("brick-nd");
             }
@@ -61,7 +62,7 @@ var TimelineHandler = (function () {
         };
     };
     TimelineHandler.prototype.addFrames = function (count) {
-        var $trList = $("tr").not(":first");
+        var $trList = $("#timeline tr").not(":first");
         for (var i = this.max_frame + 1; i <= this.max_frame + count; i++) {
             var $th = $("<th/>");
             $th.text(i);

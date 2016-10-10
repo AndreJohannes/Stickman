@@ -71,7 +71,12 @@ class Sticky {
 		let $download = $("#btnDownload");
 
 		let that = this;
-		this.menuHandler.addCallback(function(project) { that.project = project; })
+		this.menuHandler.addCallback(function(project) {
+			that.project = project;
+			that.menuHandler.setProject(project);
+			that.renderer.clearScene();
+			$.each(that.project.getFigures(), function(index, figure) { that.renderer.addObject(figure.getVisual()); that.renderer.addObject(figure.getPhantom()); })
+		})
 		$.each(that.project.getFigures(), function(index, figure) { that.renderer.addObject(figure.getVisual()); that.renderer.addObject(figure.getPhantom()); })
 		let $canvas = $(this.renderer.getDom());
 		$play.click(function() {
