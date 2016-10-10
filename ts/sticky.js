@@ -52,6 +52,7 @@ var Sticky = (function () {
         var that = this;
         this.menuHandler.addCallback(function (project) {
             that.project = project;
+            that.menuHandler.setProject(project);
             that.renderer.clearScene();
             $.each(that.project.getFigures(), function (index, figure) { that.renderer.addObject(figure.getVisual()); that.renderer.addObject(figure.getPhantom()); });
         });

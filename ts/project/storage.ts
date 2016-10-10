@@ -19,6 +19,7 @@ class ProjectStorage {
 		var toc = JSON.parse(localStorage.getItem(ProjectStorage.TOC));
 		toc = toc == null ? {} : toc;
 		var name: string = project.getName();
+		console.log(project.serialize());
 		localStorage.setItem(name, JSON.stringify(project.serialize()));
 		toc[name] = { "name": name, "date": new Date() }
 		localStorage.setItem(ProjectStorage.TOC, JSON.stringify(toc));

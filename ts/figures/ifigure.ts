@@ -1,13 +1,13 @@
 /// <reference path="./node.ts" />
 
-class FigureWrapped{
+class FigureWrapped {
 
 	public name: string;
 	public root: Object;
 
 }
 
-interface IFigure{
+interface IFigure {
 
 	getVisual(): THREE.Object3D;
 
@@ -21,7 +21,7 @@ interface IFigure{
 
 }
 
-class GenericFigure implements IFigure{
+class GenericFigure implements IFigure {
 
 	private root: Node_;
 	private name: string;
@@ -42,11 +42,14 @@ class GenericFigure implements IFigure{
 		return this.name
 	}
 
-	public serialize(): FigureWrapped{
-		return null;
+	public serialize(): FigureWrapped {
+		let figure = new FigureWrapped();
+		figure.name = this.name;
+		figure.root = this.root.serialize();
+		return figure;
 	};
 
-	static deserialize(object: Object): IFigure{
+	static deserialize(object: Object): IFigure {
 		var figure = new GenericFigure();
 		figure.name = object["name"];
 		figure.root = new Node_(object["root"]);

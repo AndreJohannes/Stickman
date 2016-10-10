@@ -20,7 +20,10 @@ var GenericFigure = (function () {
         return this.name;
     };
     GenericFigure.prototype.serialize = function () {
-        return null;
+        var figure = new FigureWrapped();
+        figure.name = this.name;
+        figure.root = this.root.serialize();
+        return figure;
     };
     ;
     GenericFigure.deserialize = function (object) {
