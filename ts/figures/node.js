@@ -54,12 +54,11 @@ var Node_ = (function () {
         this.applyToTree(function (mode) { this.visual.setMode(mode); }, mode);
     };
     Node_.prototype.manifest = function (frame) {
-        if (this._isRoot)
-            this.position.set(frame, this.position.get(frame));
-        else
-            this.alpha.set(frame, this.alpha.get(frame));
         this.applyToTree(function () {
-            this.alpha.set(frame, this.alpha.get(frame));
+            if (this._isRoot)
+                this.position.set(frame, this.position.get(frame));
+            else
+                this.alpha.set(frame, this.alpha.get(frame));
         }, null);
     };
     Node_.prototype.serialize = function () {

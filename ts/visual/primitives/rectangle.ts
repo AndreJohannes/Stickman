@@ -18,7 +18,7 @@ class Rectangle implements IPrimitives {
 			color: 0xffffff,
 			map: texture,
 			transparent: true,
-			opacity: 0.5
+			opacity: 1
 			//	depthWrite: false
 		});
 		let mesh = new THREE.Mesh(this.makeGeometry(), material);

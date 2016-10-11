@@ -15,13 +15,24 @@ class ProjectStorage {
 		return Project.deserialize(localStorage.getItem(name));
 	}
 
+	public getImageFromLocalStorage(name: string) {
+		return localStorage.getItem(name);
+	};
+
 	public saveProjectToLocalStorage(project: Project) {
 		var toc = JSON.parse(localStorage.getItem(ProjectStorage.TOC));
-		toc = toc == null ? {} : toc;
+		toc = toc == null ? { images: {}, projects: {} } : toc;
 		var name: string = project.getName();
-		console.log(project.serialize());
 		localStorage.setItem(name, JSON.stringify(project.serialize()));
-		toc[name] = { "name": name, "date": new Date() }
+		toc["projects"][name] = { "name": name, "date": new Date() }
+		localStorage.setItem(ProjectStorage.TOC, JSON.stringify(toc));
+	}
+
+	public saveImageToLocalStorage(name: string, image: string) {
+		var toc = JSON.parse(localStorage.getItem(ProjectStorage.TOC));
+		toc = toc == null ? { images: {}, projects: {} } : toc;
+		localStorage.setItem(name, image);
+		toc["images"][name] = { "name": name, "date": new Date() }
 		localStorage.setItem(ProjectStorage.TOC, JSON.stringify(toc));
 	}
 

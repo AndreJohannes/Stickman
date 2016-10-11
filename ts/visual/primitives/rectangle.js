@@ -13,7 +13,7 @@ var Rectangle = (function () {
             color: 0xffffff,
             map: texture,
             transparent: true,
-            opacity: 0.5
+            opacity: 1
         });
         var mesh = new THREE.Mesh(this.makeGeometry(), material);
         mesh.position.set(0, 0, 0);

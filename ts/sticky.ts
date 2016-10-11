@@ -9,6 +9,7 @@
 /// <reference path="handlers/timeline.ts" />
 /// <reference path="handlers/menu.ts" />
 /// <reference path="handlers/frame.ts" />
+/// <reference path="handlers/mouse.ts" />
 /// <reference path="project/project.ts" />
 
 var mouseEventHandler = function($element: JQuery, callback, activator, deactivator) {
@@ -54,7 +55,7 @@ class Sticky {
 		let project: Project = new Project("testProject");
 		project.addFigure(new Stickman("Smart"));
 		project.addFigure(new Stickman("Dumb"));
-
+		project.addFigure(new Background("BG"));
 		this.project = project;
 		this.resizer = new CanvasResizer();
 		this.renderer = new GLRenderer();
@@ -101,6 +102,7 @@ class Sticky {
 				function(index, figure) { figure.getRoot().draw(frame); }); that.renderer.update()
 		});
 		var activeNode = null;
+		new MouseHandler(this.renderer);
 		mouseEventHandler($canvas, function(x, y) {
 			if (activeNode != null) {
 				var frame = that.frameHandler.getFrame();

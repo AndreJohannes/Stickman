@@ -18,6 +18,8 @@ var MenuHandler = (function () {
         this.$export.click(function () { that.export(); });
         this.$import = $("#mnuImport");
         this.$import.click(function () { that.import(); });
+        this.$importImage = $("#mnuImportImage");
+        this.$importImage.click(function () { that.importImage(); });
         this.callbacks = [];
     }
     MenuHandler.prototype.addCallback = function (cb) {
@@ -45,6 +47,22 @@ var MenuHandler = (function () {
                 }
             };
             reader.readAsText(evt.target["files"][0]);
+        });
+        $ipt.trigger("click");
+    };
+    MenuHandler.prototype.importImage = function () {
+        var that = this;
+        var $ipt = $("<input type=\"file\">");
+        $ipt.on("change", function (evt) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                //debugger;
+                //var project = Project.deserialize(e.target["result"]);
+                //for (svar callback of that.callbacks) {
+                //	callback(project);
+                //}
+            };
+            reader.readAsDataURL(evt.target["files"][0]);
         });
         $ipt.trigger("click");
     };

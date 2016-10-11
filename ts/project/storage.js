@@ -8,13 +8,23 @@ var ProjectStorage = (function () {
     ProjectStorage.prototype.getProjectFromLocalStorage = function (name) {
         return Project.deserialize(localStorage.getItem(name));
     };
+    ProjectStorage.prototype.getImageFromLocalStorage = function (name) {
+        return localStorage.getItem(name);
+    };
+    ;
     ProjectStorage.prototype.saveProjectToLocalStorage = function (project) {
         var toc = JSON.parse(localStorage.getItem(ProjectStorage.TOC));
-        toc = toc == null ? {} : toc;
+        toc = toc == null ? { images: {}, projects: {} } : toc;
         var name = project.getName();
-        console.log(project.serialize());
         localStorage.setItem(name, JSON.stringify(project.serialize()));
-        toc[name] = { "name": name, "date": new Date() };
+        toc["projects"][name] = { "name": name, "date": new Date() };
+        localStorage.setItem(ProjectStorage.TOC, JSON.stringify(toc));
+    };
+    ProjectStorage.prototype.saveImageToLocalStorage = function (name, image) {
+        var toc = JSON.parse(localStorage.getItem(ProjectStorage.TOC));
+        toc = toc == null ? { images: {}, projects: {} } : toc;
+        localStorage.setItem(name, image);
+        toc["images"][name] = { "name": name, "date": new Date() };
         localStorage.setItem(ProjectStorage.TOC, JSON.stringify(toc));
     };
     ProjectStorage.TOC = "TableOfContent";

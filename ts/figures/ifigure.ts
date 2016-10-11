@@ -39,7 +39,7 @@ class GenericFigure implements IFigure {
 	}
 
 	public getName(): string {
-		return this.name
+		return this.name;
 	}
 
 	public serialize(): FigureWrapped {

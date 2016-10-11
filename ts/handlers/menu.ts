@@ -12,6 +12,7 @@ class MenuHandler {
 	private $save: JQuery;
 	private $export: JQuery;
 	private $import: JQuery;
+	private $importImage: JQuery;
 	private project: Project;
 	private projectStorage: ProjectStorage;
 	private callbacks: Function[];
@@ -32,6 +33,9 @@ class MenuHandler {
 
 		this.$import = $("#mnuImport");
 		this.$import.click(function() { that.import(); });
+
+		this.$importImage = $("#mnuImportImage");
+		this.$importImage.click(function() { that.importImage(); });
 
 		this.callbacks = [];
 	}
@@ -67,8 +71,23 @@ class MenuHandler {
 			reader.readAsText(evt.target["files"][0]);
 		});
 		$ipt.trigger("click");
+	}
 
-
+	private importImage() {
+		var that = this;
+		var $ipt: JQuery = $("<input type=\"file\">");
+		$ipt.on("change", function(evt) {
+			var reader = new FileReader();
+			reader.onload = function(e) {
+				//debugger;
+				//var project = Project.deserialize(e.target["result"]);
+				//for (svar callback of that.callbacks) {
+				//	callback(project);
+				//}
+			};
+			reader.readAsDataURL(evt.target["files"][0]);
+		});
+		$ipt.trigger("click");
 	}
 
 	private openProjectClick() {

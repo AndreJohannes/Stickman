@@ -64,12 +64,11 @@ class Node_ {
 	}
 
 	public manifest(frame: number) {
-		if (this._isRoot)
+		this.applyToTree(function() {
+			if (this._isRoot)
 			this.position.set(frame, this.position.get(frame))
 		else
 			this.alpha.set(frame, this.alpha.get(frame))
-		this.applyToTree(function() {
-			this.alpha.set(frame, this.alpha.get(frame));
 		}, null);
 	}
 
