@@ -27,6 +27,14 @@ var Node_ = (function () {
     Node_.prototype.isRoot = function () {
         return this._isRoot;
     };
+    Node_.prototype.attachFigure = function (node) {
+        if (!node._isRoot)
+            throw new Error("need to attach a root node");
+        for (var _i = 0, _a = node.children; _i < _a.length; _i++) {
+            var child = _a[_i];
+            this.addChild(child);
+        }
+    };
     Node_.prototype.draw = function (frame) {
         if (this._isRoot) {
             var position = this.position.get(frame);
@@ -42,6 +50,15 @@ var Node_ = (function () {
             var child = _a[_i];
             child.draw(frame);
         }
+    };
+    Node_.prototype.setLength = function (length) {
+        for (var _i = 0, _a = this.children; _i < _a.length; _i++) {
+            var child = _a[_i];
+            child.visual.position(0, length);
+            child.visual.position(0, length, true);
+            this.length = length;
+        }
+        this.visual.setLength(length);
     };
     Node_.prototype.addChild = function (node) {
         this.children.push(node);
@@ -60,6 +77,10 @@ var Node_ = (function () {
             else
                 this.alpha.set(frame, this.alpha.get(frame));
         }, null);
+    };
+    Node_.prototype.delete = function () {
+        // TODO: Implement the function
+        //this.parent_.children.
     };
     Node_.prototype.serialize = function () {
         if (!this._isRoot)
@@ -131,6 +152,16 @@ var Node_ = (function () {
             }
         }
         return retValue;
+    };
+    Node_.prototype._getPosition = function (frame) {
+        if (!this._isRoot) {
+            var parent = this.parent_._getPosition(frame);
+            var alpha = parent.alpha + this.alpha.get(frame);
+            var x = parent.x - Math.sin(alpha) * this.length;
+            var y = parent.y - Math.cos(alpha) * this.length;
+            return { x: x, y: y, alpha: alpha };
+        }
+        return { x: this.position.get(frame).x, y: this.position.get(frame).y, alpha: 0 };
     };
     Node_.prototype._addVisual = function (visual) {
         this.visual.add(visual);

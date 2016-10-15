@@ -5,6 +5,7 @@
 interface IPrimitives{
 
 	getObject(): THREE.Object3D;
+	setLength(lenght: number);
 	serialize();
 
 }

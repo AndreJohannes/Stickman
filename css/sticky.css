@@ -1,168 +1,179 @@
 .spinner {
-  width: 100px;
+    width: 100px;
 }
+
 .spinner input {
-  text-align: right;
-  margin-top: 8px;
+    text-align: right;
+    margin-top: 8px;
 }
+
 .input-group-btn-vertical {
-  position: relative;
-  white-space: nowrap;
-  width: 1%;
-  vertical-align: middle;
-  display: table-cell;
-  padding-top: 8px;
+    position: relative;
+    white-space: nowrap;
+    width: 1%;
+    vertical-align: middle;
+    display: table-cell;
+    padding-top: 8px;
 }
+
 .input-group-btn-vertical > .btn {
-  display: block;
-  float: none;
-  width: 100%;
-  max-width: 100%;
-  padding: 8px;
-  margin-left: -1px;
-  position: relative;
-  border-radius: 0;
+    display: block;
+    float: none;
+    width: 100%;
+    max-width: 100%;
+    padding: 8px;
+    margin-left: -1px;
+    position: relative;
+    border-radius: 0;
 }
+
 .input-group-btn-vertical > .btn:first-child {
-  border-top-right-radius: 4px;
+    border-top-right-radius: 4px;
 }
+
 .input-group-btn-vertical > .btn:last-child {
-  margin-top: -2px;
-  border-bottom-right-radius: 4px;
-}
-.input-group-btn-vertical i{
-  position: absolute;
-  top: 0;
-  left: 4px;
+    margin-top: -2px;
+    border-bottom-right-radius: 4px;
 }
 
-body{
-  background-color: #141414;  
+.input-group-btn-vertical i {
+    position: absolute;
+    top: 0;
+    left: 4px;
 }
 
-#timeline{
-  overflow-x: auto;
-  background-color: #141414;
-  border-width: 0px;  
-  border-color: #5b5b5b;
-  border-style: solid;
+body {
+    background-color: #141414;
 }
 
-#collection{
-  overflow-y: auto;
-  background-color: #1e1e1e;
-  height: 100%;
+#timeline {
+    overflow-x: auto;
+    background-color: #141414;
+    border-width: 0px;
+    border-color: #5b5b5b;
+    border-style: solid;
 }
 
-#frame{
-  background-color: #141414;
-  border-width: 0px;
-  border-left-width: 0px;
-  border-color: #5b5b5b;
-  border-style: solid;
-  padding-left: 0px;
-  display: flex;
-  border-bottom-width: 1px;
-  border-bottom-color: #727272;
-
+#collection {
+    overflow-y: auto;
+    background-color: #1e1e1e;
+    height: 100%;
 }
 
-td{
-  width:20px;
-  height: 20px;
+#frame {
+    background-color: #141414;
+    border-width: 0px;
+    border-left-width: 0px;
+    border-color: #5b5b5b;
+    border-style: solid;
+    padding-left: 0px;
+    display: flex;
+    border-bottom-width: 1px;
+    border-bottom-color: #727272;
 }
 
-.brick{
-  border-radius: 2.5px;
-  width:20px;
-  height: 5px;
-  background-color: blue;
+td {
+    width: 20px;
+    height: 20px;
 }
 
-.brick-nd{
-  background-color: yellow;
+.brick {
+    border-radius: 2.5px;
+    width: 20px;
+    height: 5px;
+    background-color: blue;
 }
 
-.brick-nv{
-  background-color: darkgrey;
+.brick-nd {
+    background-color: yellow;
 }
 
+.brick-nv {
+    background-color: darkgrey;
+}
 
-html, body {
-  height: 100%;
-  min-height: 100%;
-  margin: 0;
-  padding: 0;
+html,
+body {
+    height: 100%;
+    min-height: 100%;
+    margin: 0;
+    padding: 0;
 }
 
 #top-component {
-  bottom: 20em;
-  margin-bottom: 5px;
+    bottom: 20em;
+    margin-bottom: 5px;
 }
 
 #horizontal-divider {
-  bottom: 20em;
-  height: 5px;
+    bottom: 20em;
+    height: 5px;
 }
 
 #bottom-component {
-  height: 20em;
-  background-color: #141414;
-  padding-top: 10px;
-  min-height: 100px;
+    height: 20em;
+    background-color: #141414;
+    padding-top: 10px;
+    min-height: 100px;
 }
 
 #left-component {
-  width: 20em;
+    width: 20em;
 }
 
 #vertical-divider {
-  left: 20em;
-  width: 5px;
+    left: 20em;
+    width: 5px;
 }
 
 #right-component {
-  left: 20em;
-  margin-left: 5px;
+    left: 20em;
+    margin-left: 5px;
 }
 
 .pretty-split-pane-frame {
-  box-sizing: border-box;
-  width: 100%;
-  height: calc(100% - 52px);
-  background: #5b5b5b;
+    box-sizing: border-box;
+    width: 100%;
+    height: calc(100% - 52px);
+    background: #5b5b5b;
 }
 
 .pretty-split-pane-frame .split-pane > .split-pane-divider.dragged.touch {
-  background: blue;
-  opacity: 0.25;
+    background: blue;
+    opacity: 0.25;
 }
 
 .pretty-split-pane-component-inner {
-  box-sizing: border-box;
-  border: 0px solid gray;
-  background: white;
-  width: 100%;
-  height: 100%;
-  padding: 0 1em;
-  overflow: auto;
+    box-sizing: border-box;
+    border: 0px solid gray;
+    background: white;
+    width: 100%;
+    height: 100%;
+    padding: 0 1em;
+    overflow: auto;
 }
 
-#nav{
-  margin-bottom: 0px;
+#nav {
+    margin-bottom: 0px;
 }
 
-th{
-  text-align: center;
-  border-radius: 5px;
-  cursor: pointer;
+th {
+    text-align: center;
+    border-radius: 5px;
+    cursor: pointer;
 }
 
-.navbar-custom{
-  background-color: #444444;
+.navbar-custom {
+    background-color: #444444;
 }
 
-.btn-custom{
-  background-color: grey;
+.btn-custom {
+    background-color: grey;
 }
 
+#images img {
+    border: 2px solid;
+    border-radius: 2px;
+    max-height: 150px;
+    margin: 5px;
+}

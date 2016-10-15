@@ -35,6 +35,14 @@ class Node_ {
 		return this._isRoot;
 	}
 
+	public attachFigure(node: Node_) {
+		if (!node._isRoot)
+			throw new Error("need to attach a root node");
+		for (var child of node.children) {
+			this.addChild(child);
+		}
+	}
+
 	public draw(frame: number) {
 		if (this._isRoot) {
 			var position = this.position.get(frame);
@@ -49,6 +57,15 @@ class Node_ {
 		for (var child of this.children) {
 			child.draw(frame);
 		}
+	}
+
+	public setLength(length: number) {
+		for (var child of this.children) {
+			child.visual.position(0, length);
+			child.visual.position(0, length, true);
+			this.length = length;
+		}
+		this.visual.setLength(length);
 	}
 
 	public addChild(node: Node_) {
@@ -66,14 +83,19 @@ class Node_ {
 	public manifest(frame: number) {
 		this.applyToTree(function() {
 			if (this._isRoot)
-			this.position.set(frame, this.position.get(frame))
-		else
-			this.alpha.set(frame, this.alpha.get(frame))
+				this.position.set(frame, this.position.get(frame))
+			else
+				this.alpha.set(frame, this.alpha.get(frame))
 		}, null);
 	}
 
-	public serialize(): Object{
-		if(!this._isRoot)
+	public delete(){
+		// TODO: Implement the function
+		//this.parent_.children.
+	}
+
+	public serialize(): Object {
+		if (!this._isRoot)
 			throw new Error("This method should only be called for the root Node");
 		return this._serialize();
 	}
@@ -150,6 +172,17 @@ class Node_ {
 			}
 		}
 		return retValue;
+	}
+
+	private _getPosition(frame: number){
+		if(!this._isRoot){
+			var parent = this.parent_._getPosition(frame);
+			var alpha = parent.alpha + this.alpha.get(frame);
+			var x =	parent.x - Math.sin(alpha)*this.length; 
+			var y = parent.y - Math.cos(alpha)*this.length;
+			return {x: x , y: y, alpha: alpha}
+		}
+		return {x: this.position.get(frame).x, y: this.position.get(frame).y, alpha : 0}
 	}
 
 	private _addVisual(visual: Visual) {

@@ -43,5 +43,4 @@ class FrameHandler {
 			callback(this.frame);
 	}
 
-
 }

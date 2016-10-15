@@ -2,15 +2,16 @@
 /// <reference path="./factory.ts" />
 /// <reference path="../textures.ts" />
 
-class Limb implements IPrimitives{
+class Limb implements IPrimitives {
 
+	private geometry: THREE.Geometry;
 	private object: THREE.Object3D = new THREE.Object3D();
 	private width: number = 9;
 	private length: number;
 	private phantom: boolean;
 
 	constructor(length: number, phantom?: boolean) {
-		this.phantom = phantom!=null ? phantom : false;
+		this.phantom = phantom != null ? phantom : false;
 		this.length = length;
 		let texture = TextureHandler.getTexture(TextureHandler.Texture.Stickman1);
 		texture.minFilter = THREE.LinearFilter;
@@ -21,7 +22,8 @@ class Limb implements IPrimitives{
 			transparent: true
 			//	depthWrite: false
 		});
-		let mesh = new THREE.Mesh(this.makeGeometry(this.phantom), material);
+		this.geometry = this.makeGeometry(this.phantom);
+		let mesh = new THREE.Mesh(this.geometry, material);
 		mesh.position.set(-this.width / 2, 0, 0);
 		mesh.renderOrder = this.phantom ? -1 : 0;
 		this.object.add(mesh);
@@ -31,7 +33,15 @@ class Limb implements IPrimitives{
 		return this.object;
 	}
 
-	public serialize(){
+	public setLength(length: number) {
+		this.geometry.vertices[4].setY(length);
+		this.geometry.vertices[5].setY(length);
+		this.geometry.vertices[6].setY(length + this.width/2);
+		this.geometry.vertices[7].setY(length + this.width/2);
+		this.geometry.verticesNeedUpdate = true;
+	}
+
+	public serialize() {
 		return this._serialize();
 	}
 
@@ -57,15 +67,15 @@ class Limb implements IPrimitives{
 		geometry.faces.push(new THREE.Face3(7, 6, 5));
 
 		let xOffset = phantom ? 10 : 0;
-		let vertexUvs0 = new THREE.Vector2((0+xOffset) / 512, 1 - 55.5 / 512);
-		let vertexUvs1 = new THREE.Vector2((9+xOffset) / 512, 1 - 55.5 / 512);
-		let vertexUvs2 = new THREE.Vector2((0+xOffset) / 512, 1 - 60 / 512);
-		let vertexUvs3 = new THREE.Vector2((9+xOffset) / 512, 1 - 60 / 512);
+		let vertexUvs0 = new THREE.Vector2((0 + xOffset) / 512, 1 - 55.5 / 512);
+		let vertexUvs1 = new THREE.Vector2((9 + xOffset) / 512, 1 - 55.5 / 512);
+		let vertexUvs2 = new THREE.Vector2((0 + xOffset) / 512, 1 - 60 / 512);
+		let vertexUvs3 = new THREE.Vector2((9 + xOffset) / 512, 1 - 60 / 512);
 
-		let vertexUvs4 = new THREE.Vector2((0+xOffset) / 512, 1 - 100 / 512);
-		let vertexUvs5 = new THREE.Vector2((9+xOffset) / 512, 1 - 100 / 512);
-		let vertexUvs6 = new THREE.Vector2((0+xOffset) / 512, 1 - 104.5 / 512);
-		let vertexUvs7 = new THREE.Vector2((9+xOffset) / 512, 1 - 104.5 / 512);
+		let vertexUvs4 = new THREE.Vector2((0 + xOffset) / 512, 1 - 100 / 512);
+		let vertexUvs5 = new THREE.Vector2((9 + xOffset) / 512, 1 - 100 / 512);
+		let vertexUvs6 = new THREE.Vector2((0 + xOffset) / 512, 1 - 104.5 / 512);
+		let vertexUvs7 = new THREE.Vector2((9 + xOffset) / 512, 1 - 104.5 / 512);
 
 		geometry.faceVertexUvs[0].push([vertexUvs0, vertexUvs1, vertexUvs2]);
 		geometry.faceVertexUvs[0].push([vertexUvs3, vertexUvs2, vertexUvs1]);
@@ -76,8 +86,8 @@ class Limb implements IPrimitives{
 		return geometry;
 	}
 
-	private _serialize(){
-		return {"name": "limb", "length": this.length, "phantom": this.phantom}
+	private _serialize() {
+		return { "name": "limb", "length": this.length, "phantom": this.phantom }
 	}
 
 }

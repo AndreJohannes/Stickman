@@ -21,8 +21,8 @@ class Head implements IPrimitives {
 			//	depthWrite: false
 		});
 		let mesh = new THREE.Mesh(this.makeGeometry(this.phantom), material);
-		if(this.phantom)
-		mesh.renderOrder = this.phantom ? -1 : 0;
+		if (this.phantom)
+			mesh.renderOrder = this.phantom ? -1 : 0;
 		mesh.position.set(0, this.size / 2, 0);
 
 		this.object.add(mesh);
@@ -30,6 +30,10 @@ class Head implements IPrimitives {
 
 	public getObject(): THREE.Object3D {
 		return this.object;
+	}
+
+	public setLength() {
+		// for now do nothing
 	}
 
 	public serialize() {
@@ -51,7 +55,7 @@ class Head implements IPrimitives {
 		let xOffset = phantom ? 157 : 1;
 		let vertexUvs0 = new THREE.Vector2((0 + xOffset) / 512, 1 - 1 / 512);
 		let vertexUvs1 = new THREE.Vector2((50 + xOffset) / 512, 1 - 1 / 512);
-		let vertexUvs2 = new THREE.Vector2((0+ xOffset) / 512, 1 - 52 / 512);
+		let vertexUvs2 = new THREE.Vector2((0 + xOffset) / 512, 1 - 52 / 512);
 		let vertexUvs3 = new THREE.Vector2((50 + xOffset) / 512, 1 - 52 / 512);
 		geometry.faceVertexUvs[0].push([vertexUvs0, vertexUvs1, vertexUvs2]);
 		geometry.faceVertexUvs[0].push([vertexUvs3, vertexUvs2, vertexUvs1]);

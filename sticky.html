@@ -38,6 +38,8 @@
     <script src="./ts/handlers/menu.js"></script>
     <script src="./ts/handlers/frame.js"></script>
     <script src="./ts/handlers/mouse.js"></script>
+    <script src="./ts/handlers/images.js"></script>
+    <script src="./ts/handlers/navbar.js"></script>
     <script src="./ts/player.js"></script>
     <script src="./ts/download.js"></script>
 </head>
@@ -204,7 +206,7 @@
                 <div class="split-pane fixed-left" id="split-pane-2">
                     <div class="split-pane-component" id="left-component">
                         <div class="pretty-split-pane-component-inner" id="collection">
-                            <img src="./images/stickman1.png"></img>
+                            <div id="images"></div>
                             <!-- This div is added for styling purposes only. It's not part of the split-pane plugin. -->
                         </div>
                     </div>
@@ -225,4 +227,11 @@
             </div>
         </div>
     </div>
+    <ul id="contextMenu" class="dropdown-menu" role="menu" style="display:none">
+        <li><a id="tabDetach">Detach</a></li>
+        <li><a id="tabChangeLength">Change Length</a></li>
+        <li><a id="tabAddLink">Add Link</a></li>
+        <li class="divider"></li>
+        <li><a id="tabDeleteLink">Delete link</a></li>
+    </ul>
 </body>

@@ -1,6 +1,6 @@
 /// <reference path="./node.ts" />
 /// <reference path="../visual/primitives/rectangle.ts" />
-
+/// <reference path="./ifigure.ts" />
 
 class Background implements IFigure{
 

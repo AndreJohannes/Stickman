@@ -5,11 +5,12 @@
 /// <reference path="../figures/ifigure.ts" />
 /// <reference path="../project/project.ts" />
 /// <reference path="../project/storage.ts" />
+/// <reference path="../sticky.ts" />
 var MenuHandler = (function () {
-    function MenuHandler(project) {
+    function MenuHandler(controller) {
         var that = this;
         this.projectStorage = new ProjectStorage();
-        this.project = project;
+        this.controller = controller;
         this.$open = $("#btnOpen");
         this.$open.click(this.openProjectClick());
         this.$save = $("#btnSave");
@@ -25,14 +26,12 @@ var MenuHandler = (function () {
     MenuHandler.prototype.addCallback = function (cb) {
         this.callbacks.push(cb);
     };
-    MenuHandler.prototype.setProject = function (project) {
-        this.project = project;
-    };
     MenuHandler.prototype.export = function () {
-        var data = this.project.serialize();
+        var project = this.controller.getProject();
+        var data = project.serialize();
         var json = JSON.stringify(data);
         var blob = new Blob([json], { type: "text/json" });
-        saveAs(blob, $.validator.format("{0}.json", this.project.getName()));
+        saveAs(blob, $.validator.format("{0}.json", project.getName()));
     };
     MenuHandler.prototype.import = function () {
         var that = this;
@@ -41,6 +40,7 @@ var MenuHandler = (function () {
             var reader = new FileReader();
             reader.onload = function (e) {
                 var project = Project.deserialize(e.target["result"]);
+                that.controller.update();
                 for (var _i = 0, _a = that.callbacks; _i < _a.length; _i++) {
                     var callback = _a[_i];
                     callback(project);
@@ -56,11 +56,9 @@ var MenuHandler = (function () {
         $ipt.on("change", function (evt) {
             var reader = new FileReader();
             reader.onload = function (e) {
-                //debugger;
-                //var project = Project.deserialize(e.target["result"]);
-                //for (svar callback of that.callbacks) {
-                //	callback(project);
-                //}
+                var project = that.controller.getProject();
+                project.addImage(e.target["result"]);
+                that.controller.update();
             };
             reader.readAsDataURL(evt.target["files"][0]);
         });
@@ -96,6 +94,7 @@ var MenuHandler = (function () {
                         var callback = _a[_i];
                         callback(project);
                     }
+                    that.controller.update();
                 }
             });
         };
@@ -104,6 +103,7 @@ var MenuHandler = (function () {
         var that = this;
         return function () {
             var $tbody = $("#tblProjectSave tbody");
+            var project = that.controller.getProject();
             $tbody.empty();
             var dic = that.projectStorage.getLocalStorageTOC();
             for (var name in dic) {
@@ -117,12 +117,12 @@ var MenuHandler = (function () {
                 });
                 $tbody.append($tr);
             }
-            $("#iptProjectSave").val(that.project.getName());
+            $("#iptProjectSave").val(project.getName());
             $("#btnSaveProject").unbind();
             $("#btnSaveProject").click(function () {
                 var name = $("#iptProjectSave").val();
-                that.project["name"] = name;
-                that.projectStorage.saveProjectToLocalStorage(that.project);
+                project["name"] = name;
+                that.projectStorage.saveProjectToLocalStorage(project);
             });
         };
     };

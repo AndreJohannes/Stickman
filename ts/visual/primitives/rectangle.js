@@ -22,6 +22,9 @@ var Rectangle = (function () {
     Rectangle.prototype.getObject = function () {
         return this.object;
     };
+    Rectangle.prototype.setLength = function () {
+        // for now do nothing
+    };
     Rectangle.prototype.serialize = function () {
         return this._serialize();
     };

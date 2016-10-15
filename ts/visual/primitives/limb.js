@@ -15,13 +15,21 @@ var Limb = (function () {
             map: texture,
             transparent: true
         });
-        var mesh = new THREE.Mesh(this.makeGeometry(this.phantom), material);
+        this.geometry = this.makeGeometry(this.phantom);
+        var mesh = new THREE.Mesh(this.geometry, material);
         mesh.position.set(-this.width / 2, 0, 0);
         mesh.renderOrder = this.phantom ? -1 : 0;
         this.object.add(mesh);
     }
     Limb.prototype.getObject = function () {
         return this.object;
+    };
+    Limb.prototype.setLength = function (length) {
+        this.geometry.vertices[4].setY(length);
+        this.geometry.vertices[5].setY(length);
+        this.geometry.vertices[6].setY(length + this.width / 2);
+        this.geometry.vertices[7].setY(length + this.width / 2);
+        this.geometry.verticesNeedUpdate = true;
     };
     Limb.prototype.serialize = function () {
         return this._serialize();

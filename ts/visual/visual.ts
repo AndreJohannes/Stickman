@@ -24,7 +24,7 @@ class Visual {
 	}
 
 	public setMode(mode: NodeMode) {
-		switch(mode){
+		switch (mode) {
 			case NodeMode.Play:
 				this.secondary.visible = false;
 				this.primary.visible = true;
@@ -93,6 +93,11 @@ class Visual {
 		this.secondaryPrimitive = object;
 	}
 
+	public setLength(length: number){
+		this.primaryPrimitive.setLength(length);
+		this.secondaryPrimitive.setLength(length);
+	}
+
 	public serialize() {
 		return {
 			"primary": this.primaryPrimitive != null ? this.primaryPrimitive.serialize() : null,
@@ -100,11 +105,11 @@ class Visual {
 		};
 	}
 
-	static deserialize(object): Visual{
+	static deserialize(object): Visual {
 		let retObject = new Visual();
-		if(object["primary"]!=null)
+		if (object["primary"] != null)
 			retObject.addPrimary(Primitives.getPrimitive(object["primary"]["name"], object["primary"]));
-		if(object["secondary"]!=null)
+		if (object["secondary"] != null)
 			retObject.addSecondary(Primitives.getPrimitive(object["secondary"]["name"], object["secondary"]));
 		return retObject;
 	}

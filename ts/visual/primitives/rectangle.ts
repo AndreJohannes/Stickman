@@ -30,6 +30,10 @@ class Rectangle implements IPrimitives {
 		return this.object;
 	}
 
+	public setLength(){
+		// for now do nothing
+	}
+
 	public serialize() {
 		return this._serialize();
 	}

@@ -72,6 +72,10 @@ var Visual = (function () {
         this.secondary.add(object.getObject());
         this.secondaryPrimitive = object;
     };
+    Visual.prototype.setLength = function (length) {
+        this.primaryPrimitive.setLength(length);
+        this.secondaryPrimitive.setLength(length);
+    };
     Visual.prototype.serialize = function () {
         return {
             "primary": this.primaryPrimitive != null ? this.primaryPrimitive.serialize() : null,

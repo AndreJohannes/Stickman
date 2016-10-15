@@ -5,6 +5,7 @@
 /// <reference path="../figures/ifigure.ts" />
 /// <reference path="../project/project.ts" />
 /// <reference path="../project/storage.ts" />
+/// <reference path="../sticky.ts" />
 
 class MenuHandler {
 
@@ -13,14 +14,14 @@ class MenuHandler {
 	private $export: JQuery;
 	private $import: JQuery;
 	private $importImage: JQuery;
-	private project: Project;
+	private controller: Sticky;
 	private projectStorage: ProjectStorage;
 	private callbacks: Function[];
 
-	constructor(project: Project) {
+	constructor(controller: Sticky) {
 		var that = this;
 		this.projectStorage = new ProjectStorage();
-		this.project = project;
+		this.controller = controller;
 
 		this.$open = $("#btnOpen");
 		this.$open.click(this.openProjectClick());
@@ -46,15 +47,12 @@ class MenuHandler {
 
 	}
 
-	public setProject(project: Project) {
-		this.project = project;
-	}
-
 	private export() {
-		let data = this.project.serialize();
+		var project = this.controller.getProject();
+		let data = project.serialize();
 		var json = JSON.stringify(data);
 		var blob = new Blob([json], { type: "text/json" });
-		saveAs(blob, $.validator.format("{0}.json", this.project.getName()));
+		saveAs(blob, $.validator.format("{0}.json", project.getName()));
 	}
 
 	private import() {
@@ -64,6 +62,7 @@ class MenuHandler {
 			var reader = new FileReader();
 			reader.onload = function(e) {
 				var project = Project.deserialize(e.target["result"]);
+				that.controller.update();
 				for (var callback of that.callbacks) {
 					callback(project);
 				}
@@ -79,11 +78,9 @@ class MenuHandler {
 		$ipt.on("change", function(evt) {
 			var reader = new FileReader();
 			reader.onload = function(e) {
-				//debugger;
-				//var project = Project.deserialize(e.target["result"]);
-				//for (svar callback of that.callbacks) {
-				//	callback(project);
-				//}
+				var project: Project = that.controller.getProject();
+				project.addImage(e.target["result"]);
+				that.controller.update();
 			};
 			reader.readAsDataURL(evt.target["files"][0]);
 		});
@@ -120,6 +117,7 @@ class MenuHandler {
 					for (var callback of that.callbacks) {
 						callback(project);
 					}
+					that.controller.update();
 				}
 			});
 		}
@@ -129,6 +127,7 @@ class MenuHandler {
 		var that = this;
 		return function() {
 			var $tbody = $("#tblProjectSave tbody");
+			var project = that.controller.getProject();
 			$tbody.empty();
 			var dic = that.projectStorage.getLocalStorageTOC()
 			for (var name in dic) {
@@ -143,12 +142,12 @@ class MenuHandler {
 				})
 				$tbody.append($tr);
 			}
-			$("#iptProjectSave").val(that.project.getName());
+			$("#iptProjectSave").val(project.getName());
 			$("#btnSaveProject").unbind();
 			$("#btnSaveProject").click(function() {
 				var name = $("#iptProjectSave").val();
-				that.project["name"] = name;
-				that.projectStorage.saveProjectToLocalStorage(that.project);
+				project["name"] = name;
+				that.projectStorage.saveProjectToLocalStorage(project);
 			});
 		}
 	}
