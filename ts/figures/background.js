@@ -5,9 +5,9 @@ var Background = (function () {
     function Background(name) {
         this.name = name;
         var root = new Node_(new THREE.Vector2(0, 0));
-        var handle = new Node_(60, 0);
+        var handle = new Node_(60, 3.14159);
         root.addChild(handle);
-        handle.addVisual(new Rectangle(), new Rectangle());
+        //handle.addVisual(new Rectangle(), new Rectangle());
         this.root = root;
     }
     Background.prototype.getVisual = function () {

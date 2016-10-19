@@ -177,3 +177,7 @@ th {
     max-height: 150px;
     margin: 5px;
 }
+
+.timeline-highlight{
+    background-color: blue;
+}

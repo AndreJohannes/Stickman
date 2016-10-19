@@ -1,12 +1,13 @@
 /// <reference path="../definitions/jquery.d.ts" />
 /// <reference path="../figures/ifigure.ts" />
+/// <reference path="../sticky.ts" />
 var FrameHandler = (function () {
-    function FrameHandler() {
+    function FrameHandler(controller) {
         this.$btnUp = $("#btnFrameUp");
         this.$btnDown = $("#btnFrameDown");
         this.$iptFrame = $("#iptFrame");
         this.frame = 1;
-        this.callbacks = [];
+        this.controller = controller;
         this.$btnUp = $("#btnFrameUp");
         this.$btnDown = $("#btnFrameDown");
         this.$iptFrame = $("#iptFrame");
@@ -20,22 +21,17 @@ var FrameHandler = (function () {
             }
         });
     }
-    FrameHandler.prototype.addCallback = function (cb) {
-        this.callbacks.push(cb);
-    };
     FrameHandler.prototype.getFrame = function () {
         return this.frame;
     };
     FrameHandler.prototype.setFrame = function (frame) {
-        this._setFrame(frame);
+        this.frame = frame > 0 ? frame : this.frame;
+        this.$iptFrame.val(this.frame);
     };
     FrameHandler.prototype._setFrame = function (frame) {
         this.frame = frame > 0 ? frame : this.frame;
+        this.controller.updateFrame(this.frame);
         this.$iptFrame.val(this.frame);
-        for (var _i = 0, _a = this.callbacks; _i < _a.length; _i++) {
-            var callback = _a[_i];
-            callback(this.frame);
-        }
     };
     return FrameHandler;
 }());

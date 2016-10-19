@@ -14,9 +14,9 @@ class MenuHandler {
 	private $export: JQuery;
 	private $import: JQuery;
 	private $importImage: JQuery;
+	private $addStickman: JQuery;
 	private controller: Sticky;
 	private projectStorage: ProjectStorage;
-	private callbacks: Function[];
 
 	constructor(controller: Sticky) {
 		var that = this;
@@ -38,14 +38,13 @@ class MenuHandler {
 		this.$importImage = $("#mnuImportImage");
 		this.$importImage.click(function() { that.importImage(); });
 
-		this.callbacks = [];
-	}
+		this.$addStickman = $("#mnuAddStickman");
+		this.$addStickman.click(function() {console.log("pressed");that.controller.getProject().addFigure(new Stickman("toll"));that.controller.update(); });
 
-	public addCallback(cb: Function) {
-
-		this.callbacks.push(cb);
+		$('[data-submenu]')["submenupicker"]();
 
 	}
+
 
 	private export() {
 		var project = this.controller.getProject();
@@ -63,9 +62,6 @@ class MenuHandler {
 			reader.onload = function(e) {
 				var project = Project.deserialize(e.target["result"]);
 				that.controller.update();
-				for (var callback of that.callbacks) {
-					callback(project);
-				}
 			};
 			reader.readAsText(evt.target["files"][0]);
 		});
@@ -114,9 +110,6 @@ class MenuHandler {
 				if (p_name != null) {
 					$("#openFileModal")["modal"]("hide");
 					var project = that.projectStorage.getProjectFromLocalStorage(p_name);
-					for (var callback of that.callbacks) {
-						callback(project);
-					}
 					that.controller.update();
 				}
 			});

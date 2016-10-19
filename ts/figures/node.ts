@@ -83,9 +83,18 @@ class Node_ {
 	public manifest(frame: number) {
 		this.applyToTree(function() {
 			if (this._isRoot)
-				this.position.set(frame, this.position.get(frame))
+				this.position.set(frame, this.position.get(frame));
 			else
-				this.alpha.set(frame, this.alpha.get(frame))
+				this.alpha.set(frame, this.alpha.get(frame));
+		}, null);
+	}
+
+	public release(frame: number){
+		this.applyToTree(function(){
+			if (this._isRoot)
+				this.position.clear(frame);
+			else
+				this.alpha.clear(frame);
 		}, null);
 	}
 
@@ -249,6 +258,10 @@ class FSArray<T>{
 
 	public has(i: number): boolean {
 		return this.array[i] != null
+	}
+
+	public clear(i: number){
+		this.array[i] = null;
 	}
 
 	public serialize(): T[] {

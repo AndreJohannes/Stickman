@@ -21,11 +21,10 @@ var MenuHandler = (function () {
         this.$import.click(function () { that.import(); });
         this.$importImage = $("#mnuImportImage");
         this.$importImage.click(function () { that.importImage(); });
-        this.callbacks = [];
+        this.$addStickman = $("#mnuAddStickman");
+        this.$addStickman.click(function () { console.log("pressed"); that.controller.getProject().addFigure(new Stickman("toll")); that.controller.update(); });
+        $('[data-submenu]')["submenupicker"]();
     }
-    MenuHandler.prototype.addCallback = function (cb) {
-        this.callbacks.push(cb);
-    };
     MenuHandler.prototype.export = function () {
         var project = this.controller.getProject();
         var data = project.serialize();
@@ -41,10 +40,6 @@ var MenuHandler = (function () {
             reader.onload = function (e) {
                 var project = Project.deserialize(e.target["result"]);
                 that.controller.update();
-                for (var _i = 0, _a = that.callbacks; _i < _a.length; _i++) {
-                    var callback = _a[_i];
-                    callback(project);
-                }
             };
             reader.readAsText(evt.target["files"][0]);
         });
@@ -90,10 +85,6 @@ var MenuHandler = (function () {
                 if (p_name != null) {
                     $("#openFileModal")["modal"]("hide");
                     var project = that.projectStorage.getProjectFromLocalStorage(p_name);
-                    for (var _i = 0, _a = that.callbacks; _i < _a.length; _i++) {
-                        var callback = _a[_i];
-                        callback(project);
-                    }
                     that.controller.update();
                 }
             });

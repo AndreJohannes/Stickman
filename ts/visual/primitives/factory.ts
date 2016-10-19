@@ -29,7 +29,7 @@ module Primitives {
 				var phantom = getArgs(args, "phantom", false);
 				return new Head(size, phantom);
 			case "rectangle":
-				return new Rectangle();
+				return new Rectangle(null);
 			default:
 				// code...
 				break;

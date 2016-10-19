@@ -2,6 +2,7 @@
 /// <reference path="definitions/splitpane.d.ts" />
 /// <reference path="renderer.ts" />
 /// <reference path="figures/stickman.ts" />
+/// <reference path="figures/man.ts" />
 /// <reference path="figures/ifigure.ts" />
 /// <reference path="figures/background.ts" />
 /// <reference path="player.ts" />
@@ -48,16 +49,16 @@ class Sticky {
 
 	constructor() {
 		let project: Project = new Project("testProject");
-		project.addFigure(new Stickman("Smart"));
-		project.addFigure(new Stickman("Dumb"));
-		project.addFigure(new Background("BG"));
+		//project.addFigure(new Stickman("Smart"));
+		//project.addFigure(new Stickman("Dumb"));
+		//project.addFigure(new Man("BG"));
 		this.project = project;
 		this.resizer = new CanvasResizer();
 		this.renderer = new GLRenderer();
 		this.player = new Player(this.renderer);
 		this.download = new Download(this.renderer);
-		this.frameHandler = new FrameHandler();
-		this.timelineHandler = new TimelineHandler(project);
+		this.frameHandler = new FrameHandler(this);
+		this.timelineHandler = new TimelineHandler(this);
 		this.menuHandler = new MenuHandler(this);
 		this.mouseHandler = new MouseHandler(this);
 		this.imageHandler = new ImageHandler(this);
@@ -68,24 +69,9 @@ class Sticky {
 		let $download = $("#btnDownload");
 
 		let that = this;
-		this.menuHandler.addCallback(function(project) {
-			that.project = project;
-			that.renderer.clearScene();
-			$.each(that.project.getFigures(), function(index, figure) { that.renderer.addObject(figure.getVisual()); that.renderer.addObject(figure.getPhantom()); })
-		})
-		$.each(that.project.getFigures(), function(index, figure) { that.renderer.addObject(figure.getVisual()); that.renderer.addObject(figure.getPhantom()); })
+		this.update();	
 		let $canvas = $(this.renderer.getDom());
 
-		this.frameHandler.addCallback(that.timelineHandler.setFrame);
-		this.frameHandler.addCallback(function(frame: number) {
-			$.each(that.project.getFigures(),
-				function(index, figure) { figure.getRoot().draw(frame); }); that.renderer.update()
-		});
-		this.timelineHandler.addCallback(that.frameHandler.setFrame);
-		this.timelineHandler.addCallback(function(frame: number) {
-			$.each(that.project.getFigures(),
-				function(index, figure) { figure.getRoot().draw(frame); }); that.renderer.update()
-		});
 		var activeNode = null;
 		$frame.append($canvas);
 		$('div.split-pane').splitPane();
@@ -102,15 +88,27 @@ class Sticky {
 
 	public update() {
 		this.imageHandler.update();
+		this.timelineHandler.update();
+		this.renderer.clearScene();
+		let that = this;
+		$.each(this.project.getFigures(), function(index, figure) { that.renderer.addObject(figure.getVisual()); that.renderer.addObject(figure.getPhantom()); })
+		this.draw();
+	}
+
+	public updateFrame(frame: number){
+		this.timelineHandler.setFrame(frame);
+		this.frameHandler.setFrame(frame);
+		this.draw();
 	}
 
 	public draw() {
 		var frame = this.frameHandler.getFrame();
 		$.each(this.project.getFigures(),
 			function(index, figure) { figure.getRoot().draw(frame) });
+		this.renderer.update();
 	}
 
-	public redraw(){
+	public redraw() {
 		this.renderer.update();
 	}
 

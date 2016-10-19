@@ -78,6 +78,14 @@ var Node_ = (function () {
                 this.alpha.set(frame, this.alpha.get(frame));
         }, null);
     };
+    Node_.prototype.release = function (frame) {
+        this.applyToTree(function () {
+            if (this._isRoot)
+                this.position.clear(frame);
+            else
+                this.alpha.clear(frame);
+        }, null);
+    };
     Node_.prototype.delete = function () {
         // TODO: Implement the function
         //this.parent_.children.
@@ -221,6 +229,9 @@ var FSArray = (function () {
     };
     FSArray.prototype.has = function (i) {
         return this.array[i] != null;
+    };
+    FSArray.prototype.clear = function (i) {
+        this.array[i] = null;
     };
     FSArray.prototype.serialize = function () {
         return this.array;

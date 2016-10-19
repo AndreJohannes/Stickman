@@ -12,6 +12,7 @@ var ImageHandler = (function () {
             var image = _a[_i];
             var $img = $("<img>");
             $img.attr("src", image);
+            $img.click(function () { $("#cropImageModal .modal-body").append($img); $("#cropImageModal")["modal"]("show"); });
             this.$images.append($img);
         }
     };

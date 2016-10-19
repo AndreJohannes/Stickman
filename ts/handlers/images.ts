@@ -18,6 +18,7 @@ class ImageHandler{
 		for(var image of project.getImages()){
 			var $img = $("<img>");
 			$img.attr("src", image);
+			$img.click(function(){$("#cropImageModal .modal-body").append($img);$("#cropImageModal")["modal"]("show"); });
 			this.$images.append($img);
 		}
 	}

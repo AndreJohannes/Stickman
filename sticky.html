@@ -7,6 +7,7 @@
     <link rel="icon" href="./images/icon.png">
     <link rel="stylesheet" type="text/css" href="./css/bootstrap.min.css" media="screen" />
     <link rel="stylesheet" type="text/css" href="./css/bootstrap-theme.min.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="./css/bootstrap-submenu.min.css" media="screen" />
     <link rel="stylesheet" type="text/css" href="./css/font-awesome.min.css" media="screen" />
     <link rel="stylesheet" type="text/css" href="./css/sticky.css" media="screen" />
     <link rel="stylesheet" href="./css/split-pane.css" />
@@ -14,6 +15,7 @@
     <script src="./js/jquery.js"></script>
     <script src="./js/jquery.validate.min.js"></script>
     <script src="./js/bootstrap.min.js"></script>
+    <script src="./js/bootstrap-submenu.min.js"></script>
     <script src="./js/three.min.js"></script>
     <script src="./js/FileSaver.min.js"></script>
     <script src="./js/jszip.min.js"></script>
@@ -28,6 +30,7 @@
     <script src="./ts/figures/ifigure.js"></script>
     <script src="./ts/figures/node.js"></script>
     <script src="./ts/figures/stickman.js"></script>
+    <script src="./ts/figures/man.js"></script>
     <script src="./ts/figures/background.js"></script>
     <script src="./ts/project/project.js"></script>
     <script src="./ts/project/storage.js"></script>
@@ -102,6 +105,22 @@
             </div>
         </div>
     </div>
+    <div class="modal fade" id="cropImageModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">Open Project</h4>
+                </div>
+                <div class="modal-body">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button id="btnOpenProject" type="button" class="btn btn-primary disabled">Open Project</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <nav class="navbar navbar-custom" id="nav">
         <div class="container-fluid">
             <!-- Brand and toggle get grouped for better mobile display -->
@@ -130,9 +149,14 @@
                         </ul>
                     </li>
                     <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Edit <span class="caret"></span></a>
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-submenu="" role="button" aria-haspopup="true" aria-expanded="false">Edit <span class="caret"></span></a>
                         <ul class="dropdown-menu">
-                            <li><a href="#">Not Used</a></li>
+                            <li class="dropdown-submenu"><a>Add Figure</a>
+                                <ul class="dropdown-menu">
+                                    <li><a id="mnuAddStickman">Stickman</a></li>
+                                    <li><a href="#">Not Used</a></li>
+                                </ul>
+                            </li>
                             <li><a href="#">Not Used</a></li>
                             <li><a href="#">Not Used</a></li>
                             <li role="separator" class="divider"></li>
@@ -176,17 +200,9 @@
                     </button>
                 </div>
                 <div class="nav navbar-nav navbar-right" style="margin-right:15px">
-                    <button type="button" id="button_fbw" class="btn navbar-btn">
-                        <i class="fa fa-fast-backward"></i>
-                    </button>
                     <button type="button" id="btnPlay" class="btn navbar-btn">
-                        <i class="fa fa-play"></i>
-                    </button>
-                    <button type="button" id="btnPlay" class="btn navbar-btn">
-                        <i class="fa fa-stop"></i>
-                    </button>
-                    <button type="button" id="btnPlay" class="btn navbar-btn">
-                        <i class="fa fa-fast-forward"></i>
+                        <a>Play </a>
+                        <!--<i class="fa fa-play"></i>-->
                     </button>
                 </div>
                 <div class="nav navbar-nav navbar-right" style="margin-right:15px">
@@ -220,8 +236,11 @@
             <div class="split-pane-divider" id="horizontal-divider"></div>
             <div class="split-pane-component" id="bottom-component">
                 <div class="pretty-split-pane-component-inner" id="timeline">
-                    <table>
-                        <tr></tr>
+                    <table id="tblTimeline">
+                        <thead>
+                        </thead>
+                        <tbody>
+                        </tbody>
                     </table>
                 </div>
             </div>
@@ -233,5 +252,7 @@
         <li><a id="tabAddLink">Add Link</a></li>
         <li class="divider"></li>
         <li><a id="tabDeleteLink">Delete link</a></li>
+    </ul>
+    <ul id="contextMenuTimeline" class="dropdown-menu" role="menu" style="display:none">
     </ul>
 </body>
