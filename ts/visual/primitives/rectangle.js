@@ -38,19 +38,22 @@ var Rect = (function () {
     Rect.prototype.getAlpha = function () {
         return Math.atan2(this.pivot.x - this.anchor.x, this.pivot.y - this.anchor.y);
     };
+    Rect.prototype.getTexture = function () {
+        return this.texture;
+    };
     return Rect;
 }());
 var Rectangle = (function () {
     function Rectangle(rect) {
         this.object = new THREE.Object3D();
-        var texture = TextureHandler.getTexture(TextureHandler.Texture.Background);
+        //let texture = TextureHandler.getTexture(TextureHandler.Texture.Background);
         this.height = 500;
         this.width = 500;
-        texture.minFilter = THREE.LinearFilter;
+        //texture.minFilter = THREE.LinearFilter;
         //texture.magFilter= THREE.LinearFilter;
         var material = new THREE.MeshBasicMaterial({
             color: 0xffffff,
-            map: texture,
+            map: rect.getTexture(),
             transparent: true,
             opacity: 1
         });

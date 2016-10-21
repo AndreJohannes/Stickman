@@ -13,7 +13,7 @@ class Man implements IFigure {
 		//this.root = new Node_(localStorage.getItem("stickman"));
 		//return
 		this.name = name;
-		let texture = TextureHandler.getTexture(TextureHandler.Texture.Background);
+		let texture = TextureHandler.Man;
 		var rectTorso: Rect = new Rect(6, 13, 33, 95, texture);
 		rectTorso.setPivot(new THREE.Vector2(15, 82));
 		rectTorso.setAnchor(new THREE.Vector2(17, 24));

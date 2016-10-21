@@ -11,7 +11,7 @@ class Head implements IPrimitives {
 	constructor(size: number, phantom?: boolean) {
 		this.phantom = phantom != null ? phantom : false;
 		this.size = size;
-		let texture = TextureHandler.getTexture(TextureHandler.Texture.Stickman1);
+		let texture = TextureHandler.Stickman;
 		texture.minFilter = THREE.LinearFilter;
 		//texture.magFilter= THREE.LinearFilter;
 		let material = new THREE.MeshBasicMaterial({

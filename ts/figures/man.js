@@ -6,7 +6,7 @@ var Man = (function () {
         //this.root = new Node_(localStorage.getItem("stickman"));
         //return
         this.name = name;
-        var texture = TextureHandler.getTexture(TextureHandler.Texture.Background);
+        var texture = TextureHandler.Man;
         var rectTorso = new Rect(6, 13, 33, 95, texture);
         rectTorso.setPivot(new THREE.Vector2(15, 82));
         rectTorso.setAnchor(new THREE.Vector2(17, 24));

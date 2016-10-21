@@ -9,7 +9,7 @@ var Dot = (function () {
     function Dot(color) {
         this.width = 8;
         this.color = color;
-        var texture = TextureHandler.getTexture(TextureHandler.Texture.Stickman1);
+        var texture = TextureHandler.Stickman;
         texture.minFilter = THREE.LinearFilter;
         //texture.magFilter= THREE.LinearFilter;
         var material = new THREE.MeshBasicMaterial({

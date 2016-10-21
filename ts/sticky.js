@@ -44,6 +44,7 @@ var Sticky = (function () {
         this.mouseHandler = new MouseHandler(this);
         this.imageHandler = new ImageHandler(this);
         this.navbarHandler = new NavbarHandler(this);
+        this.textureHandler = new TextureHandler(this);
         var $frame = $("#frame");
         var $timeline = $("#timeline");
         var $download = $("#btnDownload");
@@ -71,6 +72,8 @@ var Sticky = (function () {
     Sticky.prototype.getDownloader = function () { return this.download; };
     ;
     Sticky.prototype.setProject = function (project) { this.project = project; };
+    Sticky.prototype.getTextureHandler = function () { return this.textureHandler; };
+    ;
     Sticky.prototype.update = function () {
         this.imageHandler.update();
         this.timelineHandler.update();

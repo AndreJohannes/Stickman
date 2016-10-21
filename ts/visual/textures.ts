@@ -1,30 +1,29 @@
 /// <reference path="../definitions/three.d.ts" />
+/// <reference path="../sticky.ts" />
 
+class TextureHandler {
 
-namespace TextureHandler {
+	public static Stickman: THREE.Texture = (new THREE.TextureLoader()).load("images/stickman1.png");
+	public static Man: THREE.Texture =  (new THREE.TextureLoader()).load("images/man.png");
 
+	private textures: Object = {};
+	private controller: Sticky;
 
-	export enum Texture {
-		Stickman1,
-		Background
+	constructor(controller: Sticky) {
+		this.controller = controller;
 	}
 
-	let texture = function() {
-		var retValue = {};
+	public getTexture(uuid: string): THREE.Texture {
+		if (uuid in this.textures) {
+			return this.textures[uuid];
+		}
+		let src: string = this.controller.getProject().getImages()[uuid];
 		var image = new Image();
-		image.src = "images/man.png";
+		image.src = src;
 		var texture = new THREE.Texture(image);
 		texture.needsUpdate = true;
-		retValue[Texture.Stickman1] = (new THREE.TextureLoader()).load("images/stickman1.png");
-		retValue[Texture.Background] = texture; //(new THREE.TextureLoader()).load("images/cola.png");
-		return retValue;
-	} ();
-
-	export function getTexture(tex: Texture) {
-
-		return texture[tex];
-
-
+		this.textures[uuid] = texture;
+		return texture;
 	}
 
 }

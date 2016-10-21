@@ -15,7 +15,7 @@ class Dot {
 
 	constructor(color: Color) {
 		this.color = color;
-		let texture = TextureHandler.getTexture(TextureHandler.Texture.Stickman1);
+		let texture = TextureHandler.Stickman;
 		texture.minFilter = THREE.LinearFilter;
 		//texture.magFilter= THREE.LinearFilter;
 		let material = new THREE.MeshBasicMaterial({

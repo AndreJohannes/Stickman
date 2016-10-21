@@ -5,13 +5,13 @@ class Project {
 
 	private name: string;
 	private figures: IFigure[];
-	private images: string[];
+	private images: Object;
 	private size: number[];
 
 	constructor(name: string, size = [1280, 720]) {
 		this.name = name;
 		this.figures = [];
-		this.images = [];
+		this.images = {};
 		this.size = size;
 	}
 
@@ -31,11 +31,11 @@ class Project {
 		return this.figures;
 	}
 
-	public addImage(image: string) {
-		this.images.push(image);
+	public addImage(uuid: string, image: string) {
+		this.images[uuid] = image;
 	}
 
-	public getImages(): string[] {
+	public getImages(): Object {
 		return this.images;
 	}
 

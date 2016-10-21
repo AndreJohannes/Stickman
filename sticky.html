@@ -10,7 +10,8 @@
     <link rel="stylesheet" type="text/css" href="./css/bootstrap-submenu.min.css" media="screen" />
     <link rel="stylesheet" type="text/css" href="./css/font-awesome.min.css" media="screen" />
     <link rel="stylesheet" type="text/css" href="./css/sticky.css" media="screen" />
-    <link rel="stylesheet" href="./css/split-pane.css" />
+    <link rel="stylesheet" type="text/css" href="./css/split-pane.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="./css/cropper.css" media="screen" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="./js/jquery.js"></script>
     <script src="./js/jquery.validate.min.js"></script>
@@ -20,6 +21,7 @@
     <script src="./js/FileSaver.min.js"></script>
     <script src="./js/jszip.min.js"></script>
     <script src="./js/split-pane.js"></script>
+    <script src="./js/cropper.min.js"></script>
     <!--<script src="./js/sticky.js"></script>-->
     <script src="./ts/sticky.js"></script>
     <script src="./ts/renderer.js"></script>
@@ -73,8 +75,8 @@
                             </ul>
                         </div>
                         <div id="divIptSizes">
-                            <input type="number" />x
-                            <input type="number" />
+                            <input type="number" min="100"/>x
+                            <input type="number" min="100"/>
                         </div>
                     </div>
                 </div>
@@ -152,7 +154,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    <button id="btnOpenProject" type="button" class="btn btn-primary disabled">Open Project</button>
+                    <button id="btnImageSeclection" type="button" class="btn btn-primary">Next</button>
                 </div>
             </div>
         </div>

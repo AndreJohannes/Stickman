@@ -27,8 +27,8 @@ class CanvasResizer {
 
 	public expand() {
 		let $canvas = $("canvas");
-		this.$verticalSplit.splitPane("lastComponentSize", $canvas.width()+20);
-		this.$horizontalSplit.splitPane("firstComponentSize", $canvas.height()+1);
+		this.$verticalSplit.splitPane("lastComponentSize", $canvas.width() + 20);
+		this.$horizontalSplit.splitPane("firstComponentSize", $canvas.height() + 1);
 		this.$verticalSplit.splitPane("lastComponentSize", $canvas.width());
 	}
 
@@ -47,6 +47,7 @@ class Sticky {
 	private mouseHandler: MouseHandler;
 	private imageHandler: ImageHandler;
 	private navbarHandler: NavbarHandler;
+	private textureHandler: TextureHandler;
 
 	constructor() {
 		let project: Project = new Project("testProject");
@@ -64,6 +65,7 @@ class Sticky {
 		this.mouseHandler = new MouseHandler(this);
 		this.imageHandler = new ImageHandler(this);
 		this.navbarHandler = new NavbarHandler(this);
+		this.textureHandler = new TextureHandler(this);
 
 		let $frame = $("#frame");
 		let $timeline = $("#timeline");
@@ -88,6 +90,7 @@ class Sticky {
 	public getResizer(): CanvasResizer { return this.resizer };
 	public getDownloader(): Download { return this.download };
 	public setProject(project: Project) { this.project = project; }
+	public getTextureHandler() { return this.textureHandler; };
 
 	public update() {
 		this.imageHandler.update();

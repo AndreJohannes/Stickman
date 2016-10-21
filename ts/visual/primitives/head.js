@@ -6,7 +6,7 @@ var Head = (function () {
         this.object = new THREE.Object3D();
         this.phantom = phantom != null ? phantom : false;
         this.size = size;
-        var texture = TextureHandler.getTexture(TextureHandler.Texture.Stickman1);
+        var texture = TextureHandler.Stickman;
         texture.minFilter = THREE.LinearFilter;
         //texture.magFilter= THREE.LinearFilter;
         var material = new THREE.MeshBasicMaterial({

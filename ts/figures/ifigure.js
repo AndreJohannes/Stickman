@@ -37,3 +37,36 @@ var GenericFigure = (function () {
     };
     return GenericFigure;
 }());
+var MonadFigure = (function () {
+    function MonadFigure(rect) {
+        var root = new Node_(new THREE.Vector2(0, 0));
+        var monad = new Node_(rect.getLength(), 0);
+        root.addChild(monad);
+        monad.addVisual(new Rectangle(rect), new Rectangle(rect));
+        this.root = root;
+        this.name = "Monad";
+    }
+    MonadFigure.prototype.getVisual = function () {
+        return this.root.getVisual();
+    };
+    MonadFigure.prototype.getPhantom = function () {
+        return this.root.getVisual(true);
+    };
+    MonadFigure.prototype.getRoot = function () {
+        return this.root;
+    };
+    MonadFigure.prototype.getName = function () {
+        return this.name;
+    };
+    MonadFigure.prototype.setName = function (name) {
+        this.name = name;
+    };
+    MonadFigure.prototype.serialize = function () {
+        var figure = new FigureWrapped();
+        figure.name = this.name;
+        figure.root = this.root.serialize();
+        return figure;
+    };
+    ;
+    return MonadFigure;
+}());

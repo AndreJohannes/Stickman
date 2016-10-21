@@ -7,7 +7,7 @@ var Limb = (function () {
         this.width = 9;
         this.phantom = phantom != null ? phantom : false;
         this.length = length;
-        var texture = TextureHandler.getTexture(TextureHandler.Texture.Stickman1);
+        var texture = TextureHandler.Stickman;
         texture.minFilter = THREE.LinearFilter;
         //texture.magFilter= THREE.LinearFilter;
         var material = new THREE.MeshBasicMaterial({

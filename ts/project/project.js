@@ -5,7 +5,7 @@ var Project = (function () {
         if (size === void 0) { size = [1280, 720]; }
         this.name = name;
         this.figures = [];
-        this.images = [];
+        this.images = {};
         this.size = size;
     }
     Project.prototype.setName = function (name) {
@@ -20,8 +20,8 @@ var Project = (function () {
     Project.prototype.getFigures = function () {
         return this.figures;
     };
-    Project.prototype.addImage = function (image) {
-        this.images.push(image);
+    Project.prototype.addImage = function (uuid, image) {
+        this.images[uuid] = image;
     };
     Project.prototype.getImages = function () {
         return this.images;
