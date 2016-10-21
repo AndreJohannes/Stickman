@@ -23,6 +23,7 @@ var NavbarHandler = (function () {
         resizer.expand();
     };
     NavbarHandler.prototype.download = function () {
+        $("#prepareZipModal")["modal"]("show");
         var downloader = this.controller.getDownloader();
         var figures = this.controller.getProject().getFigures();
         downloader.zipAndSave(figures);

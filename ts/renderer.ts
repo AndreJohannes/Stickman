@@ -8,9 +8,7 @@ class GLRenderer {
 	private renderer: THREE.Renderer;
 	private background: THREE.Object3D;
 
-	private resolution: number[] = [1280, 720]
-
-
+	private resolution: number[] = [800, 600]//[1280, 720]
 
 	constructor() {
 
@@ -19,21 +17,12 @@ class GLRenderer {
 		this.camera = new THREE.OrthographicCamera(-this.resolution[0] / 2, this.resolution[0] / 2, this.resolution[1] / 2, -this.resolution[1] / 2);
 		this.camera.position.z = 1024 / 2;
 
-		var geometry: THREE.Geometry = new THREE.PlaneGeometry(1280, 720);//THREE.BoxGeometry( 200, 1024, 200 );
+		var geometry: THREE.Geometry = new THREE.PlaneGeometry(4096, 4096);//THREE.BoxGeometry( 200, 1024, 200 );
 		var material = new THREE.MeshBasicMaterial({ color: 0xFFFFFF });
 		this.background = new THREE.Mesh(geometry, material);
 		this.scene.add(this.background);
 
-		//var object1 = (new Limb()).getObject();	
-		//var object2 = (new Limb()).getObject();
-		//object2.position.set(0,50,0);
-		//object2.rotation.set(0,0,.2);
-		//object1.rotation.set(0,0,.55);
-
-		//object1.add(object2);
-		//this.scene.add(object1);
-
-		this.renderer = new THREE.WebGLRenderer( {preserveDrawingBuffer: true , alpha: false, antialias: false });
+		this.renderer = new THREE.WebGLRenderer({ preserveDrawingBuffer: true, alpha: false, antialias: false });
 		//this.renderer.setClearColor(0xffffff, 0)
 		this.renderer.setSize(this.resolution[0], this.resolution[1]);
 
@@ -45,8 +34,8 @@ class GLRenderer {
 		this.scene.add(object);
 	}
 
-	public clearScene(){
-		while(this.scene.children.length>0){
+	public clearScene() {
+		while (this.scene.children.length > 0) {
 			this.scene.children.pop();
 		}
 		this.scene.add(this.background);
@@ -56,8 +45,13 @@ class GLRenderer {
 		return this.renderer.domElement;
 	}
 
-	public resize(x, y) {
-		this.renderer.setSize(x, y);
+	public resize(size: number[]) {
+		if (this.resolution[0] != size[0] || this.resolution[1] != size[1]) {
+			this.resolution = size;
+			this.camera = new THREE.OrthographicCamera(-this.resolution[0] / 2, this.resolution[0] / 2, this.resolution[1] / 2, -this.resolution[1] / 2);
+			this.camera.position.z = 1024 / 2;
+			this.renderer.setSize(size[0], size[1]);
+		}
 	}
 
 	public animate() {

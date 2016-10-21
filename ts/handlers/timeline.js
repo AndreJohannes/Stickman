@@ -10,12 +10,12 @@ var TimelineHandler = (function () {
         this.$trFirst = this.$timeline.find("tr").first();
         this.$table = this.$timeline.find("table");
         this.makeTimeline();
-        for (var i = 1; i <= this.max_frame; i++) {
-            this.updateFrame(i);
-        }
     }
     TimelineHandler.prototype.update = function () {
         this.makeTimeline();
+        for (var i = 1; i <= this.max_frame; i++) {
+            this.updateFrame(i);
+        }
     };
     TimelineHandler.prototype.setFrame = function (frame) {
         $("#timeline th").css("background-color", "");
@@ -23,15 +23,26 @@ var TimelineHandler = (function () {
         // TODO: if the current frame is close to the max frame, add more frames to the timeline
     };
     TimelineHandler.prototype.updateFrame = function (frame) {
-        $.each(this.controller.getProject().getFigures(), function (index, value) {
-            var div = $("#timeline tr").eq(index + 1).find("td").eq(frame - 1).find("div");
-            if (value.getRoot()["position"].has(frame)) {
-                div.removeClass("brick-nd");
+        if (frame == null) {
+            for (var i = 1; i <= this.max_frame; i++) {
+                this.updateFrame(i);
             }
-            else {
-                div.addClass("brick-nd");
-            }
-        });
+        }
+        else {
+            $.each(this.controller.getProject().getFigures(), function (index, value) {
+                var div = $("#timeline tr").eq(index + 1).find("td").eq(frame).find("div");
+                div.removeClass();
+                if (value.getRoot()["invisible"].get(frame)) {
+                    div.addClass("brick brick-nv");
+                }
+                else if (!value.getRoot()["position"].has(frame)) {
+                    div.addClass("brick brick-nd");
+                }
+                else {
+                    div.addClass("brick");
+                }
+            });
+        }
     };
     TimelineHandler.prototype.getClick = function (frame) {
         var that = this;
@@ -53,17 +64,17 @@ var TimelineHandler = (function () {
         }
         this.max_frame += count;
     };
-    TimelineHandler.prototype.getRightClickFunction = function (frame, idxY) {
-        var that = this;
-        return function (event) {
-            $("#contextMenuTimeline").show().css("left", event.clientX).css("top", event.clientY);
-            ;
-            that.controller.getProject().getFigures()[frame].getRoot().release(frame);
-        };
-    };
+    //private getRightClickFunction(frame: number, idxY: number) {
+    //	var that = this;
+    //	return function(event) {
+    //		$("#contextMenuTimeline").show().css("left", event.clientX).css("top", event.clientY);;
+    //		that.controller.getProject().getFigures()[frame].getRoot().release(frame);
+    //	}
+    //}
     TimelineHandler.prototype.makeTimeline = function () {
         var $thead = $("#tblTimeline thead");
         var $tbody = $("#tblTimeline tbody");
+        var that = this;
         $thead.empty();
         $tbody.empty();
         $thead.append($("<tr>"));
@@ -73,13 +84,16 @@ var TimelineHandler = (function () {
             $tbody.append($tr);
         }
         $thead.find("tr").append($("<th>"));
-        $tbody.find("tr").each(function (index, item) { $(this).append($("<div>" + figures[index].getName() + "</div>")); });
+        $tbody.find("tr").each(function (index, item) {
+            var $td = $("<td><div>" + figures[index].getName() + "</div></td>");
+            $(this).append($td);
+            $td.dblclick(that.getChangeNameFunction(index));
+        });
         var _loop_1 = function() {
             var frame = i;
             var $th = $("<th>" + frame + "</th>");
             $th.click(this_1.getClick(frame));
             $thead.find("tr").append($th);
-            var that = this_1;
             $tbody.find("tr").each(function (index, item) {
                 var $td = $("<td>");
                 var $div = $("<div class=\"brick\">");
@@ -93,7 +107,9 @@ var TimelineHandler = (function () {
                     $ctm.empty();
                     var root = that.controller.getProject().getFigures()[index].getRoot();
                     var isTied = root["position"].has(frame);
+                    var isInvisible = root["invisible"].get(frame);
                     $ctm.append(that.getContextMenuElement("change tie", function () { isTied ? root.release(frame) : root.manifest(frame); that.updateFrame(frame); $ctm.hide(); }));
+                    $ctm.append(that.getContextMenuElement("change visibility", function () { root["invisible"].set(frame, !isInvisible); that.updateFrame(null); $ctm.hide(); }));
                     $ctm.show().css("left", event.clientX).css("top", event.clientY);
                     ;
                     return false;
@@ -105,7 +121,9 @@ var TimelineHandler = (function () {
             _loop_1();
         }
     };
-    // Auxiliary functions
+    //////////////////////
+    /// Auxiliary functions
+    //////////////////////
     TimelineHandler.prototype.getContextMenuElement = function (text, callback) {
         var $a = $("<a>");
         var $li = $("<li>");
@@ -113,6 +131,25 @@ var TimelineHandler = (function () {
         $a.click(callback);
         $li.append($a);
         return $li;
+    };
+    TimelineHandler.prototype.getChangeNameFunction = function (index) {
+        var that = this;
+        var figure = that.controller.getProject().getFigures()[index];
+        return function (event) {
+            var $td = $(this);
+            $td.empty();
+            var $input = $("<input>");
+            $input.val(figure.getName());
+            $td.append($input);
+            $input.keypress(function (event) {
+                if (event.which == 13) {
+                    $td.empty();
+                    var name_1 = $(this).val();
+                    figure.setName(name_1);
+                    $td.append($("<div>" + figure.getName() + "</div>"));
+                }
+            });
+        };
     };
     return TimelineHandler;
 }());

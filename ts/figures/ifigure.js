@@ -19,6 +19,9 @@ var GenericFigure = (function () {
     GenericFigure.prototype.getName = function () {
         return this.name;
     };
+    GenericFigure.prototype.setName = function (name) {
+        this.name = name;
+    };
     GenericFigure.prototype.serialize = function () {
         var figure = new FigureWrapped();
         figure.name = this.name;

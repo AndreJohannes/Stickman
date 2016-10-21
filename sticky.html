@@ -49,6 +49,42 @@
 
 <body>
     <!-- Modal -->
+    <div class="modal fade" id="newModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">New Project</h4>
+                </div>
+                <div class="modal-body">
+                    <div>
+                        Name: 
+                         <input type="text" />
+                    </div>
+                    <div>
+                        <div class="dropdown" id="divDpdSizes">
+                            <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
+                                Standard Sizes
+                                <span class="caret"></span></button>
+                            <ul class="dropdown-menu">
+                                <li><a>800x600</a></li>
+                                <li><a>1024x786</a></li>
+                                <li><a>1280x720</a></li>
+                            </ul>
+                        </div>
+                        <div id="divIptSizes">
+                            <input type="number" />x
+                            <input type="number" />
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button id="btnNewProject" type="button" class="btn btn-primary" data-dismiss="modal">New</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="modal fade" id="saveFileModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -74,7 +110,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    <button id="btnSaveProject" type="button" class="btn btn-primary" data-dismiss="modal">Save changes</button>
+                    <button id="btnSaveProject" type="button" class="btn btn-primary" >Save changes</button>
                 </div>
             </div>
         </div>
@@ -121,6 +157,26 @@
             </div>
         </div>
     </div>
+    <div class="modal fade" id="prepareZipModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">Prepare Download</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="progress">
+                        <div id="divProgress" class="progress-bar" role="progressbar" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100" style="width:70%">
+                            70%
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--- Main -->
     <nav class="navbar navbar-custom" id="nav">
         <div class="container-fluid">
             <!-- Brand and toggle get grouped for better mobile display -->
@@ -139,13 +195,15 @@
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">File <span class="caret"></span></a>
                         <ul class="dropdown-menu">
-                            <li><a id="btnOpen" data-toggle="modal" data-target="#openFileModal" href="#">Open</a></li>
-                            <li><a id="btnSave" data-toggle="modal" data-target="#saveFileModal" href="#">Save</a></li>
+                            <li><a id="mnuNew" data-toggle="modal" data-target="#newModal">New</a></li>
                             <li role="separator" class="divider"></li>
-                            <li><a id="mnuExport" href="#">Export</a></li>
-                            <li><a id="mnuImport" href="#">Import</a></li>
+                            <li><a id="btnOpen" data-toggle="modal" data-target="#openFileModal">Open</a></li>
+                            <li><a id="btnSave" data-toggle="modal" data-target="#saveFileModal">Save</a></li>
                             <li role="separator" class="divider"></li>
-                            <li><a id="mnuImportImage" href="#">Import Image</a></li>
+                            <li><a id="mnuExport">Export</a></li>
+                            <li><a id="mnuImport">Import</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li><a id="mnuImportImage">Import Image</a></li>
                         </ul>
                     </li>
                     <li class="dropdown">

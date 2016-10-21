@@ -64,6 +64,9 @@ var Man = (function () {
     Man.prototype.getName = function () {
         return this.name;
     };
+    Man.prototype.setName = function (name) {
+        this.name = name;
+    };
     Man.prototype.serialize = function () {
         var figure = new FigureWrapped();
         figure.name = this.name;

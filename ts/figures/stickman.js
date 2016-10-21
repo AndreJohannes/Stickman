@@ -52,6 +52,9 @@ var Stickman = (function () {
     Stickman.prototype.getName = function () {
         return this.name;
     };
+    Stickman.prototype.setName = function (name) {
+        this.name = name;
+    };
     Stickman.prototype.serialize = function () {
         var figure = new FigureWrapped();
         figure.name = this.name;

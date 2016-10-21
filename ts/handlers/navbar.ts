@@ -33,6 +33,7 @@ class NavbarHandler {
 	}
 
 	private download(){
+		$("#prepareZipModal")["modal"]("show");
 		var downloader: Download = this.controller.getDownloader();
 		var figures: IFigure[] = this.controller.getProject().getFigures();
 		downloader.zipAndSave(figures);

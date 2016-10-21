@@ -9,6 +9,7 @@
 
 class MenuHandler {
 
+	private $new: JQuery;
 	private $open: JQuery;
 	private $save: JQuery;
 	private $export: JQuery;
@@ -22,6 +23,8 @@ class MenuHandler {
 		var that = this;
 		this.projectStorage = new ProjectStorage();
 		this.controller = controller;
+
+		this.newProjectLogic();
 
 		this.$open = $("#btnOpen");
 		this.$open.click(this.openProjectClick());
@@ -39,12 +42,11 @@ class MenuHandler {
 		this.$importImage.click(function() { that.importImage(); });
 
 		this.$addStickman = $("#mnuAddStickman");
-		this.$addStickman.click(function() {console.log("pressed");that.controller.getProject().addFigure(new Stickman("toll"));that.controller.update(); });
+		this.$addStickman.click(function() { that.controller.getProject().addFigure(new Stickman("Stickman")); that.controller.update(); });
 
 		$('[data-submenu]')["submenupicker"]();
 
 	}
-
 
 	private export() {
 		var project = this.controller.getProject();
@@ -96,7 +98,7 @@ class MenuHandler {
 			for (var name in dic) {
 				var $tr = $("<tr>");
 				$tr.append($.validator.format("<th>{0}</th><th>{1}</th>",
-					name, dic[name]["date"]));
+					name, new Date(dic[name]["date"])));
 				$tr.data("name", name);
 				$tr.click(function() {
 					$tbody.find("tr").removeClass("success");
@@ -109,7 +111,8 @@ class MenuHandler {
 			$btnOpenProject.click(function() {
 				if (p_name != null) {
 					$("#openFileModal")["modal"]("hide");
-					var project = that.projectStorage.getProjectFromLocalStorage(p_name);
+					var project: Project = that.projectStorage.getProjectFromLocalStorage(p_name);
+					that.controller.setProject(project);
 					that.controller.update();
 				}
 			});
@@ -126,7 +129,7 @@ class MenuHandler {
 			for (var name in dic) {
 				var $tr = $("<tr>");
 				$tr.append($.validator.format("<th>{0}</th><th>{1}</th>",
-					name, dic[name]["date"]));
+					name, new Date(dic[name]["date"])));
 				$tr.data("name", name);
 				$tr.click(function() {
 					$tbody.find("tr").removeClass("success");
@@ -141,9 +144,27 @@ class MenuHandler {
 				var name = $("#iptProjectSave").val();
 				project["name"] = name;
 				that.projectStorage.saveProjectToLocalStorage(project);
+				$("#saveFileModal")["modal"]("hide");
 			});
 		}
 	}
 
+	private newProjectLogic() {
+		let that = this;
+		$("#divDpdSizes a").each(function(index, item) {
+			$(item).off().click(function() {
+				let sizes: string[] = $(item).text().split("x");
+				$("#divIptSizes input").each(function(index) {
+					$(this).val(sizes[index]);
+				});
+			})
+		});
+		$("#btnNewProject").click(function{
+			let project = new Project("new",[$("#divIptSizes input").eq(0).val(), $("#divIptSizes input").eq(1).val()]);
+			that.controller.setProject(project);
+			that.controller.update();
+			that.controller.getResizer().expand();
+		});
+	}
 
 }

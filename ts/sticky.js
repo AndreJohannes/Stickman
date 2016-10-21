@@ -20,9 +20,10 @@ var CanvasResizer = (function () {
         this.$verticalSplit = $("div.split-pane").eq(1);
     }
     CanvasResizer.prototype.expand = function () {
-        this.$verticalSplit.splitPane("lastComponentSize", 1300);
-        this.$horizontalSplit.splitPane("firstComponentSize", 721);
-        this.$verticalSplit.splitPane("lastComponentSize", 1280);
+        var $canvas = $("canvas");
+        this.$verticalSplit.splitPane("lastComponentSize", $canvas.width() + 20);
+        this.$horizontalSplit.splitPane("firstComponentSize", $canvas.height() + 1);
+        this.$verticalSplit.splitPane("lastComponentSize", $canvas.width());
     };
     return CanvasResizer;
 }());
@@ -52,7 +53,7 @@ var Sticky = (function () {
         var activeNode = null;
         $frame.append($canvas);
         $('div.split-pane').splitPane();
-        //roots[0].draw(1);
+        this.resizer.expand();
         this.renderer.update();
     }
     Sticky.prototype.getProject = function () { return this.project; };
@@ -61,15 +62,20 @@ var Sticky = (function () {
     ;
     Sticky.prototype.getFrameHandler = function () { return this.frameHandler; };
     ;
+    Sticky.prototype.getTimelineHandler = function () { return this.timelineHandler; };
+    ;
     Sticky.prototype.getPlayer = function () { return this.player; };
     ;
     Sticky.prototype.getResizer = function () { return this.resizer; };
     ;
     Sticky.prototype.getDownloader = function () { return this.download; };
     ;
+    Sticky.prototype.setProject = function (project) { this.project = project; };
     Sticky.prototype.update = function () {
         this.imageHandler.update();
         this.timelineHandler.update();
+        this.renderer.resize(this.project.getSize());
+        this.mouseHandler.setCanvasSize(this.project.getSize());
         this.renderer.clearScene();
         var that = this;
         $.each(this.project.getFigures(), function (index, figure) { that.renderer.addObject(figure.getVisual()); that.renderer.addObject(figure.getPhantom()); });

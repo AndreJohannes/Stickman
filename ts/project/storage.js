@@ -20,6 +20,13 @@ var ProjectStorage = (function () {
         toc[name] = { "name": name, "date": new Date() };
         localStorage.setItem(ProjectStorage.TOC, JSON.stringify(toc));
     };
+    ProjectStorage.prototype.deleteProjectFromLocalStorage = function (name) {
+        var toc = JSON.parse(localStorage.getItem(ProjectStorage.TOC));
+        toc = toc == null ? {} : toc;
+        delete toc[name];
+        localStorage.removeItem(name);
+        localStorage.setItem(ProjectStorage.TOC, JSON.stringify(toc));
+    };
     ProjectStorage.TOC = "TableOfContent";
     return ProjectStorage;
 }());

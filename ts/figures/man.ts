@@ -29,17 +29,17 @@ class Man implements IFigure {
 		var rectHand: Rect = new Rect(34, 124, 50, 168, texture);
 		rectHand.setPivot(new THREE.Vector2(42, 131.5));
 		rectHand.setAnchor(new THREE.Vector2(42, 164));
-		var rectKopf: Rect =  new Rect(68, 33, 109, 88, texture);
+		var rectKopf: Rect = new Rect(68, 33, 109, 88, texture);
 		rectKopf.setPivot(new THREE.Vector2(89, 87));
 		rectKopf.setAnchor(new THREE.Vector2(89, 40));
 		let root: Node_ = new Node_(new THREE.Vector2(0, 0));
 		let torso: Node_ = new Node_(rectTorso.getLength(), 0);
-		let leg1: Node_ = new Node_(rectLeg.getLength(),Math.PI);
-		let foot1: Node_ = new Node_(rectFoot.getLength(),0);
-		let leg2: Node_ = new Node_(rectLeg.getLength(),Math.PI);
-		let foot2: Node_ = new Node_(rectFoot.getLength(),0);
+		let leg1: Node_ = new Node_(rectLeg.getLength(), Math.PI);
+		let foot1: Node_ = new Node_(rectFoot.getLength(), 0);
+		let leg2: Node_ = new Node_(rectLeg.getLength(), Math.PI);
+		let foot2: Node_ = new Node_(rectFoot.getLength(), 0);
 		let arm1: Node_ = new Node_(rectArm.getLength(), 0);
-		let hand1: Node_ = new Node_(rectHand.getLength(),0);
+		let hand1: Node_ = new Node_(rectHand.getLength(), 0);
 		let kopf: Node_ = new Node_(rectKopf.getLength(), 0);
 		root.addChild(torso);
 		root.addChild(leg1);
@@ -74,6 +74,10 @@ class Man implements IFigure {
 
 	public getName(): string {
 		return this.name
+	}
+
+	public setName(name: string) {
+		this.name = name;
 	}
 
 	public serialize(): FigureWrapped {

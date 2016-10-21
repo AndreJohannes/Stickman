@@ -18,49 +18,19 @@ var MouseHandler = (function () {
         this.frameHandler = controller.getFrameHandler();
         this.$canvas = $(this.renderer.getDom());
         var that = this;
+        this.resolution = [this.$canvas.width(), this.$canvas.height()];
         this.$canvas.mousedown(this.getMouseDownFunction());
         this.$canvas.mousemove(this.getMouseMoveFunction());
         this.$canvas.mouseup(this.getMouseUpFunction());
         this.$canvas.on("contextmenu", this.getContextMenuFunction());
         $("#tabChangeLength").click(function () { that.mode = MouseMode.CHANGE_LENGTH; });
-        // 	function(event) {
-        // 	var frame = that.frameHandler.getFrame();
-        // 	var node = that.getProximityNode(that.getMousePosition(event), frame);
-        // 	if (node != null) {
-        // 		$("#contextMenu").show().css("left", event.clientX).css("top", event.clientY);
-        // 		$("#tabDetach").off().click(function() {
-        // 		});
-        // 		$("#tabChangeLength").off().click(function() {
-        // 			$("#contextMenu").hide();
-        // 			let xOffset = node.pivot.x;
-        // 			let yOffset = node.pivot.y;
-        // 			var changeLength = that.$canvas.mousemove(function(event) {
-        // 				var position = that.getMousePosition(event);
-        // 				console.log(position.x, position.y);
-        // 				node.node.setAlpha(Math.atan2(-position.x + xOffset, -position.y + yOffset) - node.alpha, frame);
-        // 				node.node.setLength(position.distanceTo(new THREE.Vector2(xOffset, yOffset)));
-        // 				node.node.draw(frame);
-        // 				that.renderer.update();
-        // 			});
-        // 			that.$canvas.click(function() {
-        // 				that.$canvas.unbind("mousemove");
-        // 			})
-        // 		});
-        // 		$("#tabAddLink").off().click(function() {
-        // 			var newNode = new Node_(60, 0);
-        // 			node.node.addChild(newNode);
-        // 			newNode.addVisual(new Limb(60), new Limb(60, true));
-        // 		});
-        // 	}
-        // 	return false; // supress the native manu;
-        // });
         this.$canvas.click(function () {
             $("#contextMenu").hide();
         });
-        //this.$canvas.mousemove(function(e) {
-        //	console.log(e.offsetX - 1280 / 2, e.offsetY - 720 / 2)
-        //})
     }
+    MouseHandler.prototype.setCanvasSize = function (size) {
+        this.resolution = size;
+    };
     MouseHandler.prototype.getProximityNode = function (position, frame) {
         var figures = this.controller.getProject().getFigures();
         var retNode = null;
@@ -72,7 +42,7 @@ var MouseHandler = (function () {
         return retNode;
     };
     MouseHandler.prototype.getMousePosition = function (event) {
-        return new THREE.Vector2(event.offsetX - 1280 / 2, event.offsetY - 720 / 2);
+        return new THREE.Vector2(event.offsetX - this.resolution[0] / 2, event.offsetY - this.resolution[1] / 2);
     };
     MouseHandler.prototype.getMouseMoveFunction = function () {
         var that = this;
@@ -115,6 +85,7 @@ var MouseHandler = (function () {
                         that.activeNode = node;
                         that.mode = node.node.isRoot() ? MouseMode.MOVE_FIGURE : MouseMode.MOVE_LIMB;
                         that.activeNode.node.getRoot().manifest(frame);
+                        that.controller.getTimelineHandler().updateFrame(frame);
                     }
                     return;
                 case MouseMode.CHANGE_LENGTH:

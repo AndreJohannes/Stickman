@@ -6,11 +6,13 @@ class Project {
 	private name: string;
 	private figures: IFigure[];
 	private images: string[];
+	private size: number[];
 
-	constructor(name: string) {
+	constructor(name: string, size = [1280, 720]) {
 		this.name = name;
 		this.figures = [];
 		this.images = [];
+		this.size = size;
 	}
 
 	public setName(name: string) {
@@ -29,12 +31,16 @@ class Project {
 		return this.figures;
 	}
 
-	public addImage(image: string){
+	public addImage(image: string) {
 		this.images.push(image);
 	}
 
-	public getImages(): string[]{
+	public getImages(): string[] {
 		return this.images;
+	}
+
+	public getSize(): number[] {
+		return this.size;
 	}
 
 	public serialize(): Object {
@@ -42,7 +48,7 @@ class Project {
 		for (var figure of this.figures) {
 			figures.push(figure.serialize());
 		}
-		return { "name": this.name, "figures": figures, "images": this.images };
+		return { "name": this.name, "figures": figures, "images": this.images, "size": this.size };
 	}
 
 	static deserialize(input: string): Project {
@@ -50,7 +56,8 @@ class Project {
 		var projectName = json["name"];
 		var figures = json["figures"];
 		var images = json["images"];
-		var project = new Project(projectName);
+		var size = json["size"];
+		var project = new Project(projectName, size);
 		project.images = images;
 		$.each(figures, function(index, figure) { project.figures.push(GenericFigure.deserialize(figure)) });
 		return project;

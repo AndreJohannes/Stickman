@@ -26,9 +26,10 @@ class CanvasResizer {
 	}
 
 	public expand() {
-		this.$verticalSplit.splitPane("lastComponentSize", 1300);
-		this.$horizontalSplit.splitPane("firstComponentSize", 721);
-		this.$verticalSplit.splitPane("lastComponentSize", 1280);
+		let $canvas = $("canvas");
+		this.$verticalSplit.splitPane("lastComponentSize", $canvas.width()+20);
+		this.$horizontalSplit.splitPane("firstComponentSize", $canvas.height()+1);
+		this.$verticalSplit.splitPane("lastComponentSize", $canvas.width());
 	}
 
 }
@@ -69,33 +70,37 @@ class Sticky {
 		let $download = $("#btnDownload");
 
 		let that = this;
-		this.update();	
+		this.update();
 		let $canvas = $(this.renderer.getDom());
 
 		var activeNode = null;
 		$frame.append($canvas);
 		$('div.split-pane').splitPane();
-		//roots[0].draw(1);
+		this.resizer.expand();
 		this.renderer.update();
 	}
 
 	public getProject(): Project { return this.project };
 	public getRenderer(): GLRenderer { return this.renderer };
 	public getFrameHandler(): FrameHandler { return this.frameHandler };
+	public getTimelineHandler(): TimelineHandler { return this.timelineHandler };
 	public getPlayer(): Player { return this.player };
 	public getResizer(): CanvasResizer { return this.resizer };
 	public getDownloader(): Download { return this.download };
+	public setProject(project: Project) { this.project = project; }
 
 	public update() {
 		this.imageHandler.update();
 		this.timelineHandler.update();
+		this.renderer.resize(this.project.getSize());
+		this.mouseHandler.setCanvasSize(this.project.getSize());
 		this.renderer.clearScene();
 		let that = this;
 		$.each(this.project.getFigures(), function(index, figure) { that.renderer.addObject(figure.getVisual()); that.renderer.addObject(figure.getPhantom()); })
 		this.draw();
 	}
 
-	public updateFrame(frame: number){
+	public updateFrame(frame: number) {
 		this.timelineHandler.setFrame(frame);
 		this.frameHandler.setFrame(frame);
 		this.draw();

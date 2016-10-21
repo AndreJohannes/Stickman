@@ -62,7 +62,11 @@ class Stickman implements IFigure {
 		return this.name
 	}
 
-	public serialize(): FigureWrapped{
+	public setName(name: string) {
+		this.name = name;
+	}
+
+	public serialize(): FigureWrapped {
 		let figure = new FigureWrapped();
 		figure.name = this.name;
 		figure.root = this.root.serialize();

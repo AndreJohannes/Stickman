@@ -19,6 +19,8 @@ interface IFigure {
 
 	getName(): string;
 
+	setName(name: string);
+
 }
 
 class GenericFigure implements IFigure {
@@ -40,6 +42,10 @@ class GenericFigure implements IFigure {
 
 	public getName(): string {
 		return this.name;
+	}
+
+	public setName(name: string){
+		this.name= name;
 	}
 
 	public serialize(): FigureWrapped {

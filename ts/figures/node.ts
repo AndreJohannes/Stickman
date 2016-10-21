@@ -4,10 +4,11 @@
 class Node_ {
 
 	private _isRoot: Boolean;
-	private position: FSArray<THREE.Vector2>;
 	private parent_: Node_;
-	private length: number;
+	private position: FSArray<THREE.Vector2>;
+	private invisible: FSArray<boolean>;
 	private alpha: FSArray<number>;
+	private length: number;
 	private children: Node_[] = [];
 	private visual: Visual;
 
@@ -21,6 +22,7 @@ class Node_ {
 			this._isRoot = true;
 			this.alpha = null;
 			this.visual = new Visual();
+			this.invisible = new FSArray<boolean>(false);
 		} else {
 			this.length = firstArg;
 			this.alpha = new FSArray<number>(secondArg);
@@ -45,6 +47,8 @@ class Node_ {
 
 	public draw(frame: number) {
 		if (this._isRoot) {
+			this.visual.getPrimary().visible = !this.invisible.get(frame);
+			this.visual.getSecondary().visible = !this.invisible.get(frame - 1);
 			var position = this.position.get(frame);
 			this.visual.position(position.x, -position.y);
 			position = this.position.get(frame - 1 > 0 ? frame - 1 : 1);
@@ -89,8 +93,8 @@ class Node_ {
 		}, null);
 	}
 
-	public release(frame: number){
-		this.applyToTree(function(){
+	public release(frame: number) {
+		this.applyToTree(function() {
 			if (this._isRoot)
 				this.position.clear(frame);
 			else
@@ -98,7 +102,7 @@ class Node_ {
 		}, null);
 	}
 
-	public delete(){
+	public delete() {
 		// TODO: Implement the function
 		//this.parent_.children.
 	}
@@ -159,6 +163,8 @@ class Node_ {
 
 	private _getProximityNodes(radius: number, alpha: number, frame: number,
 								position: THREE.Vector2, anchor_position: THREE.Vector2) {
+		if (this._isRoot && this.invisible.get(frame))
+			return null;
 		let beta = this._isRoot ? 0 : alpha + this.alpha.get(frame);
 		let pos = this._isRoot ? this.position.get(frame) : new THREE.Vector2(-Math.sin(beta) * this.length, -Math.cos(beta) * this.length);
 		let distance = position.distanceTo(pos);
@@ -183,15 +189,15 @@ class Node_ {
 		return retValue;
 	}
 
-	private _getPosition(frame: number){
-		if(!this._isRoot){
+	private _getPosition(frame: number) {
+		if (!this._isRoot) {
 			var parent = this.parent_._getPosition(frame);
 			var alpha = parent.alpha + this.alpha.get(frame);
-			var x =	parent.x - Math.sin(alpha)*this.length; 
-			var y = parent.y - Math.cos(alpha)*this.length;
-			return {x: x , y: y, alpha: alpha}
+			var x = parent.x - Math.sin(alpha) * this.length;
+			var y = parent.y - Math.cos(alpha) * this.length;
+			return { x: x, y: y, alpha: alpha }
 		}
-		return {x: this.position.get(frame).x, y: this.position.get(frame).y, alpha : 0}
+		return { x: this.position.get(frame).x, y: this.position.get(frame).y, alpha: 0 }
 	}
 
 	private _addVisual(visual: Visual) {
@@ -206,6 +212,7 @@ class Node_ {
 		let retObject = {};
 		retObject["isRoot"] = this._isRoot;
 		retObject["position"] = this.position != null ? this.position.serialize() : null;
+		retObject["invisible"] = this.invisible != null ? this.invisible.serialize() : null;
 		retObject["length"] = this.length;
 		retObject["alpha"] = this.alpha != null ? this.alpha.serialize() : null;
 		retObject["visual"] = this.visual.serialize();
@@ -222,6 +229,7 @@ class Node_ {
 		this.visual = Visual.deserialize(object["visual"]);
 		this.alpha = FSArray.deserialize<number>(object["alpha"]);
 		this.position = FSArray.deserialize<THREE.Vector2>(object["position"]);
+		this.invisible = FSArray.deserialize<boolean>(this.position != null && object["invisible"] == null ? [false] : object["invisible"]);
 		for (var child of object["children"]) {
 			let childNode = new Node_(child, this);
 			this.addChild(childNode);
@@ -260,7 +268,7 @@ class FSArray<T>{
 		return this.array[i] != null
 	}
 
-	public clear(i: number){
+	public clear(i: number) {
 		this.array[i] = null;
 	}
 

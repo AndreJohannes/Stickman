@@ -22,6 +22,9 @@ var Background = (function () {
     Background.prototype.getName = function () {
         return this.name;
     };
+    Background.prototype.setName = function (name) {
+        this.name = name;
+    };
     Background.prototype.serialize = function () {
         var figure = new FigureWrapped();
         figure.name = this.name;

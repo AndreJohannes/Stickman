@@ -14,6 +14,7 @@ var Node_ = (function () {
             this._isRoot = true;
             this.alpha = null;
             this.visual = new Visual();
+            this.invisible = new FSArray(false);
         }
         else {
             this.length = firstArg;
@@ -37,6 +38,8 @@ var Node_ = (function () {
     };
     Node_.prototype.draw = function (frame) {
         if (this._isRoot) {
+            this.visual.getPrimary().visible = !this.invisible.get(frame);
+            this.visual.getSecondary().visible = !this.invisible.get(frame - 1);
             var position = this.position.get(frame);
             this.visual.position(position.x, -position.y);
             position = this.position.get(frame - 1 > 0 ? frame - 1 : 1);
@@ -136,6 +139,8 @@ var Node_ = (function () {
         this.visual.deactivate();
     };
     Node_.prototype._getProximityNodes = function (radius, alpha, frame, position, anchor_position) {
+        if (this._isRoot && this.invisible.get(frame))
+            return null;
         var beta = this._isRoot ? 0 : alpha + this.alpha.get(frame);
         var pos = this._isRoot ? this.position.get(frame) : new THREE.Vector2(-Math.sin(beta) * this.length, -Math.cos(beta) * this.length);
         var distance = position.distanceTo(pos);
@@ -182,6 +187,7 @@ var Node_ = (function () {
         var retObject = {};
         retObject["isRoot"] = this._isRoot;
         retObject["position"] = this.position != null ? this.position.serialize() : null;
+        retObject["invisible"] = this.invisible != null ? this.invisible.serialize() : null;
         retObject["length"] = this.length;
         retObject["alpha"] = this.alpha != null ? this.alpha.serialize() : null;
         retObject["visual"] = this.visual.serialize();
@@ -199,6 +205,7 @@ var Node_ = (function () {
         this.visual = Visual.deserialize(object["visual"]);
         this.alpha = FSArray.deserialize(object["alpha"]);
         this.position = FSArray.deserialize(object["position"]);
+        this.invisible = FSArray.deserialize(this.position != null && object["invisible"] == null ? [false] : object["invisible"]);
         for (var _i = 0, _a = object["children"]; _i < _a.length; _i++) {
             var child = _a[_i];
             var childNode = new Node_(child, this);

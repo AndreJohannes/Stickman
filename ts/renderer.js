@@ -2,22 +2,15 @@
 /// <reference path="./visual/primitives/limb.ts" />
 var GLRenderer = (function () {
     function GLRenderer() {
-        this.resolution = [1280, 720];
+        this.resolution = [800, 600]; //[1280, 720]
         var that = this;
         this.scene = new THREE.Scene();
         this.camera = new THREE.OrthographicCamera(-this.resolution[0] / 2, this.resolution[0] / 2, this.resolution[1] / 2, -this.resolution[1] / 2);
         this.camera.position.z = 1024 / 2;
-        var geometry = new THREE.PlaneGeometry(1280, 720); //THREE.BoxGeometry( 200, 1024, 200 );
+        var geometry = new THREE.PlaneGeometry(4096, 4096); //THREE.BoxGeometry( 200, 1024, 200 );
         var material = new THREE.MeshBasicMaterial({ color: 0xFFFFFF });
         this.background = new THREE.Mesh(geometry, material);
         this.scene.add(this.background);
-        //var object1 = (new Limb()).getObject();	
-        //var object2 = (new Limb()).getObject();
-        //object2.position.set(0,50,0);
-        //object2.rotation.set(0,0,.2);
-        //object1.rotation.set(0,0,.55);
-        //object1.add(object2);
-        //this.scene.add(object1);
         this.renderer = new THREE.WebGLRenderer({ preserveDrawingBuffer: true, alpha: false, antialias: false });
         //this.renderer.setClearColor(0xffffff, 0)
         this.renderer.setSize(this.resolution[0], this.resolution[1]);
@@ -35,8 +28,13 @@ var GLRenderer = (function () {
     GLRenderer.prototype.getDom = function () {
         return this.renderer.domElement;
     };
-    GLRenderer.prototype.resize = function (x, y) {
-        this.renderer.setSize(x, y);
+    GLRenderer.prototype.resize = function (size) {
+        if (this.resolution[0] != size[0] || this.resolution[1] != size[1]) {
+            this.resolution = size;
+            this.camera = new THREE.OrthographicCamera(-this.resolution[0] / 2, this.resolution[0] / 2, this.resolution[1] / 2, -this.resolution[1] / 2);
+            this.camera.position.z = 1024 / 2;
+            this.renderer.setSize(size[0], size[1]);
+        }
     };
     GLRenderer.prototype.animate = function () {
         GLRenderer._animate(this)();
