@@ -3,6 +3,7 @@
 var Node_ = (function () {
     function Node_(firstArg, secondArg) {
         this.children = [];
+        this.length = 100;
         if (typeof firstArg == "string") {
             this.deserialize(JSON.parse(firstArg));
         }
@@ -13,33 +14,31 @@ var Node_ = (function () {
             this.position = new FSArray(firstArg);
             this._isRoot = true;
             this.alpha = null;
-            this.visual = new Visual();
+            this.visual = new Visual(0);
             this.invisible = new FSArray(false);
         }
         else {
             this.length = firstArg;
             this.alpha = new FSArray(secondArg);
             this._isRoot = false;
-            this.visual = new Visual();
+            this.visual = new Visual(this.length);
             this.visual.rotate(secondArg);
-            this.visual.setDotPosition(0, this.length);
         }
     }
     Node_.prototype.isRoot = function () {
         return this._isRoot;
     };
-    Node_.prototype.attachFigure = function (node) {
-        if (!node._isRoot)
-            throw new Error("need to attach a root node");
-        for (var _i = 0, _a = node.children; _i < _a.length; _i++) {
+    Node_.prototype.attachFigure = function (figure) {
+        var root = figure.getRoot();
+        for (var _i = 0, _a = root.children; _i < _a.length; _i++) {
             var child = _a[_i];
             this.addChild(child);
         }
     };
     Node_.prototype.draw = function (frame) {
         if (this._isRoot) {
-            this.visual.getPrimary().visible = !this.invisible.get(frame);
-            this.visual.getSecondary().visible = !this.invisible.get(frame - 1);
+            //this.visual.getPrimary().visible = !this.invisible.get(frame);
+            //this.visual.getSecondary().visible = !this.invisible.get(frame - 1);
             var position = this.position.get(frame);
             this.visual.position(position.x, -position.y);
             position = this.position.get(frame - 1 > 0 ? frame - 1 : 1);
@@ -61,7 +60,7 @@ var Node_ = (function () {
             child.visual.position(0, length, true);
             this.length = length;
         }
-        this.visual.setLength(length);
+        //this.visual.setLength(length);
     };
     Node_.prototype.addChild = function (node) {
         this.children.push(node);
@@ -178,10 +177,6 @@ var Node_ = (function () {
     };
     Node_.prototype._addVisual = function (visual) {
         this.visual.add(visual);
-        if (!this._isRoot) {
-            visual.position(0, this.length);
-            visual.position(0, this.length, true);
-        }
     };
     Node_.prototype._serialize = function () {
         var retObject = {};

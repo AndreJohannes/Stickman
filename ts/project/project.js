@@ -29,6 +29,23 @@ var Project = (function () {
     Project.prototype.getSize = function () {
         return this.size;
     };
+    Project.prototype.findFigure = function (root) {
+        if (!root.isRoot())
+            throw new Error("Node is not a root");
+        for (var _i = 0, _a = this.figures; _i < _a.length; _i++) {
+            var figure = _a[_i];
+            if (figure.getRoot() == root)
+                return figure;
+        }
+        return null;
+    };
+    Project.prototype.removeFigure = function (figure) {
+        var index = this.figures.indexOf(figure);
+        if (index >= 0) {
+            this.figures.splice(index, 1);
+            delete figure;
+        }
+    };
     Project.prototype.serialize = function () {
         var figures = [];
         for (var _i = 0, _a = this.figures; _i < _a.length; _i++) {

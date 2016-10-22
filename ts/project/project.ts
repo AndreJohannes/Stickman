@@ -43,6 +43,23 @@ class Project {
 		return this.size;
 	}
 
+	public findFigure(root: Node_){
+		if(!root.isRoot())
+			throw new Error("Node is not a root");
+		for(var figure of this.figures){
+			if(figure.getRoot()==root)
+				return figure;
+		}
+		return null;
+	}
+
+	public removeFigure(figure: IFigure){
+		let index = this.figures.indexOf(figure);
+		if(index >=0){
+			this.figures.splice(index, 1);
+		}
+	}
+
 	public serialize(): Object {
 		var figures = [];
 		for (var figure of this.figures) {

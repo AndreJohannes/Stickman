@@ -2,20 +2,21 @@
 /// <reference path="./factory.ts" />
 /// <reference path="../textures.ts" />
 
-class Limb implements IPrimitives {
+class VLink extends THREE.Object3D {
 
 	private geometry: THREE.Geometry;
 	private object: THREE.Object3D = new THREE.Object3D();
-	private width: number = 9;
+	private width: number = 9;//9;
 	private length: number;
 	private phantom: boolean;
 
 	constructor(length: number, phantom?: boolean) {
+		super();
 		this.phantom = phantom != null ? phantom : false;
 		this.length = length;
 		let texture = TextureHandler.Stickman;
-		texture.minFilter = THREE.LinearFilter;
-		//texture.magFilter= THREE.LinearFilter;
+		texture.minFilter = THREE.LinearFilter;//MipMapLinearFilter;
+		texture.magFilter= THREE.LinearFilter;
 		let material = new THREE.MeshBasicMaterial({
 			color: 0xffffff,
 			map: texture,
@@ -26,12 +27,9 @@ class Limb implements IPrimitives {
 		let mesh = new THREE.Mesh(this.geometry, material);
 		mesh.position.set(-this.width / 2, 0, 0);
 		mesh.renderOrder = this.phantom ? -1 : 0;
-		this.object.add(mesh);
+		super.add(mesh);
 	}
 
-	public getObject(): THREE.Object3D {
-		return this.object;
-	}
 
 	public setLength(length: number) {
 		this.geometry.vertices[4].setY(length);

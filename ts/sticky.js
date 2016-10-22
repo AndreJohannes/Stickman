@@ -56,6 +56,19 @@ var Sticky = (function () {
         $('div.split-pane').splitPane();
         this.resizer.expand();
         this.renderer.update();
+        setTimeout(function () {
+            var texture = TextureHandler.Man;
+            var rectTorso = new Rect(6, 13, 33, 95, texture);
+            rectTorso.setPivot(new THREE.Vector2(15, 82));
+            rectTorso.setAnchor(new THREE.Vector2(17, 24));
+            that.project.addFigure(new MonadFigure(rectTorso));
+            that.update();
+            var rectLeg = new Rect(0, 100, 29, 168, texture);
+            rectLeg.setPivot(new THREE.Vector2(15, 112));
+            rectLeg.setAnchor(new THREE.Vector2(18.5, 159.5));
+            that.project.addFigure(new MonadFigure(rectLeg));
+            that.update();
+        }, 1000);
     }
     Sticky.prototype.getProject = function () { return this.project; };
     ;

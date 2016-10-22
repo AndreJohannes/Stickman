@@ -1,6 +1,6 @@
 /// <reference path="./node.ts" />
 /// <reference path="./ifigure.ts" />
-/// <reference path="../visual/primitives/limb.ts" />
+/// <reference path="../visual/primitives/link.ts" />
 /// <reference path="../visual/primitives/head.ts" />
 var Stickman = (function () {
     function Stickman(name) {
@@ -28,15 +28,15 @@ var Stickman = (function () {
         leg_2.addChild(shin_2);
         arm_1.addChild(lower_arm_1);
         arm_2.addChild(lower_arm_2);
-        torso.addVisual(new Limb(60), new Limb(60, true));
-        leg_1.addVisual(new Limb(50), new Limb(50, true));
-        leg_2.addVisual(new Limb(50), new Limb(50, true));
-        shin_1.addVisual(new Limb(50), new Limb(50, true));
-        shin_2.addVisual(new Limb(50), new Limb(50, true));
-        arm_1.addVisual(new Limb(40), new Limb(40, true));
-        arm_2.addVisual(new Limb(40), new Limb(40, true));
-        lower_arm_1.addVisual(new Limb(40), new Limb(40, true));
-        lower_arm_2.addVisual(new Limb(40), new Limb(40, true));
+        //torso.addVisual(new Limb(60), new Limb(60, true));
+        //leg_1.addVisual(new Limb(50), new Limb(50, true));
+        //leg_2.addVisual(new Limb(50), new Limb(50, true));
+        //shin_1.addVisual(new Limb(50), new Limb(50, true));
+        //shin_2.addVisual(new Limb(50), new Limb(50, true));
+        //arm_1.addVisual(new Limb(40), new Limb(40, true));
+        //arm_2.addVisual(new Limb(40), new Limb(40, true));
+        //lower_arm_1.addVisual(new Limb(40), new Limb(40, true));
+        //lower_arm_2.addVisual(new Limb(40), new Limb(40, true));
         head.addVisual(new Head(35), new Head(35, true));
         this.root = root;
     }

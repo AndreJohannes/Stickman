@@ -24,6 +24,8 @@ var MenuHandler = (function () {
         this.$importImage.click(function () { that.importImage(); });
         this.$addStickman = $("#mnuAddStickman");
         this.$addStickman.click(function () { that.controller.getProject().addFigure(new Stickman("Stickman")); that.controller.update(); });
+        this.$addMan = $("#mnuAddMan");
+        this.$addMan.click(function () { that.controller.getProject().addFigure(new Man("Man")); that.controller.update(); });
         $('[data-submenu]')["submenupicker"]();
     }
     MenuHandler.prototype.export = function () {

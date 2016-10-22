@@ -1,5 +1,4 @@
 /// <reference path="./definitions/three.d.ts" />
-/// <reference path="./visual/primitives/limb.ts" />
 var GLRenderer = (function () {
     function GLRenderer() {
         this.resolution = [800, 600]; //[1280, 720]

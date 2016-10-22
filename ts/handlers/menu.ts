@@ -16,6 +16,7 @@ class MenuHandler {
 	private $import: JQuery;
 	private $importImage: JQuery;
 	private $addStickman: JQuery;
+	private $addMan: JQuery;
 	private controller: Sticky;
 	private projectStorage: ProjectStorage;
 
@@ -43,6 +44,9 @@ class MenuHandler {
 
 		this.$addStickman = $("#mnuAddStickman");
 		this.$addStickman.click(function() { that.controller.getProject().addFigure(new Stickman("Stickman")); that.controller.update(); });
+
+		this.$addMan = $("#mnuAddMan");
+		this.$addMan.click(function() { that.controller.getProject().addFigure(new Man("Man")); that.controller.update(); });
 
 		$('[data-submenu]')["submenupicker"]();
 

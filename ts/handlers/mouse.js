@@ -9,6 +9,7 @@ var MouseMode;
     MouseMode[MouseMode["MOVE_FIGURE"] = 1] = "MOVE_FIGURE";
     MouseMode[MouseMode["MOVE_LIMB"] = 2] = "MOVE_LIMB";
     MouseMode[MouseMode["CHANGE_LENGTH"] = 3] = "CHANGE_LENGTH";
+    MouseMode[MouseMode["ATTACH_TO_NODE"] = 4] = "ATTACH_TO_NODE";
 })(MouseMode || (MouseMode = {}));
 var MouseHandler = (function () {
     function MouseHandler(controller) {
@@ -23,7 +24,8 @@ var MouseHandler = (function () {
         this.$canvas.mousemove(this.getMouseMoveFunction());
         this.$canvas.mouseup(this.getMouseUpFunction());
         this.$canvas.on("contextmenu", this.getContextMenuFunction());
-        $("#tabChangeLength").click(function () { that.mode = MouseMode.CHANGE_LENGTH; });
+        $("#tabChangeLength").click(function () { that.mode = MouseMode.CHANGE_LENGTH; $("#contextMenu").hide(); });
+        $("#tabAttach").click(function () { that.mode = MouseMode.ATTACH_TO_NODE; $("#contextMenu").hide(); });
         this.$canvas.click(function () {
             $("#contextMenu").hide();
         });
@@ -31,12 +33,17 @@ var MouseHandler = (function () {
     MouseHandler.prototype.setCanvasSize = function (size) {
         this.resolution = size;
     };
-    MouseHandler.prototype.getProximityNode = function (position, frame) {
+    MouseHandler.prototype.getProximityNode = function (position, frame, excludeFigure) {
+        if (excludeFigure === void 0) { excludeFigure = null; }
         var figures = this.controller.getProject().getFigures();
         var retNode = null;
         for (var _i = 0, figures_1 = figures; _i < figures_1.length; _i++) {
             var figure = figures_1[_i];
+            if (figure == excludeFigure)
+                continue;
             var node = figure.getRoot().getProximityNodes(frame, 5, position);
+            if (node != null)
+                node["figure"] = figure;
             retNode = node == null ? retNode : (retNode == null ? node : (retNode.distance > node.distance ? node : retNode));
         }
         return retNode;
@@ -59,6 +66,7 @@ var MouseHandler = (function () {
                 case MouseMode.MOVE_LIMB:
                     that.activeNode.node.setAlpha(Math.atan2(-x + xOffset, -y + yOffset) - that.activeNode.alpha, frame);
                     break;
+                case MouseMode.ATTACH_TO_NODE:
                 case MouseMode.MOVE_FIGURE:
                     that.activeNode.node.setPosition(x, y, frame);
                     break;
@@ -91,6 +99,17 @@ var MouseHandler = (function () {
                 case MouseMode.CHANGE_LENGTH:
                     that.mode = MouseMode.IDEL;
                     return;
+                case MouseMode.ATTACH_TO_NODE:
+                    var frame = that.controller.getFrameHandler().getFrame();
+                    var position = that.getMousePosition(event);
+                    var figure = that.activeNode["figure"];
+                    var node = that.getProximityNode(position, frame, figure);
+                    if (node != null) {
+                        node["node"].attachFigure(figure);
+                        that.controller.getProject().removeFigure(figure);
+                        that.controller.update();
+                        that.mode = MouseMode.IDEL;
+                    }
             }
         };
     };
@@ -113,6 +132,8 @@ var MouseHandler = (function () {
             if (node != null) {
                 $("#contextMenu").show().css("left", event.clientX).css("top", event.clientY);
                 that.activeNode = node;
+                var isRoot = node.node.isRoot();
+                $("#tabAttach").parent().removeClass().addClass(isRoot ? "" : "disabled");
             }
             return false;
         };

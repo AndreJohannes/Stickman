@@ -8,7 +8,8 @@ enum MouseMode {
 	IDEL,
 	MOVE_FIGURE,
 	MOVE_LIMB,
-	CHANGE_LENGTH
+	CHANGE_LENGTH,
+	ATTACH_TO_NODE
 }
 
 
@@ -37,29 +38,33 @@ class MouseHandler {
 
 		this.$canvas.on("contextmenu", this.getContextMenuFunction());
 
-		$("#tabChangeLength").click(function() { that.mode = MouseMode.CHANGE_LENGTH; });
+		$("#tabChangeLength").click(function() { that.mode = MouseMode.CHANGE_LENGTH; $("#contextMenu").hide() });
+		$("#tabAttach").click(function() { that.mode = MouseMode.ATTACH_TO_NODE; $("#contextMenu").hide() });
 
 		this.$canvas.click(function() {
 			$("#contextMenu").hide();
 		})
 	}
 
-	public setCanvasSize(size: number[]){
+	public setCanvasSize(size: number[]) {
 		this.resolution = size;
 	}
 
-	private getProximityNode(position: THREE.Vector2, frame: number) {
+	private getProximityNode(position: THREE.Vector2, frame: number, excludeFigure = null) {
 		var figures = this.controller.getProject().getFigures();
 		var retNode = null;
 		for (var figure of figures) {
+			if (figure == excludeFigure)
+				continue;
 			var node = figure.getRoot().getProximityNodes(frame, 5, position);
+			if (node != null) node["figure"] = figure;
 			retNode = node == null ? retNode : (retNode == null ? node : (retNode.distance > node.distance ? node : retNode));
 		}
 		return retNode;
 	}
 
 	private getMousePosition(event): THREE.Vector2 {
-		return new THREE.Vector2(event.offsetX - this.resolution[0]/2, event.offsetY - this.resolution[1]/2);
+		return new THREE.Vector2(event.offsetX - this.resolution[0] / 2, event.offsetY - this.resolution[1] / 2);
 	}
 
 	private getMouseMoveFunction() {
@@ -76,6 +81,7 @@ class MouseHandler {
 				case MouseMode.MOVE_LIMB:
 					that.activeNode.node.setAlpha(Math.atan2(-x + xOffset, -y + yOffset) - that.activeNode.alpha, frame);
 					break;
+				case MouseMode.ATTACH_TO_NODE:
 				case MouseMode.MOVE_FIGURE:
 					that.activeNode.node.setPosition(x, y, frame)
 					break;
@@ -109,6 +115,17 @@ class MouseHandler {
 				case MouseMode.CHANGE_LENGTH:
 					that.mode = MouseMode.IDEL;
 					return;
+				case MouseMode.ATTACH_TO_NODE:
+					var frame: number = that.controller.getFrameHandler().getFrame();
+					var position: THREE.Vector2 = that.getMousePosition(event);
+					var figure: IFigure = that.activeNode["figure"];
+					var node = that.getProximityNode(position, frame, figure);
+					if (node != null) {
+						node["node"].attachFigure(figure);
+						that.controller.getProject().removeFigure(figure);
+						that.controller.update();
+						that.mode = MouseMode.IDEL;
+					}
 			}
 		}
 	}
@@ -133,6 +150,8 @@ class MouseHandler {
 			if (node != null) {
 				$("#contextMenu").show().css("left", event.clientX).css("top", event.clientY);
 				that.activeNode = node;
+				let isRoot = node.node.isRoot();
+				$("#tabAttach").parent().removeClass().addClass(isRoot ? "" : "disabled");
 			}
 			return false;
 		}

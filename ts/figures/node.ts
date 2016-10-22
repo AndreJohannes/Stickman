@@ -8,9 +8,9 @@ class Node_ {
 	private position: FSArray<THREE.Vector2>;
 	private invisible: FSArray<boolean>;
 	private alpha: FSArray<number>;
-	private length: number;
 	private children: Node_[] = [];
 	private visual: Visual;
+	private length: number = 100;
 
 	constructor(firstArg?: any, secondArg?: any) { // TypeScripts way of constructor overloading
 		if (typeof firstArg == "string") {
@@ -21,15 +21,15 @@ class Node_ {
 			this.position = new FSArray<THREE.Vector2>(firstArg);
 			this._isRoot = true;
 			this.alpha = null;
-			this.visual = new Visual();
+			this.visual = new Visual(0);
 			this.invisible = new FSArray<boolean>(false);
 		} else {
 			this.length = firstArg;
 			this.alpha = new FSArray<number>(secondArg);
 			this._isRoot = false;
-			this.visual = new Visual();
+			this.visual = new Visual(this.length);
 			this.visual.rotate(secondArg);
-			this.visual.setDotPosition(0, this.length);
+			//this.visual.setDotPosition(0, this.length);
 		}
 	}
 
@@ -37,18 +37,17 @@ class Node_ {
 		return this._isRoot;
 	}
 
-	public attachFigure(node: Node_) {
-		if (!node._isRoot)
-			throw new Error("need to attach a root node");
-		for (var child of node.children) {
+	public attachFigure(figure: IFigure) {
+		var root = figure.getRoot();
+		for (var child of root.children) {
 			this.addChild(child);
 		}
 	}
 
 	public draw(frame: number) {
 		if (this._isRoot) {
-			this.visual.getPrimary().visible = !this.invisible.get(frame);
-			this.visual.getSecondary().visible = !this.invisible.get(frame - 1);
+			//this.visual.getPrimary().visible = !this.invisible.get(frame);
+			//this.visual.getSecondary().visible = !this.invisible.get(frame - 1);
 			var position = this.position.get(frame);
 			this.visual.position(position.x, -position.y);
 			position = this.position.get(frame - 1 > 0 ? frame - 1 : 1);
@@ -69,7 +68,7 @@ class Node_ {
 			child.visual.position(0, length, true);
 			this.length = length;
 		}
-		this.visual.setLength(length);
+		//this.visual.setLength(length);
 	}
 
 	public addChild(node: Node_) {
@@ -114,10 +113,10 @@ class Node_ {
 	}
 
 	public addVisual(object: IPrimitives, phantom: IPrimitives) {
-		if (this.parent_ != null && this.parent_.visual != null) {
-			this.visual.addPrimary(object);
-			this.visual.addSecondary(phantom);
-		}
+			if (this.parent_ != null && this.parent_.visual != null) {
+				this.visual.addPrimary(object);
+				this.visual.addSecondary(phantom);
+			}
 	}
 
 	public getVisual(secondary?: Boolean): THREE.Object3D {
@@ -202,10 +201,6 @@ class Node_ {
 
 	private _addVisual(visual: Visual) {
 		this.visual.add(visual);
-		if (!this._isRoot) {
-			visual.position(0, this.length);
-			visual.position(0, this.length, true);
-		}
 	}
 
 	private _serialize(): Object {

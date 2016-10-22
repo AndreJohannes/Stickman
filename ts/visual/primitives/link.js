@@ -1,15 +1,22 @@
 /// <reference path="../../definitions/three.d.ts" />
 /// <reference path="./factory.ts" />
 /// <reference path="../textures.ts" />
-var Limb = (function () {
-    function Limb(length, phantom) {
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var VLink = (function (_super) {
+    __extends(VLink, _super);
+    function VLink(length, phantom) {
+        _super.call(this);
         this.object = new THREE.Object3D();
-        this.width = 9;
+        this.width = 9; //9;
         this.phantom = phantom != null ? phantom : false;
         this.length = length;
         var texture = TextureHandler.Stickman;
-        texture.minFilter = THREE.LinearFilter;
-        //texture.magFilter= THREE.LinearFilter;
+        texture.minFilter = THREE.LinearFilter; //MipMapLinearFilter;
+        texture.magFilter = THREE.LinearFilter;
         var material = new THREE.MeshBasicMaterial({
             color: 0xffffff,
             map: texture,
@@ -19,22 +26,19 @@ var Limb = (function () {
         var mesh = new THREE.Mesh(this.geometry, material);
         mesh.position.set(-this.width / 2, 0, 0);
         mesh.renderOrder = this.phantom ? -1 : 0;
-        this.object.add(mesh);
+        _super.prototype.add.call(this, mesh);
     }
-    Limb.prototype.getObject = function () {
-        return this.object;
-    };
-    Limb.prototype.setLength = function (length) {
+    VLink.prototype.setLength = function (length) {
         this.geometry.vertices[4].setY(length);
         this.geometry.vertices[5].setY(length);
         this.geometry.vertices[6].setY(length + this.width / 2);
         this.geometry.vertices[7].setY(length + this.width / 2);
         this.geometry.verticesNeedUpdate = true;
     };
-    Limb.prototype.serialize = function () {
+    VLink.prototype.serialize = function () {
         return this._serialize();
     };
-    Limb.prototype.makeGeometry = function (phantom) {
+    VLink.prototype.makeGeometry = function (phantom) {
         var geometry = new THREE.Geometry();
         var wd = this.width;
         var lg = this.length;
@@ -69,8 +73,8 @@ var Limb = (function () {
         geometry.faceVertexUvs[0].push([vertexUvs7, vertexUvs6, vertexUvs5]);
         return geometry;
     };
-    Limb.prototype._serialize = function () {
+    VLink.prototype._serialize = function () {
         return { "name": "limb", "length": this.length, "phantom": this.phantom };
     };
-    return Limb;
-}());
+    return VLink;
+}(THREE.Object3D));
