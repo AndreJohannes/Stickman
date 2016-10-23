@@ -178,6 +178,22 @@ th {
     margin: 5px;
 }
 
-.timeline-highlight{
+.timeline-highlight {
     background-color: blue;
+}
+
+.pivotPoint {
+    background-color: red;
+    position: absolute;
+    z-index: 1000;
+    width: 10px;
+    height: 10px;
+}
+
+.anchorPoint {
+    background-color: blue;
+    position: absolute;
+    z-index: 1000;
+    width: 10px;
+    height: 10px;
 }
