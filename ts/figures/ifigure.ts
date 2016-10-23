@@ -68,7 +68,7 @@ class MonadFigure implements IFigure {
 	private root: Node_;
 	private name: string;
 
-	constructor(rect: Rect){
+	constructor(rect: Rect) {
 		let root: Node_ = new Node_(new THREE.Vector2(0, 0));
 		let monad: Node_ = new Node_(rect.getLength(), 0);
 		root.addChild(monad);
@@ -105,6 +105,44 @@ class MonadFigure implements IFigure {
 		return figure;
 	};
 
+}
+class PivotFigure implements IFigure {
+
+	private root: Node_;
+	private name: string;
+
+	constructor(root: Node_) {
+		this.root = root;
+		this.name = "Pivot";
+	}
+
+
+	public getVisual(): THREE.Object3D {
+		return this.root.getVisual();
+	}
+
+	public getPhantom(): THREE.Object3D {
+		return this.root.getVisual(true);
+	}
+
+	public getRoot(): Node_ {
+		return this.root;
+	}
+
+	public getName(): string {
+		return this.name;
+	}
+
+	public setName(name: string) {
+		this.name = name;
+	}
+
+	public serialize(): FigureWrapped {
+		let figure = new FigureWrapped();
+		figure.name = this.name;
+		figure.root = this.root.serialize();
+		return figure;
+	};
 
 }
 

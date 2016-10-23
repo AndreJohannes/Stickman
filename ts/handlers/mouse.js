@@ -10,6 +10,7 @@ var MouseMode;
     MouseMode[MouseMode["MOVE_LIMB"] = 2] = "MOVE_LIMB";
     MouseMode[MouseMode["CHANGE_LENGTH"] = 3] = "CHANGE_LENGTH";
     MouseMode[MouseMode["ATTACH_TO_NODE"] = 4] = "ATTACH_TO_NODE";
+    MouseMode[MouseMode["DETACH_FROM_NODE"] = 5] = "DETACH_FROM_NODE";
 })(MouseMode || (MouseMode = {}));
 var MouseHandler = (function () {
     function MouseHandler(controller) {
@@ -26,6 +27,7 @@ var MouseHandler = (function () {
         this.$canvas.on("contextmenu", this.getContextMenuFunction());
         $("#tabChangeLength").click(function () { that.mode = MouseMode.CHANGE_LENGTH; $("#contextMenu").hide(); });
         $("#tabAttach").click(function () { that.mode = MouseMode.ATTACH_TO_NODE; $("#contextMenu").hide(); });
+        $("#tabDetach").click(function (event) { that.mode = MouseMode.DETACH_FROM_NODE; that.activeNode = that.detachNode(that.activeNode, event); $("#contextMenu").hide(); });
         this.$canvas.click(function () {
             $("#contextMenu").hide();
         });
@@ -66,6 +68,7 @@ var MouseHandler = (function () {
                 case MouseMode.MOVE_LIMB:
                     that.activeNode.node.setAlpha(Math.atan2(-x + xOffset, -y + yOffset) - that.activeNode.alpha, frame);
                     break;
+                case MouseMode.DETACH_FROM_NODE:
                 case MouseMode.ATTACH_TO_NODE:
                 case MouseMode.MOVE_FIGURE:
                     that.activeNode.node.setPosition(x, y, frame);
@@ -110,6 +113,8 @@ var MouseHandler = (function () {
                         that.controller.update();
                         that.mode = MouseMode.IDEL;
                     }
+                case MouseMode.DETACH_FROM_NODE:
+                    that.mode = MouseMode.IDEL;
             }
         };
     };
@@ -134,9 +139,21 @@ var MouseHandler = (function () {
                 that.activeNode = node;
                 var isRoot = node.node.isRoot();
                 $("#tabAttach").parent().removeClass().addClass(isRoot ? "" : "disabled");
+                $("#tabDetach").parent().removeClass().addClass(!isRoot ? "" : "disabled");
             }
             return false;
         };
+    };
+    MouseHandler.prototype.detachNode = function (node, event) {
+        var position = this.getMousePosition(event);
+        var root = new Node_(position);
+        var frame = this.frameHandler.getFrame();
+        node.node.reattachToNode(root);
+        var pivotFigure = new PivotFigure(root);
+        this.controller.getProject().addFigure(pivotFigure);
+        root.setPosition(position.x, position.y, frame);
+        this.controller.update();
+        return { "node": root, "pivot": { x: 0, y: 0 } };
     };
     return MouseHandler;
 }());

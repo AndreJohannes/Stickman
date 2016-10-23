@@ -92,6 +92,12 @@ var Node_ = (function () {
         // TODO: Implement the function
         //this.parent_.children.
     };
+    Node_.prototype.reattachToNode = function (newNode) {
+        var children = this.parent_.children;
+        children.splice(children.indexOf(this), 1);
+        // Remark: apperently we do not need to detach the corresponding THREE.Object2D explicitly
+        newNode.addChild(this);
+    };
     Node_.prototype.serialize = function () {
         if (!this._isRoot)
             throw new Error("This method should only be called for the root Node");

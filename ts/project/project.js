@@ -43,7 +43,6 @@ var Project = (function () {
         var index = this.figures.indexOf(figure);
         if (index >= 0) {
             this.figures.splice(index, 1);
-            delete figure;
         }
     };
     Project.prototype.serialize = function () {

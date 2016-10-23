@@ -70,3 +70,32 @@ var MonadFigure = (function () {
     ;
     return MonadFigure;
 }());
+var PivotFigure = (function () {
+    function PivotFigure(root) {
+        this.root = root;
+        this.name = "Pivot";
+    }
+    PivotFigure.prototype.getVisual = function () {
+        return this.root.getVisual();
+    };
+    PivotFigure.prototype.getPhantom = function () {
+        return this.root.getVisual(true);
+    };
+    PivotFigure.prototype.getRoot = function () {
+        return this.root;
+    };
+    PivotFigure.prototype.getName = function () {
+        return this.name;
+    };
+    PivotFigure.prototype.setName = function (name) {
+        this.name = name;
+    };
+    PivotFigure.prototype.serialize = function () {
+        var figure = new FigureWrapped();
+        figure.name = this.name;
+        figure.root = this.root.serialize();
+        return figure;
+    };
+    ;
+    return PivotFigure;
+}());

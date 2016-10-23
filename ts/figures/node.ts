@@ -106,6 +106,13 @@ class Node_ {
 		//this.parent_.children.
 	}
 
+	public reattachToNode(newNode: Node_){
+		let children:Node_[] = this.parent_.children;
+		children.splice(children.indexOf(this),1);
+		// Remark: apperently we do not need to detach the corresponding THREE.Object2D explicitly
+		newNode.addChild(this);
+	}
+
 	public serialize(): Object {
 		if (!this._isRoot)
 			throw new Error("This method should only be called for the root Node");

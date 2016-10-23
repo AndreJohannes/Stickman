@@ -9,7 +9,8 @@ enum MouseMode {
 	MOVE_FIGURE,
 	MOVE_LIMB,
 	CHANGE_LENGTH,
-	ATTACH_TO_NODE
+	ATTACH_TO_NODE,
+	DETACH_FROM_NODE
 }
 
 
@@ -40,6 +41,7 @@ class MouseHandler {
 
 		$("#tabChangeLength").click(function() { that.mode = MouseMode.CHANGE_LENGTH; $("#contextMenu").hide() });
 		$("#tabAttach").click(function() { that.mode = MouseMode.ATTACH_TO_NODE; $("#contextMenu").hide() });
+		$("#tabDetach").click(function(event) { that.mode = MouseMode.DETACH_FROM_NODE; that.activeNode = that.detachNode(that.activeNode, event); $("#contextMenu").hide() });
 
 		this.$canvas.click(function() {
 			$("#contextMenu").hide();
@@ -81,6 +83,7 @@ class MouseHandler {
 				case MouseMode.MOVE_LIMB:
 					that.activeNode.node.setAlpha(Math.atan2(-x + xOffset, -y + yOffset) - that.activeNode.alpha, frame);
 					break;
+				case MouseMode.DETACH_FROM_NODE:
 				case MouseMode.ATTACH_TO_NODE:
 				case MouseMode.MOVE_FIGURE:
 					that.activeNode.node.setPosition(x, y, frame)
@@ -126,6 +129,8 @@ class MouseHandler {
 						that.controller.update();
 						that.mode = MouseMode.IDEL;
 					}
+				case MouseMode.DETACH_FROM_NODE:
+					that.mode = MouseMode.IDEL;
 			}
 		}
 	}
@@ -152,9 +157,22 @@ class MouseHandler {
 				that.activeNode = node;
 				let isRoot = node.node.isRoot();
 				$("#tabAttach").parent().removeClass().addClass(isRoot ? "" : "disabled");
+				$("#tabDetach").parent().removeClass().addClass(!isRoot ? "" : "disabled");
 			}
 			return false;
 		}
+	}
+
+	private detachNode(node, event) {
+		let position: THREE.Vector2 = this.getMousePosition(event);
+		let root = new Node_(position);
+		let frame = this.frameHandler.getFrame();
+		node.node.reattachToNode(root);
+		let pivotFigure: IFigure = new PivotFigure(root);
+		this.controller.getProject().addFigure(pivotFigure);
+		root.setPosition(position.x, position.y, frame);
+		this.controller.update();
+		return { "node": root, "pivot": { x: 0, y: 0 } };
 	}
 
 }
