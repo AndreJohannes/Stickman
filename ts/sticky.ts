@@ -82,7 +82,6 @@ class Sticky {
 		this.resizer.expand();
 		this.renderer.update();
 
-		
 	}
 
 	public getProject(): Project { return this.project };

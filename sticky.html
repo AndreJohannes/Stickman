@@ -59,24 +59,28 @@
                     <h4 class="modal-title" id="myModalLabel">New Project</h4>
                 </div>
                 <div class="modal-body">
-                    <div>
-                        Name: 
-                         <input type="text" />
+                    <div class="form-group">
+                        <label for="iptProjectName">Name:</label>
+                        <input id="iptProjectName" class="form-control" type="text" />
                     </div>
-                    <div>
-                        <div class="dropdown" id="divDpdSizes">
-                            <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
-                                Standard Sizes
-                                <span class="caret"></span></button>
-                            <ul class="dropdown-menu">
-                                <li><a>800x600</a></li>
-                                <li><a>1024x786</a></li>
-                                <li><a>1280x720</a></li>
-                            </ul>
-                        </div>
-                        <div id="divIptSizes">
-                            <input type="number" min="100"/>x
-                            <input type="number" min="100"/>
+                    <div class="form-group">
+                        <label>Size:</label>
+                        <div id="divSizes">
+                            <div class="dropdown" id="divDpdSizes">
+                                <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
+                                    Standard Sizes
+                                    <span class="caret"></span></button>
+                                <ul class="dropdown-menu">
+                                    <li><a>800x600</a></li>
+                                    <li><a>1024x786</a></li>
+                                    <li><a>1280x720</a></li>
+                                </ul>
+                            </div>
+                            <div id="divIptSizes">
+                                <input type="number" class="form-control" min="100" />
+                                <span>x</span>
+                                <input type="number" class="form-control" min="100" />
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -112,7 +116,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    <button id="btnSaveProject" type="button" class="btn btn-primary" >Save changes</button>
+                    <button id="btnSaveProject" type="button" class="btn btn-primary">Save changes</button>
                 </div>
             </div>
         </div>

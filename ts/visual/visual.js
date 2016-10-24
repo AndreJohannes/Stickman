@@ -20,6 +20,9 @@ var VElement = (function () {
         this.offset.add(this.dot_active);
         this.offset.add(this.children);
     }
+    VElement.prototype.setVisibility = function (value) {
+        this.principal.visible = value;
+    };
     VElement.prototype.setPosition = function (x, y) {
         this.principal.position.set(x, y, 0);
     };
@@ -51,14 +54,14 @@ var Visual = (function () {
     Visual.prototype.setMode = function (mode) {
         switch (mode) {
             case NodeMode.Play:
-                //this.secondary.visible = false;
-                //this.primary.visible = true;
+                this.secondary.setVisibility(false);
+                this.primary.setVisibility(true);
                 //this.dot.visible = false;
                 //this.dot_active.visible = false;
                 break;
             case NodeMode.Edit:
-                //this.secondary.visible = true;
-                //this.primary.visible = true;
+                this.secondary.setVisibility(true);
+                this.primary.setVisibility(true);
                 //this.dot.visible = true;
                 //this.dot_active.visible = false;
                 break;
@@ -88,9 +91,9 @@ var Visual = (function () {
     Visual.prototype.getSecondary = function () {
         return this.secondary.getPrincipal();
     };
-    //public showSecondary(show: boolean) {
-    //	this.secondary.visible = show;
-    //}
+    Visual.prototype.displaySecondary = function (display) {
+        this.secondary.setVisibility(display);
+    };
     Visual.prototype.add = function (visual) {
         this.primary.addChild(visual.primary);
         this.secondary.addChild(visual.secondary);
@@ -114,7 +117,9 @@ var Visual = (function () {
         //};
     };
     Visual.deserialize = function (object) {
-        return null;
+        if (object["primary"] != null)
+            return new Visual(object["primary"].length);
+        return new Visual(0);
         //let retObject = new Visual();
         //if (object["primary"] != null)
         //	retObject.addPrimary(Primitives.getPrimitive(object["primary"]["name"], object["primary"]));

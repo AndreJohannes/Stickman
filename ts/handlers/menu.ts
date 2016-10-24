@@ -27,6 +27,9 @@ class MenuHandler {
 
 		this.newProjectLogic();
 
+		this.$new = $("#mnuNew");
+		this.$new.click(function(){ that.newProject()});
+
 		this.$open = $("#btnOpen");
 		this.$open.click(this.openProjectClick());
 
@@ -50,6 +53,12 @@ class MenuHandler {
 
 		$('[data-submenu]')["submenupicker"]();
 
+	}
+
+	private newProject(){
+		$("#iptProjectName").val("newProject");
+		$("#divIptSizes input").eq(0).val("1280");
+		$("#divIptSizes input").eq(1).val("720");
 	}
 
 	private export() {
@@ -165,7 +174,7 @@ class MenuHandler {
 			})
 		});
 		$("#btnNewProject").click(function() {
-			let project = new Project("new", [$("#divIptSizes input").eq(0).val(), $("#divIptSizes input").eq(1).val()]);
+			let project = new Project($("#iptProjectName").val(), [$("#divIptSizes input").eq(0).val(), $("#divIptSizes input").eq(1).val()]);
 			that.controller.setProject(project);
 			that.controller.update();
 			that.controller.getResizer().expand();

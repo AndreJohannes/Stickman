@@ -37,8 +37,8 @@ var Node_ = (function () {
     };
     Node_.prototype.draw = function (frame) {
         if (this._isRoot) {
-            //this.visual.getPrimary().visible = !this.invisible.get(frame);
-            //this.visual.getSecondary().visible = !this.invisible.get(frame - 1);
+            this.visual.getPrimary().visible = !this.invisible.get(frame);
+            this.visual.getSecondary().visible = !this.invisible.get(frame - 1);
             var position = this.position.get(frame);
             this.visual.position(position.x, -position.y);
             position = this.position.get(frame - 1 > 0 ? frame - 1 : 1);

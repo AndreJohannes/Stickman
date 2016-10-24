@@ -157,7 +157,7 @@ body {
     margin-bottom: 0px;
 }
 
-th {
+#tblTimeline th {
     text-align: center;
     border-radius: 5px;
     cursor: pointer;
@@ -196,4 +196,30 @@ th {
     z-index: 1000;
     width: 10px;
     height: 10px;
+}
+
+#divDpdSizes {
+    float: left;
+}
+
+#divIptSizes {
+    float: right;
+}
+
+#divIptSizes input {
+    float: left;
+    width: 100px;
+}
+
+#divIptSizes input:first-of-type {
+    text-align: right;
+}
+
+#divIptSizes span {
+    float: left;
+    margin: 5px;
+}
+
+#divSizes{
+    height: 40px;
 }

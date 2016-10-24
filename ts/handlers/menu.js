@@ -12,6 +12,8 @@ var MenuHandler = (function () {
         this.projectStorage = new ProjectStorage();
         this.controller = controller;
         this.newProjectLogic();
+        this.$new = $("#mnuNew");
+        this.$new.click(function () { that.newProject(); });
         this.$open = $("#btnOpen");
         this.$open.click(this.openProjectClick());
         this.$save = $("#btnSave");
@@ -28,6 +30,11 @@ var MenuHandler = (function () {
         this.$addMan.click(function () { that.controller.getProject().addFigure(new Man("Man")); that.controller.update(); });
         $('[data-submenu]')["submenupicker"]();
     }
+    MenuHandler.prototype.newProject = function () {
+        $("#iptProjectName").val("newProject");
+        $("#divIptSizes input").eq(0).val("1280");
+        $("#divIptSizes input").eq(1).val("720");
+    };
     MenuHandler.prototype.export = function () {
         var project = this.controller.getProject();
         var data = project.serialize();
@@ -134,7 +141,7 @@ var MenuHandler = (function () {
             });
         });
         $("#btnNewProject").click(function () {
-            var project = new Project("new", [$("#divIptSizes input").eq(0).val(), $("#divIptSizes input").eq(1).val()]);
+            var project = new Project($("#iptProjectName").val(), [$("#divIptSizes input").eq(0).val(), $("#divIptSizes input").eq(1).val()]);
             that.controller.setProject(project);
             that.controller.update();
             that.controller.getResizer().expand();

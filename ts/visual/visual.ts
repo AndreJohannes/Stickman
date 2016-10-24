@@ -31,6 +31,10 @@ class VElement {
 		this.offset.add(this.children);
 	}
 
+	public setVisibility(value: boolean){
+		this.principal.visible = value;
+	}
+
 	public setPosition(x: number, y: number) {
 		this.principal.position.set(x, y, 0);
 	}
@@ -73,14 +77,14 @@ class Visual {
 	public setMode(mode: NodeMode) {
 		switch (mode) {
 			case NodeMode.Play:
-				//this.secondary.visible = false;
-				//this.primary.visible = true;
+				this.secondary.setVisibility(false);
+				this.primary.setVisibility(true);
 				//this.dot.visible = false;
 				//this.dot_active.visible = false;
 				break;
 			case NodeMode.Edit:
-				//this.secondary.visible = true;
-				//this.primary.visible = true;
+				this.secondary.setVisibility(true);
+				this.primary.setVisibility(true);
 				//this.dot.visible = true;
 				//this.dot_active.visible = false;
 				break;
@@ -117,9 +121,9 @@ class Visual {
 		return this.secondary.getPrincipal();
 	}
 
-	//public showSecondary(show: boolean) {
-	//	this.secondary.visible = show;
-	//}
+	public displaySecondary(display: boolean) {
+		this.secondary.setVisibility(display);
+	}
 
 	public add(visual: Visual) {
 		this.primary.addChild(visual.primary);
@@ -149,7 +153,9 @@ class Visual {
 	}
 
 	static deserialize(object): Visual {
-		return null;
+		if(object["primary"] != null)
+				return new Visual(object["primary"].length);		
+		return new Visual(0);
 		//let retObject = new Visual();
 		//if (object["primary"] != null)
 		//	retObject.addPrimary(Primitives.getPrimitive(object["primary"]["name"], object["primary"]));
