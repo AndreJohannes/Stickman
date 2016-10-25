@@ -17,12 +17,12 @@ class Download {
 		let $progress = $("#divProgress");
 		let that = this;
 		let zip = new JSZip();
-		let asyncList: Function[] = [];
+		let asyncList: Function[] = new Array();
 		$.each(figures, function(index, figure) { figure.getRoot().setMode(NodeMode.Play); });
 		var pack =0;
 		for (var i = 1; i <= 99; i++) {
 			let frame = i;
-			asyncList.push(function() {
+			asyncList.unshift(function() {
 				$.each(figures, function(index, figure) { figure.getRoot().draw(frame); })
 				that.renderer.update();
 				var img = $("canvas").get(0)["toDataURL"]();

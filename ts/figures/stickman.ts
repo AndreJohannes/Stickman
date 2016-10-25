@@ -3,14 +3,10 @@
 /// <reference path="../visual/primitives/link.ts" />
 /// <reference path="../visual/primitives/head.ts" />
 
-class Stickman implements IFigure {
-
-	private root: Node_;
-	private name: string;
+class Stickman extends IFigure {
 
 	constructor(name: string) {
-		//this.root = new Node_(localStorage.getItem("stickman"));
-		//return
+		super();
 		this.name = name;
 		let root: Node_ = new Node_(new THREE.Vector2(0, 0));
 		let torso: Node_ = new Node_(60, 0);
@@ -44,33 +40,6 @@ class Stickman implements IFigure {
 		//lower_arm_2.addVisual(new Limb(40), new Limb(40, true));
 		head.addVisual(new Head(35), new Head(35, true));
 		this.root = root;
-	}
-
-	public getVisual(): THREE.Object3D {
-		return this.root.getVisual();
-	}
-
-	public getPhantom(): THREE.Object3D {
-		return this.root.getVisual(true);
-	}
-
-	public getRoot(): Node_ {
-		return this.root;
-	}
-
-	public getName(): string {
-		return this.name
-	}
-
-	public setName(name: string) {
-		this.name = name;
-	}
-
-	public serialize(): FigureWrapped {
-		let figure = new FigureWrapped();
-		figure.name = this.name;
-		figure.root = this.root.serialize();
-		return figure;
 	}
 
 }

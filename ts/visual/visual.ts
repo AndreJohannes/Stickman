@@ -13,6 +13,7 @@ class VElement {
 	private children: THREE.Object3D;
 	private dot: THREE.Object3D;
 	private dot_active: THREE.Object3D;
+	private iPrimitive : IPrimitives;
 
 	constructor(length: number) {
 		this.principal = new THREE.Object3D();
@@ -48,11 +49,18 @@ class VElement {
 	}
 
 	public setPrimitive(object: IPrimitives) {
+		if(object==null)
+			return;
+		this.iPrimitive = object;
 		this.primitive.add(object.getObject());
 	}
 
 	public getPrincipal(): THREE.Object3D{
 		return this.principal;
+	}
+
+	public getIPrimitive():IPrimitives{
+		return this.iPrimitive;
 	}
 
 }
@@ -113,12 +121,12 @@ class Visual {
 			this.primary.setPosition(x, y);
 	}
 	
-	public getPrimary(): THREE.Object3D {
-		return this.primary.getPrincipal();
+	public getPrimary(): VElement {
+		return this.primary;
 	}
 
-	public getSecondary(): THREE.Object3D {
-		return this.secondary.getPrincipal();
+	public getSecondary(): VElement {
+		return this.secondary;
 	}
 
 	public displaySecondary(display: boolean) {

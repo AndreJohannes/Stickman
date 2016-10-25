@@ -26,6 +26,9 @@ var Head = (function () {
     Head.prototype.setLength = function () {
         // for now do nothing
     };
+    Head.prototype.copy = function () {
+        return new Head(this.size, this.phantom);
+    };
     Head.prototype.serialize = function () {
         return this._serialize();
     };

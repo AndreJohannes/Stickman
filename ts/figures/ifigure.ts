@@ -7,26 +7,10 @@ class FigureWrapped {
 
 }
 
-interface IFigure {
+class IFigure {
 
-	getVisual(): THREE.Object3D;
-
-	getPhantom(): THREE.Object3D;
-
-	getRoot(): Node_;
-
-	serialize(): FigureWrapped;
-
-	getName(): string;
-
-	setName(name: string);
-
-}
-
-class GenericFigure implements IFigure {
-
-	private root: Node_;
-	private name: string;
+	protected root: Node_;
+	protected name: string;
 
 	public getVisual(): THREE.Object3D {
 		return this.root.getVisual();
@@ -46,6 +30,13 @@ class GenericFigure implements IFigure {
 
 	public setName(name: string) {
 		this.name = name;
+	}
+
+	public copyFigure(): IFigure{
+		let figure = new IFigure();
+		figure.name = this.name + "_Copy";
+		figure.root = this.root.copy();
+		return figure;
 	}
 
 	public serialize(): FigureWrapped {
@@ -56,19 +47,17 @@ class GenericFigure implements IFigure {
 	};
 
 	static deserialize(object: Object): IFigure {
-		var figure = new GenericFigure();
+		var figure = new IFigure();
 		figure.name = object["name"];
 		figure.root = new Node_(object["root"]);
 		return figure;
 	}
 }
 
-class MonadFigure implements IFigure {
-
-	private root: Node_;
-	private name: string;
+class MonadFigure extends IFigure {
 
 	constructor(rect: Rect) {
+		super();
 		let root: Node_ = new Node_(new THREE.Vector2(0, 0));
 		let monad: Node_ = new Node_(rect.getLength(), 0);
 		root.addChild(monad);
@@ -77,72 +66,16 @@ class MonadFigure implements IFigure {
 		this.name = "Monad";
 	}
 
+};
 
-	public getVisual(): THREE.Object3D {
-		return this.root.getVisual();
-	}
-
-	public getPhantom(): THREE.Object3D {
-		return this.root.getVisual(true);
-	}
-
-	public getRoot(): Node_ {
-		return this.root;
-	}
-
-	public getName(): string {
-		return this.name;
-	}
-
-	public setName(name: string) {
-		this.name = name;
-	}
-
-	public serialize(): FigureWrapped {
-		let figure = new FigureWrapped();
-		figure.name = this.name;
-		figure.root = this.root.serialize();
-		return figure;
-	};
-
-}
-class PivotFigure implements IFigure {
-
-	private root: Node_;
-	private name: string;
+class PivotFigure extends IFigure {
 
 	constructor(root: Node_) {
+		super();
 		this.root = root;
 		this.name = "Pivot";
 	}
 
-
-	public getVisual(): THREE.Object3D {
-		return this.root.getVisual();
-	}
-
-	public getPhantom(): THREE.Object3D {
-		return this.root.getVisual(true);
-	}
-
-	public getRoot(): Node_ {
-		return this.root;
-	}
-
-	public getName(): string {
-		return this.name;
-	}
-
-	public setName(name: string) {
-		this.name = name;
-	}
-
-	public serialize(): FigureWrapped {
-		let figure = new FigureWrapped();
-		figure.name = this.name;
-		figure.root = this.root.serialize();
-		return figure;
-	};
 
 }
 

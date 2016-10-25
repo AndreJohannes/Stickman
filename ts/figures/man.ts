@@ -4,14 +4,12 @@
 
 
 
-class Man implements IFigure {
-
-	private root: Node_;
-	private name: string;
+class Man extends IFigure {
 
 	constructor(name: string) {
 		//this.root = new Node_(localStorage.getItem("stickman"));
 		//return
+		super();
 		this.name = name;
 		let texture = TextureHandler.Man;
 		var rectTorso: Rect = new Rect(6, 13, 33, 95, texture);
@@ -59,34 +57,5 @@ class Man implements IFigure {
 		kopf.addVisual(new Rectangle(rectKopf), new Rectangle(rectKopf));
 		this.root = root;
 	}
-
-	public getVisual(): THREE.Object3D {
-		return this.root.getVisual();
-	}
-
-	public getPhantom(): THREE.Object3D {
-		return this.root.getVisual(true);
-	}
-
-	public getRoot(): Node_ {
-		return this.root;
-	}
-
-	public getName(): string {
-		return this.name
-	}
-
-	public setName(name: string) {
-		this.name = name;
-	}
-
-	public serialize(): FigureWrapped {
-		let figure = new FigureWrapped();
-		figure.name = this.name;
-		figure.root = this.root.serialize();
-		return figure;
-	}
-
-
 
 }

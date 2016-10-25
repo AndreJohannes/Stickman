@@ -28,7 +28,7 @@ class MenuHandler {
 		this.newProjectLogic();
 
 		this.$new = $("#mnuNew");
-		this.$new.click(function(){ that.newProject()});
+		this.$new.click(function() { that.newProject() });
 
 		this.$open = $("#btnOpen");
 		this.$open.click(this.openProjectClick());
@@ -55,7 +55,7 @@ class MenuHandler {
 
 	}
 
-	private newProject(){
+	private newProject() {
 		$("#iptProjectName").val("newProject");
 		$("#divIptSizes input").eq(0).val("1280");
 		$("#divIptSizes input").eq(1).val("720");
@@ -120,8 +120,21 @@ class MenuHandler {
 					p_name = $(this).data("name");
 					$btnOpenProject.removeClass("disabled");
 				});
+				$tr.on("contextmenu", function(event) {
+					let name = $(this).data("name");
+					$("#contextMenuDeleteProject").show().css("left", event.clientX).css("top", event.clientY).css("z-index", 2000);
+					$("#tabDeleteProject").text($.validator.format("Delete {0}", name));
+					$("#tabDeleteProject").off().click(function() {
+						that.projectStorage.deleteProjectFromLocalStorage(name);
+						$("#contextMenuDeleteProject").hide();
+						that.openProjectClick()();
+					});
+					$("#openFileModal").click(function() { $("#contextMenuDeleteProject").hide() });
+					return false;
+				});
 				$tbody.append($tr);
 			}
+
 			$btnOpenProject.click(function() {
 				if (p_name != null) {
 					$("#openFileModal")["modal"]("hide");

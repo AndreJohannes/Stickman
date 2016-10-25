@@ -37,8 +37,8 @@ var Node_ = (function () {
     };
     Node_.prototype.draw = function (frame) {
         if (this._isRoot) {
-            this.visual.getPrimary().visible = !this.invisible.get(frame);
-            this.visual.getSecondary().visible = !this.invisible.get(frame - 1);
+            //this.visual.getPrimary().visible = !this.invisible.get(frame);
+            //this.visual.getSecondary().visible = !this.invisible.get(frame - 1);
             var position = this.position.get(frame);
             this.visual.position(position.x, -position.y);
             position = this.position.get(frame - 1 > 0 ? frame - 1 : 1);
@@ -111,9 +111,9 @@ var Node_ = (function () {
     };
     Node_.prototype.getVisual = function (secondary) {
         if (secondary)
-            return this.visual.getSecondary();
+            return this.visual.getSecondary().getPrincipal();
         else
-            return this.visual.getPrimary();
+            return this.visual.getPrimary().getPrincipal();
     };
     Node_.prototype.setAlpha = function (alpha, frame) {
         if (this._isRoot)
@@ -142,6 +142,27 @@ var Node_ = (function () {
     };
     Node_.prototype.deactivate = function () {
         this.visual.deactivate();
+    };
+    Node_.prototype.copy = function () {
+        if (this._isRoot)
+            return this._copy();
+        throw new Error("Node is not root!");
+    };
+    Node_.prototype._copy = function () {
+        var node = new Node_(this._isRoot ? new THREE.Vector2(0, 0) : this.length, this.alpha != null ? this.alpha.get(0) : null);
+        if (this.visual.getPrimary().getIPrimitive() != null) {
+            node.visual.getPrimary().setPrimitive(this.visual.getPrimary().getIPrimitive().copy());
+        }
+        ;
+        if (this.visual.getSecondary().getIPrimitive() != null) {
+            node.visual.getSecondary().setPrimitive(this.visual.getSecondary().getIPrimitive().copy());
+        }
+        ;
+        for (var _i = 0, _a = this.children; _i < _a.length; _i++) {
+            var child = _a[_i];
+            node.addChild(child._copy());
+        }
+        return node;
     };
     Node_.prototype._getProximityNodes = function (radius, alpha, frame, position, anchor_position) {
         if (this._isRoot && this.invisible.get(frame))

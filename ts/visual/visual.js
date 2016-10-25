@@ -33,10 +33,16 @@ var VElement = (function () {
         this.children.add(child.principal);
     };
     VElement.prototype.setPrimitive = function (object) {
+        if (object == null)
+            return;
+        this.iPrimitive = object;
         this.primitive.add(object.getObject());
     };
     VElement.prototype.getPrincipal = function () {
         return this.principal;
+    };
+    VElement.prototype.getIPrimitive = function () {
+        return this.iPrimitive;
     };
     return VElement;
 }());
@@ -86,10 +92,10 @@ var Visual = (function () {
             this.primary.setPosition(x, y);
     };
     Visual.prototype.getPrimary = function () {
-        return this.primary.getPrincipal();
+        return this.primary;
     };
     Visual.prototype.getSecondary = function () {
-        return this.secondary.getPrincipal();
+        return this.secondary;
     };
     Visual.prototype.displaySecondary = function (display) {
         this.secondary.setVisibility(display);

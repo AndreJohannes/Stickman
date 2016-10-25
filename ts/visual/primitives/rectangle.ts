@@ -64,21 +64,23 @@ class Rect {
 		return this.texture;
 	}
 
+	public copy(): Rect{
+		let rect = new Rect(this.x1, this.y1, this.x2, this.y2, this.texture);
+		rect.setPivot(this.pivot);
+		rect.setAnchor(this.anchor);
+		return rect;
+	}
+
 }
 
 
 class Rectangle implements IPrimitives {
 
 	private object: THREE.Object3D = new THREE.Object3D();
-	private width: number;
-	private height: number;
+	private rect: Rect;
 
 	constructor(rect: Rect) {
-		//let texture = TextureHandler.getTexture(TextureHandler.Texture.Background);
-		this.height = 500;
-		this.width = 500;
-		//texture.minFilter = THREE.LinearFilter;
-		//texture.magFilter= THREE.LinearFilter;
+		this.rect = rect;
 		let material = new THREE.MeshBasicMaterial({
 			color: 0xffffff,
 			map: rect.getTexture(),
@@ -100,6 +102,10 @@ class Rectangle implements IPrimitives {
 
 	public setLength() {
 		// for now do nothing
+	}
+
+	public copy(): Rectangle{
+		return new Rectangle(this.rect);
 	}
 
 	public serialize() {

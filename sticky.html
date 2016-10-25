@@ -12,6 +12,7 @@
     <link rel="stylesheet" type="text/css" href="./css/sticky.css" media="screen" />
     <link rel="stylesheet" type="text/css" href="./css/split-pane.css" media="screen" />
     <link rel="stylesheet" type="text/css" href="./css/cropper.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="./css/bootstrap.vertical-tabs.min.css" media="screen" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="./js/jquery.js"></script>
     <script src="./js/jquery.validate.min.js"></script>
@@ -22,6 +23,7 @@
     <script src="./js/jszip.min.js"></script>
     <script src="./js/split-pane.js"></script>
     <script src="./js/cropper.min.js"></script>
+    <script src="./js/validator.js"></script>
     <!--<script src="./js/sticky.js"></script>-->
     <script src="./ts/sticky.js"></script>
     <script src="./ts/renderer.js"></script>
@@ -54,40 +56,42 @@
     <div class="modal fade" id="newModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="myModalLabel">New Project</h4>
-                </div>
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label for="iptProjectName">Name:</label>
-                        <input id="iptProjectName" class="form-control" type="text" />
+                <form data-toggle="validator" role="form">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="myModalLabel">New Project</h4>
                     </div>
-                    <div class="form-group">
-                        <label>Size:</label>
-                        <div id="divSizes">
-                            <div class="dropdown" id="divDpdSizes">
-                                <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
-                                    Standard Sizes
-                                    <span class="caret"></span></button>
-                                <ul class="dropdown-menu">
-                                    <li><a>800x600</a></li>
-                                    <li><a>1024x786</a></li>
-                                    <li><a>1280x720</a></li>
-                                </ul>
-                            </div>
-                            <div id="divIptSizes">
-                                <input type="number" class="form-control" min="100" />
-                                <span>x</span>
-                                <input type="number" class="form-control" min="100" />
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="iptProjectName">Name:</label>
+                            <input id="iptProjectName" class="form-control" type="text" required/>
+                        </div>
+                        <div class="form-group">
+                            <label>Size:</label>
+                            <div id="divSizes">
+                                <div class="dropdown" id="divDpdSizes">
+                                    <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
+                                        Standard Sizes
+                                        <span class="caret"></span></button>
+                                    <ul class="dropdown-menu">
+                                        <li><a>800x600</a></li>
+                                        <li><a>1024x786</a></li>
+                                        <li><a>1280x720</a></li>
+                                    </ul>
+                                </div>
+                                <div id="divIptSizes">
+                                    <input type="number" class="form-control" min="100" required/>
+                                    <span>x</span>
+                                    <input type="number" class="form-control" min="100" required/>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    <button id="btnNewProject" type="button" class="btn btn-primary" data-dismiss="modal">New</button>
-                </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button id="btnNewProject" type="submit" class="btn btn-primary" data-dismiss="modal">New</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -286,7 +290,26 @@
                 <div class="split-pane fixed-left" id="split-pane-2">
                     <div class="split-pane-component" id="left-component">
                         <div class="pretty-split-pane-component-inner" id="collection">
-                            <div id="images"></div>
+                            <div class="col-xs-3">
+                                <!-- required for floating -->
+                                <!-- Nav tabs -->
+                                <ul class="nav nav-tabs tabs-left sideways">
+                                    <li class="active"><a href="#home" data-toggle="tab">Home</a></li>
+                                    <li><a href="#profile" data-toggle="tab">Profile</a></li>
+                                    <li><a href="#messages" data-toggle="tab">Messages</a></li>
+                                    <li><a href="#settings" data-toggle="tab">Settings</a></li>
+                                </ul>
+                            </div>
+                            <div class="col-xs-9">
+                                <!-- Tab panes -->
+                                <div class="tab-content">
+                                    <div class="tab-pane active" id="home"><div id="images"></div></div>
+                                    <div class="tab-pane" id="profile">Profile Tab.</div>
+                                    <div class="tab-pane" id="messages">Messages Tab.</div>
+                                    <div class="tab-pane" id="settings">Settings Tab.</div>
+                                </div>
+                            </div>
+                            
                             <!-- This div is added for styling purposes only. It's not part of the split-pane plugin. -->
                         </div>
                     </div>
@@ -316,8 +339,12 @@
         <li><a id="tabAddLink">Add Link</a></li>
         <li><a id="tabAttach">Attach to Node</a></li>
         <li class="divider"></li>
-        <li><a id="tabDeleteLink">Delete link</a></li>
+        <li><a id="tabCopyFigure">Copy Figure</a></li>
+        <li><a id="tabDeleteFigure">Delete Figure</a></li>
     </ul>
     <ul id="contextMenuTimeline" class="dropdown-menu" role="menu" style="display:none">
+    </ul>
+    <ul id="contextMenuDeleteProject" class="dropdown-menu" role="menu" style="display:none">
+        <li><a id="tabDeleteProject">Delete</a></li>
     </ul>
 </body>

@@ -106,9 +106,9 @@ class Node_ {
 		//this.parent_.children.
 	}
 
-	public reattachToNode(newNode: Node_){
-		let children:Node_[] = this.parent_.children;
-		children.splice(children.indexOf(this),1);
+	public reattachToNode(newNode: Node_) {
+		let children: Node_[] = this.parent_.children;
+		children.splice(children.indexOf(this), 1);
 		// Remark: apperently we do not need to detach the corresponding THREE.Object2D explicitly
 		newNode.addChild(this);
 	}
@@ -120,17 +120,17 @@ class Node_ {
 	}
 
 	public addVisual(object: IPrimitives, phantom: IPrimitives) {
-			if (this.parent_ != null && this.parent_.visual != null) {
-				this.visual.addPrimary(object);
-				this.visual.addSecondary(phantom);
-			}
+		if (this.parent_ != null && this.parent_.visual != null) {
+			this.visual.addPrimary(object);
+			this.visual.addSecondary(phantom);
+		}
 	}
 
 	public getVisual(secondary?: Boolean): THREE.Object3D {
 		if (secondary)
-			return this.visual.getSecondary();
+			return this.visual.getSecondary().getPrincipal();
 		else
-			return this.visual.getPrimary();
+			return this.visual.getPrimary().getPrincipal();
 	}
 
 	public setAlpha(alpha: number, frame: number) {
@@ -165,6 +165,22 @@ class Node_ {
 
 	public deactivate() {
 		this.visual.deactivate();
+	}
+
+	public copy(): Node_ {
+		if (this._isRoot)
+			return this._copy();
+		throw new Error("Node is not root!");
+	}
+
+	private _copy(): Node_ {
+		let node = new Node_(this._isRoot ? new THREE.Vector2(0, 0) : this.length, this.alpha != null ? this.alpha.get(0) : null);
+		if (this.visual.getPrimary().getIPrimitive() != null) { node.visual.getPrimary().setPrimitive(this.visual.getPrimary().getIPrimitive().copy()) };
+		if (this.visual.getSecondary().getIPrimitive() != null) { node.visual.getSecondary().setPrimitive(this.visual.getSecondary().getIPrimitive().copy()) };
+		for (var child of this.children) {
+			node.addChild(child._copy());
+		}
+		return node;
 	}
 
 	private _getProximityNodes(radius: number, alpha: number, frame: number,

@@ -41,16 +41,18 @@ var Rect = (function () {
     Rect.prototype.getTexture = function () {
         return this.texture;
     };
+    Rect.prototype.copy = function () {
+        var rect = new Rect(this.x1, this.y1, this.x2, this.y2, this.texture);
+        rect.setPivot(this.pivot);
+        rect.setAnchor(this.anchor);
+        return rect;
+    };
     return Rect;
 }());
 var Rectangle = (function () {
     function Rectangle(rect) {
         this.object = new THREE.Object3D();
-        //let texture = TextureHandler.getTexture(TextureHandler.Texture.Background);
-        this.height = 500;
-        this.width = 500;
-        //texture.minFilter = THREE.LinearFilter;
-        //texture.magFilter= THREE.LinearFilter;
+        this.rect = rect;
         var material = new THREE.MeshBasicMaterial({
             color: 0xffffff,
             map: rect.getTexture(),
@@ -69,6 +71,9 @@ var Rectangle = (function () {
     };
     Rectangle.prototype.setLength = function () {
         // for now do nothing
+    };
+    Rectangle.prototype.copy = function () {
+        return new Rectangle(this.rect);
     };
     Rectangle.prototype.serialize = function () {
         return this._serialize();

@@ -1,10 +1,17 @@
 /// <reference path="./node.ts" />
 /// <reference path="./ifigure.ts" />
 /// <reference path="../visual/primitives/rectangle.ts" />
-var Man = (function () {
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var Man = (function (_super) {
+    __extends(Man, _super);
     function Man(name) {
         //this.root = new Node_(localStorage.getItem("stickman"));
         //return
+        _super.call(this);
         this.name = name;
         var texture = TextureHandler.Man;
         var rectTorso = new Rect(6, 13, 33, 95, texture);
@@ -52,26 +59,5 @@ var Man = (function () {
         kopf.addVisual(new Rectangle(rectKopf), new Rectangle(rectKopf));
         this.root = root;
     }
-    Man.prototype.getVisual = function () {
-        return this.root.getVisual();
-    };
-    Man.prototype.getPhantom = function () {
-        return this.root.getVisual(true);
-    };
-    Man.prototype.getRoot = function () {
-        return this.root;
-    };
-    Man.prototype.getName = function () {
-        return this.name;
-    };
-    Man.prototype.setName = function (name) {
-        this.name = name;
-    };
-    Man.prototype.serialize = function () {
-        var figure = new FigureWrapped();
-        figure.name = this.name;
-        figure.root = this.root.serialize();
-        return figure;
-    };
     return Man;
-}());
+}(IFigure));

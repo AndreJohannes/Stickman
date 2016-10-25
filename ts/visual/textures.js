@@ -13,6 +13,7 @@ var TextureHandler = (function () {
         var image = new Image();
         image.src = src;
         var texture = new THREE.Texture(image);
+        texture.uuid = uuid; // we use out uuid
         texture.needsUpdate = true;
         this.textures[uuid] = texture;
         return texture;

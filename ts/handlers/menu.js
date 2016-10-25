@@ -90,6 +90,18 @@ var MenuHandler = (function () {
                     p_name = $(this).data("name");
                     $btnOpenProject.removeClass("disabled");
                 });
+                $tr.on("contextmenu", function (event) {
+                    var name = $(this).data("name");
+                    $("#contextMenuDeleteProject").show().css("left", event.clientX).css("top", event.clientY).css("z-index", 2000);
+                    $("#tabDeleteProject").text($.validator.format("Delete {0}", name));
+                    $("#tabDeleteProject").off().click(function () {
+                        that.projectStorage.deleteProjectFromLocalStorage(name);
+                        $("#contextMenuDeleteProject").hide();
+                        that.openProjectClick()();
+                    });
+                    $("#openFileModal").click(function () { $("#contextMenuDeleteProject").hide(); });
+                    return false;
+                });
                 $tbody.append($tr);
             }
             $btnOpenProject.click(function () {

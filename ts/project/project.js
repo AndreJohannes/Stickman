@@ -7,6 +7,7 @@ var Project = (function () {
         this.figures = [];
         this.images = {};
         this.size = size;
+        this.frameCount = 30;
     }
     Project.prototype.setName = function (name) {
         this.name = name;
@@ -61,7 +62,7 @@ var Project = (function () {
         var size = json["size"];
         var project = new Project(projectName, size);
         project.images = images;
-        $.each(figures, function (index, figure) { project.figures.push(GenericFigure.deserialize(figure)); });
+        $.each(figures, function (index, figure) { project.figures.push(IFigure.deserialize(figure)); });
         return project;
     };
     return Project;

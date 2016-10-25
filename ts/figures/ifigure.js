@@ -1,44 +1,57 @@
 /// <reference path="./node.ts" />
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
 var FigureWrapped = (function () {
     function FigureWrapped() {
     }
     return FigureWrapped;
 }());
-var GenericFigure = (function () {
-    function GenericFigure() {
+var IFigure = (function () {
+    function IFigure() {
     }
-    GenericFigure.prototype.getVisual = function () {
+    IFigure.prototype.getVisual = function () {
         return this.root.getVisual();
     };
-    GenericFigure.prototype.getPhantom = function () {
+    IFigure.prototype.getPhantom = function () {
         return this.root.getVisual(true);
     };
-    GenericFigure.prototype.getRoot = function () {
+    IFigure.prototype.getRoot = function () {
         return this.root;
     };
-    GenericFigure.prototype.getName = function () {
+    IFigure.prototype.getName = function () {
         return this.name;
     };
-    GenericFigure.prototype.setName = function (name) {
+    IFigure.prototype.setName = function (name) {
         this.name = name;
     };
-    GenericFigure.prototype.serialize = function () {
+    IFigure.prototype.copyFigure = function () {
+        var figure = new IFigure();
+        figure.name = this.name + "_Copy";
+        figure.root = this.root.copy();
+        return figure;
+    };
+    IFigure.prototype.serialize = function () {
         var figure = new FigureWrapped();
         figure.name = this.name;
         figure.root = this.root.serialize();
         return figure;
     };
     ;
-    GenericFigure.deserialize = function (object) {
-        var figure = new GenericFigure();
+    IFigure.deserialize = function (object) {
+        var figure = new IFigure();
         figure.name = object["name"];
         figure.root = new Node_(object["root"]);
         return figure;
     };
-    return GenericFigure;
+    return IFigure;
 }());
-var MonadFigure = (function () {
+var MonadFigure = (function (_super) {
+    __extends(MonadFigure, _super);
     function MonadFigure(rect) {
+        _super.call(this);
         var root = new Node_(new THREE.Vector2(0, 0));
         var monad = new Node_(rect.getLength(), 0);
         root.addChild(monad);
@@ -46,56 +59,15 @@ var MonadFigure = (function () {
         this.root = root;
         this.name = "Monad";
     }
-    MonadFigure.prototype.getVisual = function () {
-        return this.root.getVisual();
-    };
-    MonadFigure.prototype.getPhantom = function () {
-        return this.root.getVisual(true);
-    };
-    MonadFigure.prototype.getRoot = function () {
-        return this.root;
-    };
-    MonadFigure.prototype.getName = function () {
-        return this.name;
-    };
-    MonadFigure.prototype.setName = function (name) {
-        this.name = name;
-    };
-    MonadFigure.prototype.serialize = function () {
-        var figure = new FigureWrapped();
-        figure.name = this.name;
-        figure.root = this.root.serialize();
-        return figure;
-    };
-    ;
     return MonadFigure;
-}());
-var PivotFigure = (function () {
+}(IFigure));
+;
+var PivotFigure = (function (_super) {
+    __extends(PivotFigure, _super);
     function PivotFigure(root) {
+        _super.call(this);
         this.root = root;
         this.name = "Pivot";
     }
-    PivotFigure.prototype.getVisual = function () {
-        return this.root.getVisual();
-    };
-    PivotFigure.prototype.getPhantom = function () {
-        return this.root.getVisual(true);
-    };
-    PivotFigure.prototype.getRoot = function () {
-        return this.root;
-    };
-    PivotFigure.prototype.getName = function () {
-        return this.name;
-    };
-    PivotFigure.prototype.setName = function (name) {
-        this.name = name;
-    };
-    PivotFigure.prototype.serialize = function () {
-        var figure = new FigureWrapped();
-        figure.name = this.name;
-        figure.root = this.root.serialize();
-        return figure;
-    };
-    ;
     return PivotFigure;
-}());
+}(IFigure));

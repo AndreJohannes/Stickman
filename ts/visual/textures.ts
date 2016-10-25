@@ -1,6 +1,7 @@
 /// <reference path="../definitions/three.d.ts" />
 /// <reference path="../sticky.ts" />
 
+
 class TextureHandler {
 
 	public static Stickman: THREE.Texture = (new THREE.TextureLoader()).load("images/stickman1.png");
@@ -21,6 +22,7 @@ class TextureHandler {
 		var image = new Image();
 		image.src = src;
 		var texture = new THREE.Texture(image);
+		texture.uuid = uuid; // we use out uuid
 		texture.needsUpdate = true;
 		this.textures[uuid] = texture;
 		return texture;

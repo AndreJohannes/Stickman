@@ -7,12 +7,14 @@ class Project {
 	private figures: IFigure[];
 	private images: Object;
 	private size: number[];
+	private frameCount: number;
 
 	constructor(name: string, size = [1280, 720]) {
 		this.name = name;
 		this.figures = [];
 		this.images = {};
 		this.size = size;
+		this.frameCount = 30;
 	}
 
 	public setName(name: string) {
@@ -76,7 +78,7 @@ class Project {
 		var size = json["size"];
 		var project = new Project(projectName, size);
 		project.images = images;
-		$.each(figures, function(index, figure) { project.figures.push(GenericFigure.deserialize(figure)) });
+		$.each(figures, function(index, figure) { project.figures.push(IFigure.deserialize(figure)) });
 		return project;
 	}
 

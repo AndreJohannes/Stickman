@@ -12,12 +12,12 @@ var Download = (function () {
         var $progress = $("#divProgress");
         var that = this;
         var zip = new JSZip();
-        var asyncList = [];
+        var asyncList = new Array();
         $.each(figures, function (index, figure) { figure.getRoot().setMode(NodeMode.Play); });
         var pack = 0;
         var _loop_1 = function() {
             var frame = i;
-            asyncList.push(function () {
+            asyncList.unshift(function () {
                 $.each(figures, function (index, figure) { figure.getRoot().draw(frame); });
                 that.renderer.update();
                 var img = $("canvas").get(0)["toDataURL"]();

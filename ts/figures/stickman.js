@@ -2,10 +2,15 @@
 /// <reference path="./ifigure.ts" />
 /// <reference path="../visual/primitives/link.ts" />
 /// <reference path="../visual/primitives/head.ts" />
-var Stickman = (function () {
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var Stickman = (function (_super) {
+    __extends(Stickman, _super);
     function Stickman(name) {
-        //this.root = new Node_(localStorage.getItem("stickman"));
-        //return
+        _super.call(this);
         this.name = name;
         var root = new Node_(new THREE.Vector2(0, 0));
         var torso = new Node_(60, 0);
@@ -40,26 +45,5 @@ var Stickman = (function () {
         head.addVisual(new Head(35), new Head(35, true));
         this.root = root;
     }
-    Stickman.prototype.getVisual = function () {
-        return this.root.getVisual();
-    };
-    Stickman.prototype.getPhantom = function () {
-        return this.root.getVisual(true);
-    };
-    Stickman.prototype.getRoot = function () {
-        return this.root;
-    };
-    Stickman.prototype.getName = function () {
-        return this.name;
-    };
-    Stickman.prototype.setName = function (name) {
-        this.name = name;
-    };
-    Stickman.prototype.serialize = function () {
-        var figure = new FigureWrapped();
-        figure.name = this.name;
-        figure.root = this.root.serialize();
-        return figure;
-    };
     return Stickman;
-}());
+}(IFigure));

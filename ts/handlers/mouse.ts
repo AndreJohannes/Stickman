@@ -42,6 +42,8 @@ class MouseHandler {
 		$("#tabChangeLength").click(function() { that.mode = MouseMode.CHANGE_LENGTH; $("#contextMenu").hide() });
 		$("#tabAttach").click(function() { that.mode = MouseMode.ATTACH_TO_NODE; $("#contextMenu").hide() });
 		$("#tabDetach").click(function(event) { that.mode = MouseMode.DETACH_FROM_NODE; that.activeNode = that.detachNode(that.activeNode, event); $("#contextMenu").hide() });
+		$("#tabCopyFigure").click(function(){ that.mode = MouseMode.IDEL; that.controller.getProject().getFigures().push(that.activeNode.figure.copyFigure()); that.controller.update(); $("#contextMenu").hide() })
+		$("#tabDeleteFigure").click(function(){ that.mode = MouseMode.IDEL; that.controller.getProject().removeFigure(that.activeNode.figure); that.controller.update(); $("#contextMenu").hide() })
 
 		this.$canvas.click(function() {
 			$("#contextMenu").hide();
@@ -82,19 +84,24 @@ class MouseHandler {
 			switch (that.mode) {
 				case MouseMode.MOVE_LIMB:
 					that.activeNode.node.setAlpha(Math.atan2(-x + xOffset, -y + yOffset) - that.activeNode.alpha, frame);
+					that.activeNode.node.draw(frame);
+					that.controller.draw();
 					break;
 				case MouseMode.DETACH_FROM_NODE:
 				case MouseMode.ATTACH_TO_NODE:
 				case MouseMode.MOVE_FIGURE:
 					that.activeNode.node.setPosition(x, y, frame)
+					that.activeNode.node.draw(frame);
+					that.controller.draw();
 					break;
 				case MouseMode.CHANGE_LENGTH:
 					that.activeNode.node.setAlpha(Math.atan2(-x + xOffset, -y + yOffset) - that.activeNode.alpha, frame);
 					that.activeNode.node.setLength(position.distanceTo(new THREE.Vector2(xOffset, yOffset)));
+					that.activeNode.node.draw(frame);
+					that.renderer.update();
 					break;
 			}
-			that.activeNode.node.draw(frame);
-			that.renderer.update();
+			
 			//that.timelineHandler.updateFrame(frame);
 		}
 	}
@@ -156,6 +163,8 @@ class MouseHandler {
 				$("#contextMenu").show().css("left", event.clientX).css("top", event.clientY);
 				that.activeNode = node;
 				let isRoot = node.node.isRoot();
+				$("#tabCopyFigure").parent().removeClass().addClass(isRoot ? "" : "disabled");
+				$("#tabDeleteFigure").parent().removeClass().addClass(isRoot ? "" : "disabled");
 				$("#tabAttach").parent().removeClass().addClass(isRoot ? "" : "disabled");
 				$("#tabDetach").parent().removeClass().addClass(!isRoot ? "" : "disabled");
 			}

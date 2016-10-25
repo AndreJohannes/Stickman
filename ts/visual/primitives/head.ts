@@ -36,6 +36,10 @@ class Head implements IPrimitives {
 		// for now do nothing
 	}
 
+	public copy(): Head {
+		return new Head(this.size, this.phantom);
+	}
+
 	public serialize() {
 		return this._serialize();
 	}
