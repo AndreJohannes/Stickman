@@ -28,6 +28,16 @@ var MenuHandler = (function () {
         this.$addStickman.click(function () { that.controller.getProject().addFigure(new Stickman("Stickman")); that.controller.update(); });
         this.$addMan = $("#mnuAddMan");
         this.$addMan.click(function () { that.controller.getProject().addFigure(new Man("Man")); that.controller.update(); });
+        this.$addGVB = $("#mnuAddGVB");
+        this.$addGVB.click(function () {
+            $.getJSON("json/goodvsbad.json", function (data) {
+                for (var _i = 0, _a = data["figures"]; _i < _a.length; _i++) {
+                    var figure = _a[_i];
+                    that.controller.getProject().addFigure(IFigure.deserialize(figure));
+                    that.controller.update();
+                }
+            });
+        });
         $('[data-submenu]')["submenupicker"]();
     }
     MenuHandler.prototype.newProject = function () {
