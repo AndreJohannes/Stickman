@@ -39,6 +39,11 @@ class VElement {
 		this.principal.visible = value;
 	}
 
+	public setLength(length: number){
+		this.offset.position.set(0, length, 0);
+		(<VLink>this.link).setLength(length);
+	}
+
 	public setPosition(x: number, y: number) {
 		this.principal.position.set(x, y, 0);
 	}
@@ -153,10 +158,10 @@ class Visual {
 		//this.secondaryPrimitive = object;
 	}
 
-	//public setLength(length: number) {
-	//	this.primaryPrimitive.setLength(length);
-	//	this.secondaryPrimitive.setLength(length);
-	//}
+	public setLength(length: number) {
+		this.primary.setLength(length);
+		this.secondary.setLength(length);
+	}
 
 	public serialize() {
 		//return {

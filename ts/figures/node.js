@@ -54,13 +54,8 @@ var Node_ = (function () {
         }
     };
     Node_.prototype.setLength = function (length) {
-        for (var _i = 0, _a = this.children; _i < _a.length; _i++) {
-            var child = _a[_i];
-            child.visual.position(0, length);
-            child.visual.position(0, length, true);
-            this.length = length;
-        }
-        //this.visual.setLength(length);
+        this.length = length;
+        this.visual.setLength(length);
     };
     Node_.prototype.addChild = function (node) {
         this.children.push(node);

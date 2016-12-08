@@ -32,6 +32,7 @@ class VLink extends THREE.Object3D {
 
 
 	public setLength(length: number) {
+		this.length = length;
 		this.geometry.vertices[4].setY(length);
 		this.geometry.vertices[5].setY(length);
 		this.geometry.vertices[6].setY(length + this.width/2);

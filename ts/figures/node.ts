@@ -63,12 +63,8 @@ class Node_ {
 	}
 
 	public setLength(length: number) {
-		for (var child of this.children) {
-			child.visual.position(0, length);
-			child.visual.position(0, length, true);
-			this.length = length;
-		}
-		//this.visual.setLength(length);
+		this.length = length;
+		this.visual.setLength(length);
 	}
 
 	public addChild(node: Node_) {

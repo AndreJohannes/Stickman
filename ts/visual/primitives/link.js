@@ -29,6 +29,7 @@ var VLink = (function (_super) {
         _super.prototype.add.call(this, mesh);
     }
     VLink.prototype.setLength = function (length) {
+        this.length = length;
         this.geometry.vertices[4].setY(length);
         this.geometry.vertices[5].setY(length);
         this.geometry.vertices[6].setY(length + this.width / 2);

@@ -25,6 +25,10 @@ var VElement = (function () {
     VElement.prototype.setVisibility = function (value) {
         this.principal.visible = value;
     };
+    VElement.prototype.setLength = function (length) {
+        this.offset.position.set(0, length, 0);
+        this.link.setLength(length);
+    };
     VElement.prototype.setPosition = function (x, y) {
         this.principal.position.set(x, y, 0);
     };
@@ -115,10 +119,10 @@ var Visual = (function () {
         this.secondary.setPrimitive(object);
         //this.secondaryPrimitive = object;
     };
-    //public setLength(length: number) {
-    //	this.primaryPrimitive.setLength(length);
-    //	this.secondaryPrimitive.setLength(length);
-    //}
+    Visual.prototype.setLength = function (length) {
+        this.primary.setLength(length);
+        this.secondary.setLength(length);
+    };
     Visual.prototype.serialize = function () {
         //return {
         //	"primary": this.primaryPrimitive != null ? this.primaryPrimitive.serialize() : null,
