@@ -237,7 +237,7 @@ class Node_ {
 		var children = [];
 		for (var child of this.children)
 			children.push(child._serialize());
-		retObject["children"] = children;
+		retObject["children"] = children; 
 		return retObject;
 	}
 

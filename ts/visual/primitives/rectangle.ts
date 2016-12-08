@@ -24,7 +24,6 @@ class Rect {
 		this.anchor = anchor;
 	}
 
-
 	public setPivot(pivot: THREE.Vector2) {
 		this.pivot = pivot;
 	}
@@ -60,15 +59,23 @@ class Rect {
 		return Math.atan2(this.pivot.x - this.anchor.x, this.pivot.y - this.anchor.y);
 	}
 
-	public getTexture(): THREE.Texture{
+	public getTexture(): THREE.Texture {
 		return this.texture;
 	}
 
-	public copy(): Rect{
+	public copy(): Rect {
 		let rect = new Rect(this.x1, this.y1, this.x2, this.y2, this.texture);
 		rect.setPivot(this.pivot);
 		rect.setAnchor(this.anchor);
 		return rect;
+	}
+
+	public serialize() {
+		return { "x1": this.x1, "x2": this.x2, "y1": this.y1, "y2": this.y2, "texture": this.texture.uuid }
+	}
+
+	public static deserialize(object: Object): Rect{
+		let texture: THREE.Texture = TextureHandler.getInstance().getTexture(object["uuid"]);
 	}
 
 }
@@ -79,13 +86,13 @@ class Rectangle implements IPrimitives {
 	private object: THREE.Object3D = new THREE.Object3D();
 	private rect: Rect;
 
-	constructor(rect: Rect) {
+	constructor(rect: Rect, phantom = false) {
 		this.rect = rect;
 		let material = new THREE.MeshBasicMaterial({
 			color: 0xffffff,
 			map: rect.getTexture(),
 			transparent: true,
-			opacity: 1
+			opacity: phantom ? 0.5 : 1
 			//	depthWrite: false
 		});
 		let mesh = new THREE.Mesh(this.makeGeometry(rect), material);
@@ -104,7 +111,7 @@ class Rectangle implements IPrimitives {
 		// for now do nothing
 	}
 
-	public copy(): Rectangle{
+	public copy(): Rectangle {
 		return new Rectangle(this.rect);
 	}
 

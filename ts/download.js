@@ -6,6 +6,8 @@
 /// <reference path="./figures/ifigure.ts" />
 var Download = (function () {
     function Download(renderer) {
+        this.startFrame = 1;
+        this.stopFrame = 100;
         this.renderer = renderer;
     }
     Download.prototype.zipAndSave = function (figures) {
@@ -23,8 +25,8 @@ var Download = (function () {
                 var img = $("canvas").get(0)["toDataURL"]();
                 zip.file("frame" + frame + ".png", img.replace("data:image/png;base64,", ""), { base64: true });
                 pack++;
-                $progress.css("width", 100 / 99 * pack + "%");
-                console.log(pack);
+                $progress.css("width", 100 / (that.stopFrame - that.startFrame) * pack + "%");
+                $progress.text("Frame: " + frame);
                 if (asyncList.length != 0) {
                     setTimeout(asyncList.pop(), 0);
                 }
@@ -36,11 +38,17 @@ var Download = (function () {
                 }
             });
         };
-        for (var i = 1; i <= 99; i++) {
+        for (var i = this.startFrame; i <= this.stopFrame; i++) {
             _loop_1();
         }
         // We use setTimeout to build the frames and zip asynchronously; the web-interface will be responsive
         setTimeout(asyncList.pop(), 0);
+    };
+    Download.prototype.setStartFrame = function (startFrame) {
+        this.startFrame = startFrame;
+    };
+    Download.prototype.setStopFrame = function (stopFrame) {
+        this.stopFrame = stopFrame;
     };
     return Download;
 }());

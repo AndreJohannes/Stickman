@@ -4,11 +4,11 @@
 /// <reference path="../figures/node.ts" />
 /// <reference path="../visual/primitives/link.ts" />
 var VElement = (function () {
-    function VElement(length) {
+    function VElement(length, phantom) {
         this.principal = new THREE.Object3D();
         this.offset = new THREE.Object3D();
         this.primitive = new THREE.Object3D();
-        this.link = new VLink(length);
+        this.link = new VLink(length, phantom);
         this.children = new THREE.Object3D();
         this.offset.position.set(0, length, 0);
         this.dot = new Dot(Color.Blue).getObject();
@@ -16,9 +16,11 @@ var VElement = (function () {
         this.principal.add(this.offset);
         this.principal.add(this.primitive);
         this.principal.add(this.link);
-        this.offset.add(this.dot);
-        this.offset.add(this.dot_active);
         this.offset.add(this.children);
+        if (!phantom) {
+            this.offset.add(this.dot);
+            this.offset.add(this.dot_active);
+        }
     }
     VElement.prototype.setVisibility = function (value) {
         this.principal.visible = value;
@@ -37,6 +39,7 @@ var VElement = (function () {
             return;
         this.iPrimitive = object;
         this.primitive.add(object.getObject());
+        this.link.visible = false;
     };
     VElement.prototype.getPrincipal = function () {
         return this.principal;
@@ -44,32 +47,32 @@ var VElement = (function () {
     VElement.prototype.getIPrimitive = function () {
         return this.iPrimitive;
     };
+    VElement.prototype.showDots = function (value) {
+        this.dot.visible = value;
+        this.dot_active.visible = value;
+    };
     return VElement;
 }());
 var Visual = (function () {
     function Visual(length) {
         //private primaryPrimitive: IPrimitives;
         //private secondaryPrimitive: IPrimitives;
-        //private dot: THREE.Object3D;
-        //private dot_active: THREE.Object3D;
         this.isVisual = true;
         this.mode = NodeMode.Edit;
-        this.primary = new VElement(length);
-        this.secondary = new VElement(length);
+        this.primary = new VElement(length, false);
+        this.secondary = new VElement(length, true);
     }
     Visual.prototype.setMode = function (mode) {
         switch (mode) {
             case NodeMode.Play:
                 this.secondary.setVisibility(false);
                 this.primary.setVisibility(true);
-                //this.dot.visible = false;
-                //this.dot_active.visible = false;
+                this.primary.showDots(false);
                 break;
             case NodeMode.Edit:
                 this.secondary.setVisibility(true);
                 this.primary.setVisibility(true);
-                //this.dot.visible = true;
-                //this.dot_active.visible = false;
+                this.primary.showDots(true);
                 break;
         }
     };
@@ -123,15 +126,12 @@ var Visual = (function () {
         //};
     };
     Visual.deserialize = function (object) {
+        var retObject = object["primary"] != null ? new Visual(object["primary"].length) : new Visual(0);
         if (object["primary"] != null)
-            return new Visual(object["primary"].length);
-        return new Visual(0);
-        //let retObject = new Visual();
-        //if (object["primary"] != null)
-        //	retObject.addPrimary(Primitives.getPrimitive(object["primary"]["name"], object["primary"]));
-        //if (object["secondary"] != null)
-        //	retObject.addSecondary(Primitives.getPrimitive(object["secondary"]["name"], object["secondary"]));
-        //return retObject;
+            retObject.addPrimary(Primitives.getPrimitive(object["primary"]["name"], object["primary"]));
+        if (object["secondary"] != null)
+            retObject.addSecondary(Primitives.getPrimitive(object["secondary"]["name"], object["secondary"]));
+        return retObject;
     };
     return Visual;
 }());

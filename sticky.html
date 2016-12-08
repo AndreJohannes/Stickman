@@ -9,10 +9,11 @@
     <link rel="stylesheet" type="text/css" href="./css/bootstrap-theme.min.css" media="screen" />
     <link rel="stylesheet" type="text/css" href="./css/bootstrap-submenu.min.css" media="screen" />
     <link rel="stylesheet" type="text/css" href="./css/font-awesome.min.css" media="screen" />
-    <link rel="stylesheet" type="text/css" href="./css/sticky.css" media="screen" />
     <link rel="stylesheet" type="text/css" href="./css/split-pane.css" media="screen" />
     <link rel="stylesheet" type="text/css" href="./css/cropper.css" media="screen" />
     <link rel="stylesheet" type="text/css" href="./css/bootstrap.vertical-tabs.min.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="./css/bootstrap-slider.min.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="./css/sticky.css" media="screen" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="./js/jquery.js"></script>
     <script src="./js/jquery.validate.min.js"></script>
@@ -24,6 +25,7 @@
     <script src="./js/split-pane.js"></script>
     <script src="./js/cropper.min.js"></script>
     <script src="./js/validator.js"></script>
+    <script src="./js/bootstrap-slider.min.js"></script>
     <!--<script src="./js/sticky.js"></script>-->
     <script src="./ts/sticky.js"></script>
     <script src="./ts/renderer.js"></script>
@@ -47,6 +49,7 @@
     <script src="./ts/handlers/mouse.js"></script>
     <script src="./ts/handlers/images.js"></script>
     <script src="./ts/handlers/navbar.js"></script>
+    <script src="./ts/handlers/tabs.js"></script>
     <script src="./ts/player.js"></script>
     <script src="./ts/download.js"></script>
 </head>
@@ -246,12 +249,12 @@
                         </ul>
                     </li>
                 </ul>
-                <form class="navbar-form navbar-left">
+                <!--<form class="navbar-form navbar-left">
                     <div class="form-group">
                         <input type="text" class="form-control" placeholder="Search">
                     </div>
                     <button type="submit" class="btn">Submit</button>
-                </form>
+                </form>-->
                 <div class="nav navbar-nav navbar-right" style="width: 200px">
                     <p class="navbar-text">Frame:</p>
                     <div class="input-group spinner">
@@ -290,27 +293,94 @@
                 <div class="split-pane fixed-left" id="split-pane-2">
                     <div class="split-pane-component" id="left-component">
                         <div class="pretty-split-pane-component-inner" id="collection">
-                            <div class="col-xs-3">
+                            <div>
                                 <!-- required for floating -->
                                 <!-- Nav tabs -->
-                                <ul class="nav nav-tabs tabs-left sideways">
-                                    <li class="active"><a href="#home" data-toggle="tab">Home</a></li>
-                                    <li><a href="#profile" data-toggle="tab">Profile</a></li>
-                                    <li><a href="#messages" data-toggle="tab">Messages</a></li>
+                                <ul class="nav-tabs tabs-left sideways">
+                                    <li class="active"><a href="#home" data-toggle="tab">Images</a></li>
+                                    <li><a href="#player" data-toggle="tab">Player</a></li>
+                                    <li><a href="#download" data-toggle="tab">Download</a></li>
                                     <li><a href="#settings" data-toggle="tab">Settings</a></li>
                                 </ul>
                             </div>
-                            <div class="col-xs-9">
+                            <div class="tabField">
                                 <!-- Tab panes -->
                                 <div class="tab-content">
-                                    <div class="tab-pane active" id="home"><div id="images"></div></div>
-                                    <div class="tab-pane" id="profile">Profile Tab.</div>
-                                    <div class="tab-pane" id="messages">Messages Tab.</div>
+                                    <div class="tab-pane active" id="home">
+                                        <div id="images"></div>
+                                    </div>
+                                    <div class="tab-pane" id="player">
+                                        <div style="width:250px; height: 80px">
+                                            <div style="margin: 0 auto; display: table; margin-top: 20px"  >
+                                            <div class="nav navbar-nav navbar-right" >
+                                                <button type="button" id="btnTabPause" class="btn navbar-btn" style="width: 60px">
+                                                    <i class="fa fa-pause"></i>
+                                                </button>
+                                            </div>
+                                            <div class="nav navbar-nav navbar-right" style="margin-right:15px">
+                                                <button type="button" id="btnTabPlay" class="btn navbar-btn" style="width: 70px">
+                                                    <i class="fa fa-play"></i>
+                                                </button>
+                                            </div>
+                                            </div>
+                                        </div>
+                                        <form style="width:250px" class="form-horizontal">
+                                            <div class="form-group">
+                                                <label class="control-label col-sm-6">First Frame:</label>
+                                                <div class="col-sm-6">
+                                                    <input id="iptPlyFirstFrame" value="1" type="number" min="1" class="form-control" />
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="control-label col-sm-6">Last Frame:</label>
+                                                <div class="col-sm-6">
+                                                    <input id="iptPlyLastFrame" type="number" value="100" min="1" class="form-control" />
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="control-label col-sm-6">Loop:</label>
+                                                <div class="col-sm-6">
+                                                    <input id="iptLoop" type="checkbox" />
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="control-label col-sm-6">Frame Rate:</label>
+                                                <div class="col-sm-6">
+                                                    <input id="iptFPS" data-slider-orientation="vertical" data-slider-id='FPSSlider' type="text" data-slider-min="8" data-slider-max="30" data-slider-step="1" data-slider-value="14" />
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <div class="tab-pane" id="download">
+
+                                        <div style="width:250px; height: 80px">
+                                            <div style="margin: 0 auto; display: table; margin-top: 20px"  >
+                                                <div class="nav navbar-nav navbar-right" >
+                                                    <button type="button" id="btnTabDownload" class="btn navbar-btn" style="width: 60px">
+                                                        <i class="fa fa-download"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <form style="width:250px" class="form-horizontal">
+                                            <div class="form-group">
+                                                <label class="control-label col-sm-6">First Frame:</label>
+                                                <div class="col-sm-6">
+                                                    <input id="iptDldFirstFrame" type="number" value="1" min="1" class="form-control" />
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="control-label col-sm-6">Last Frame:</label>
+                                                <div class="col-sm-6">
+                                                    <input id="iptDldLastFrame" type="number" min="1" class="form-control" value="100" />
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
                                     <div class="tab-pane" id="settings">Settings Tab.</div>
                                 </div>
                             </div>
-                            
-                            <!-- This div is added for styling purposes only. It's not part of the split-pane plugin. -->
                         </div>
                     </div>
                     <div class="split-pane-divider" id="vertical-divider"></div>

@@ -13,13 +13,13 @@ class VElement {
 	private children: THREE.Object3D;
 	private dot: THREE.Object3D;
 	private dot_active: THREE.Object3D;
-	private iPrimitive : IPrimitives;
+	private iPrimitive: IPrimitives;
 
-	constructor(length: number) {
+	constructor(length: number, phantom: boolean) {
 		this.principal = new THREE.Object3D();
 		this.offset = new THREE.Object3D();
 		this.primitive = new THREE.Object3D();
-		this.link = new VLink(length);
+		this.link = new VLink(length, phantom);
 		this.children = new THREE.Object3D();
 		this.offset.position.set(0, length, 0);
 		this.dot = new Dot(Color.Blue).getObject();
@@ -27,12 +27,15 @@ class VElement {
 		this.principal.add(this.offset);
 		this.principal.add(this.primitive);
 		this.principal.add(this.link);
-		this.offset.add(this.dot);
-		this.offset.add(this.dot_active);
 		this.offset.add(this.children);
+		if (!phantom) {
+			this.offset.add(this.dot);
+			this.offset.add(this.dot_active);
+		}
+		
 	}
 
-	public setVisibility(value: boolean){
+	public setVisibility(value: boolean) {
 		this.principal.visible = value;
 	}
 
@@ -40,8 +43,8 @@ class VElement {
 		this.principal.position.set(x, y, 0);
 	}
 
-	public SetRotation(alpha: number){
-		this.principal.rotation.set(0,0, alpha);
+	public SetRotation(alpha: number) {
+		this.principal.rotation.set(0, 0, alpha);
 	}
 
 	public addChild(child: VElement) {
@@ -49,18 +52,24 @@ class VElement {
 	}
 
 	public setPrimitive(object: IPrimitives) {
-		if(object==null)
+		if (object == null)
 			return;
 		this.iPrimitive = object;
 		this.primitive.add(object.getObject());
+		this.link.visible = false;
 	}
 
-	public getPrincipal(): THREE.Object3D{
+	public getPrincipal(): THREE.Object3D {
 		return this.principal;
 	}
 
-	public getIPrimitive():IPrimitives{
+	public getIPrimitive(): IPrimitives {
 		return this.iPrimitive;
+	}
+
+	public showDots(value: boolean){
+		this.dot.visible = value;
+		this.dot_active.visible = value;
 	}
 
 }
@@ -72,14 +81,12 @@ class Visual {
 	private secondary: VElement;
 	//private primaryPrimitive: IPrimitives;
 	//private secondaryPrimitive: IPrimitives;
-	//private dot: THREE.Object3D;
-	//private dot_active: THREE.Object3D;
 	private isVisual: Boolean = true;
 	private mode: NodeMode = NodeMode.Edit;
 
 	constructor(length: number) {
-		this.primary =new VElement(length);
-		this.secondary = new VElement(length);
+		this.primary = new VElement(length, false);
+		this.secondary = new VElement(length, true);
 	}
 
 	public setMode(mode: NodeMode) {
@@ -87,14 +94,12 @@ class Visual {
 			case NodeMode.Play:
 				this.secondary.setVisibility(false);
 				this.primary.setVisibility(true);
-				//this.dot.visible = false;
-				//this.dot_active.visible = false;
+				this.primary.showDots(false);
 				break;
 			case NodeMode.Edit:
 				this.secondary.setVisibility(true);
 				this.primary.setVisibility(true);
-				//this.dot.visible = true;
-				//this.dot_active.visible = false;
+				this.primary.showDots(true);
 				break;
 		}
 	}
@@ -120,7 +125,7 @@ class Visual {
 		else
 			this.primary.setPosition(x, y);
 	}
-	
+
 	public getPrimary(): VElement {
 		return this.primary;
 	}
@@ -161,15 +166,12 @@ class Visual {
 	}
 
 	static deserialize(object): Visual {
-		if(object["primary"] != null)
-				return new Visual(object["primary"].length);		
-		return new Visual(0);
-		//let retObject = new Visual();
-		//if (object["primary"] != null)
-		//	retObject.addPrimary(Primitives.getPrimitive(object["primary"]["name"], object["primary"]));
-		//if (object["secondary"] != null)
-		//	retObject.addSecondary(Primitives.getPrimitive(object["secondary"]["name"], object["secondary"]));
-		//return retObject;
+		let retObject = object["primary"] != null ?new Visual(object["primary"].length) : new Visual(0);
+		if (object["primary"] != null)
+			retObject.addPrimary(Primitives.getPrimitive(object["primary"]["name"], object["primary"]));
+		if (object["secondary"] != null)
+			retObject.addSecondary(Primitives.getPrimitive(object["secondary"]["name"], object["secondary"]));
+		return retObject;
 	}
 
 }

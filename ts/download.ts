@@ -8,6 +8,8 @@
 class Download {
 
 	private renderer: GLRenderer;
+	private startFrame: number = 1;
+	private stopFrame: number = 100;
 
 	constructor(renderer: GLRenderer) {
 		this.renderer = renderer;
@@ -20,7 +22,7 @@ class Download {
 		let asyncList: Function[] = new Array();
 		$.each(figures, function(index, figure) { figure.getRoot().setMode(NodeMode.Play); });
 		var pack =0;
-		for (var i = 1; i <= 99; i++) {
+		for (var i = this.startFrame; i <= this.stopFrame; i++) {
 			let frame = i;
 			asyncList.unshift(function() {
 				$.each(figures, function(index, figure) { figure.getRoot().draw(frame); })
@@ -28,8 +30,8 @@ class Download {
 				var img = $("canvas").get(0)["toDataURL"]();
 				zip.file("frame" + frame + ".png", img.replace("data:image/png;base64,", ""), { base64: true });
 				pack++;
-				$progress.css("width",100/99*pack+"%");
-				console.log(pack);
+				$progress.css("width",100/(that.stopFrame-that.startFrame)*pack+"%");
+				$progress.text("Frame: " + frame);
 				if (asyncList.length != 0) {
 					setTimeout(asyncList.pop(), 0);
 				} else {
@@ -46,5 +48,12 @@ class Download {
 
 	}
 
+	public setStartFrame(startFrame: number){
+		this.startFrame = startFrame;
+	}
+
+	public setStopFrame(stopFrame: number){
+		this.stopFrame = stopFrame;
+	}
 
 }

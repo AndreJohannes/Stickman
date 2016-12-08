@@ -1,0 +1,2 @@
+Finish Download tab
+Image tab: be able to delete images

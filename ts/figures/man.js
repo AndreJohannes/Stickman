@@ -1,6 +1,7 @@
 /// <reference path="./node.ts" />
 /// <reference path="./ifigure.ts" />
 /// <reference path="../visual/primitives/rectangle.ts" />
+/// <reference path="../visual/textures.ts" />
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -9,8 +10,6 @@ var __extends = (this && this.__extends) || function (d, b) {
 var Man = (function (_super) {
     __extends(Man, _super);
     function Man(name) {
-        //this.root = new Node_(localStorage.getItem("stickman"));
-        //return
         _super.call(this);
         this.name = name;
         var texture = TextureHandler.Man;
@@ -49,14 +48,14 @@ var Man = (function (_super) {
         torso.addChild(arm1);
         arm1.addChild(hand1);
         torso.addChild(kopf);
-        torso.addVisual(new Rectangle(rectTorso), new Rectangle(rectTorso));
-        leg1.addVisual(new Rectangle(rectLeg), new Rectangle(rectLeg));
-        foot1.addVisual(new Rectangle(rectFoot), new Rectangle(rectFoot));
-        leg2.addVisual(new Rectangle(rectLeg), new Rectangle(rectLeg));
-        foot2.addVisual(new Rectangle(rectFoot), new Rectangle(rectFoot));
-        arm1.addVisual(new Rectangle(rectArm), new Rectangle(rectArm));
-        hand1.addVisual(new Rectangle(rectHand), new Rectangle(rectHand));
-        kopf.addVisual(new Rectangle(rectKopf), new Rectangle(rectKopf));
+        torso.addVisual(new Rectangle(rectTorso), new Rectangle(rectTorso, true));
+        leg1.addVisual(new Rectangle(rectLeg), new Rectangle(rectLeg, true));
+        foot1.addVisual(new Rectangle(rectFoot), new Rectangle(rectFoot, true));
+        leg2.addVisual(new Rectangle(rectLeg), new Rectangle(rectLeg, true));
+        foot2.addVisual(new Rectangle(rectFoot), new Rectangle(rectFoot, true));
+        arm1.addVisual(new Rectangle(rectArm), new Rectangle(rectArm, true));
+        hand1.addVisual(new Rectangle(rectHand), new Rectangle(rectHand, true));
+        kopf.addVisual(new Rectangle(rectKopf), new Rectangle(rectKopf, true));
         this.root = root;
     }
     return Man;

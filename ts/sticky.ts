@@ -7,12 +7,14 @@
 /// <reference path="figures/background.ts" />
 /// <reference path="player.ts" />
 /// <reference path="download.ts" />
+/// <reference path="visual/textures.ts" />
 /// <reference path="handlers/timeline.ts" />
 /// <reference path="handlers/menu.ts" />
 /// <reference path="handlers/frame.ts" />
 /// <reference path="handlers/mouse.ts" />
 /// <reference path="handlers/images.ts" />
 /// <reference path="handlers/navbar.ts" />
+/// <reference path="handlers/tabs.ts" />
 /// <reference path="project/project.ts" />
 
 class CanvasResizer {
@@ -48,6 +50,7 @@ class Sticky {
 	private imageHandler: ImageHandler;
 	private navbarHandler: NavbarHandler;
 	private textureHandler: TextureHandler;
+	private tabsHander: TabsHandler;
 
 	constructor() {
 		let project: Project = new Project("testProject");
@@ -66,7 +69,8 @@ class Sticky {
 		this.mouseHandler = new MouseHandler(this);
 		this.imageHandler = new ImageHandler(this);
 		this.navbarHandler = new NavbarHandler(this);
-		this.textureHandler = new TextureHandler(this);
+		this.textureHandler = TextureHandler.getInstance(this);
+		this.tabsHander = new TabsHandler(this);
 
 		let $frame = $("#frame");
 		let $timeline = $("#timeline");

@@ -1,3 +1,7 @@
+a{
+    color: #DDDDDD;
+}
+
 .spinner {
     width: 100px;
 }
@@ -153,8 +157,23 @@ body {
     overflow: auto;
 }
 
+
+/* ---- Navigatrion Bar ------*/
+
 #nav {
     margin-bottom: 0px;
+}
+
+#btnPlay>a{
+    color: black;
+}
+
+.navbar-text{
+    color: #DDDDDD;
+}
+
+.control-label{
+    color: #DDDDDD;
 }
 
 #tblTimeline th {
@@ -222,4 +241,36 @@ body {
 
 #divSizes{
     height: 40px;
+}
+
+/*--------------------- Vertical Tabs   --------------------------*/
+.tabField{
+    position: absolute;
+    top: 0px;
+    left: 30px;
+    width: calc(100% - 35px);
+}
+
+.nav-tabs>li.active>a:focus{
+    background-color: #666;
+    border-top-color: #777;
+    color: #ddd;
+}
+
+.nav-tabs>li.active>a{
+    background-color: #666;
+}
+
+.nav-tabs>li.active>a:active{
+    background-color: #666;
+}
+
+.nav-tabs>li>a{
+    background-color: #444444;
+    border-bottom-color: #444;
+}
+
+.sideways>li.active>a:focus{
+    border-right-color: #777;
+    border-left-color: #777;
 }

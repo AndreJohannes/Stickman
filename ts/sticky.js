@@ -7,12 +7,14 @@
 /// <reference path="figures/background.ts" />
 /// <reference path="player.ts" />
 /// <reference path="download.ts" />
+/// <reference path="visual/textures.ts" />
 /// <reference path="handlers/timeline.ts" />
 /// <reference path="handlers/menu.ts" />
 /// <reference path="handlers/frame.ts" />
 /// <reference path="handlers/mouse.ts" />
 /// <reference path="handlers/images.ts" />
 /// <reference path="handlers/navbar.ts" />
+/// <reference path="handlers/tabs.ts" />
 /// <reference path="project/project.ts" />
 var CanvasResizer = (function () {
     function CanvasResizer() {
@@ -44,7 +46,8 @@ var Sticky = (function () {
         this.mouseHandler = new MouseHandler(this);
         this.imageHandler = new ImageHandler(this);
         this.navbarHandler = new NavbarHandler(this);
-        this.textureHandler = new TextureHandler(this);
+        this.textureHandler = TextureHandler.getInstance(this);
+        this.tabsHander = new TabsHandler(this);
         var $frame = $("#frame");
         var $timeline = $("#timeline");
         var $download = $("#btnDownload");

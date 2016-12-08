@@ -47,17 +47,24 @@ var Rect = (function () {
         rect.setAnchor(this.anchor);
         return rect;
     };
+    Rect.prototype.serialize = function () {
+        return { "x1": this.x1, "x2": this.x2, "y1": this.y1, "y2": this.y2, "texture": this.texture.uuid };
+    };
+    Rect.deserialize = function (object) {
+        var texture = TextureHandler.getInstance().getTexture(object["uuid"]);
+    };
     return Rect;
 }());
 var Rectangle = (function () {
-    function Rectangle(rect) {
+    function Rectangle(rect, phantom) {
+        if (phantom === void 0) { phantom = false; }
         this.object = new THREE.Object3D();
         this.rect = rect;
         var material = new THREE.MeshBasicMaterial({
             color: 0xffffff,
             map: rect.getTexture(),
             transparent: true,
-            opacity: 1
+            opacity: phantom ? 0.5 : 1
         });
         var mesh = new THREE.Mesh(this.makeGeometry(rect), material);
         mesh.position.set(-rect.getRelativePivot().x, rect.getRelativePivot().y, 0);
