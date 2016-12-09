@@ -123,6 +123,7 @@ body {
 
 #left-component {
     width: 20em;
+    min-width: 200px;
 }
 
 #vertical-divider {

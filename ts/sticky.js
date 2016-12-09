@@ -20,12 +20,23 @@ var CanvasResizer = (function () {
     function CanvasResizer() {
         this.$horizontalSplit = $("div.split-pane").eq(0);
         this.$verticalSplit = $("div.split-pane").eq(1);
+        this.$leftComponent = $("#left-component");
+        this.$bottomComponent = $("#bottom-component");
+        var that = this;
+        $(window).resize(function () { that.setLimits(); });
     }
     CanvasResizer.prototype.expand = function () {
         var $canvas = $("canvas");
         this.$verticalSplit.splitPane("lastComponentSize", $canvas.width() + 20);
         this.$horizontalSplit.splitPane("firstComponentSize", $canvas.height() + 1);
         this.$verticalSplit.splitPane("lastComponentSize", $canvas.width());
+    };
+    CanvasResizer.prototype.setLimits = function () {
+        var $canvas = $("canvas");
+        this.$leftComponent.css("min-width", Math.max(($(window).width() - 5 - $canvas.width()), 50) + "px");
+        this.$bottomComponent.css("min-height", Math.max($(window).height() - 58 - $canvas.height(), 105) + "px");
+        this.$verticalSplit.splitPane("firstComponentSize", this.$leftComponent.width());
+        this.$horizontalSplit.splitPane("lastComponentSize", this.$bottomComponent.height());
     };
     return CanvasResizer;
 }());
