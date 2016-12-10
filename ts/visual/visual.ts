@@ -84,12 +84,12 @@ class Visual {
 
 	private primary: VElement;
 	private secondary: VElement;
-	//private primaryPrimitive: IPrimitives;
-	//private secondaryPrimitive: IPrimitives;
 	private isVisual: Boolean = true;
+	private length: number;
 	private mode: NodeMode = NodeMode.Edit;
 
 	constructor(length: number) {
+		this.length= length;
 		this.primary = new VElement(length, false);
 		this.secondary = new VElement(length, true);
 	}
@@ -150,28 +150,30 @@ class Visual {
 
 	public addPrimary(object: IPrimitives) {
 		this.primary.setPrimitive(object);
-		//this.primaryPrimitive = object;
 	}
 
 	public addSecondary(object: IPrimitives) {
 		this.secondary.setPrimitive(object);
-		//this.secondaryPrimitive = object;
 	}
 
 	public setLength(length: number) {
+		this.length = length;
 		this.primary.setLength(length);
 		this.secondary.setLength(length);
 	}
 
 	public serialize() {
-		//return {
-		//	"primary": this.primaryPrimitive != null ? this.primaryPrimitive.serialize() : null,
-		//	"secondary": this.secondaryPrimitive != null ? this.secondaryPrimitive.serialize() : null
-		//};
+		return {
+			"length": this.length,
+			"primary": this.primary.getIPrimitive() != null ? this.primary.getIPrimitive().serialize() : null,
+			"secondary": this.secondary.getIPrimitive() != null ? this.secondary.getIPrimitive().serialize() : null
+		};
 	}
 
 	static deserialize(object): Visual {
-		let retObject = object["primary"] != null ?new Visual(object["primary"].length) : new Visual(0);
+		let retObject = object["length"]==null ? 
+			 object["primary"]==null ? new Visual(0) : 
+			new Visual(object["primary"]["length"]) : new Visual(object["length"]);
 		if (object["primary"] != null)
 			retObject.addPrimary(Primitives.getPrimitive(object["primary"]["name"], object["primary"]));
 		if (object["secondary"] != null)

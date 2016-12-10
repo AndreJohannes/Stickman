@@ -59,10 +59,9 @@ var VElement = (function () {
 }());
 var Visual = (function () {
     function Visual(length) {
-        //private primaryPrimitive: IPrimitives;
-        //private secondaryPrimitive: IPrimitives;
         this.isVisual = true;
         this.mode = NodeMode.Edit;
+        this.length = length;
         this.primary = new VElement(length, false);
         this.secondary = new VElement(length, true);
     }
@@ -113,24 +112,26 @@ var Visual = (function () {
     };
     Visual.prototype.addPrimary = function (object) {
         this.primary.setPrimitive(object);
-        //this.primaryPrimitive = object;
     };
     Visual.prototype.addSecondary = function (object) {
         this.secondary.setPrimitive(object);
-        //this.secondaryPrimitive = object;
     };
     Visual.prototype.setLength = function (length) {
+        this.length = length;
         this.primary.setLength(length);
         this.secondary.setLength(length);
     };
     Visual.prototype.serialize = function () {
-        //return {
-        //	"primary": this.primaryPrimitive != null ? this.primaryPrimitive.serialize() : null,
-        //	"secondary": this.secondaryPrimitive != null ? this.secondaryPrimitive.serialize() : null
-        //};
+        return {
+            "length": this.length,
+            "primary": this.primary.getIPrimitive() != null ? this.primary.getIPrimitive().serialize() : null,
+            "secondary": this.secondary.getIPrimitive() != null ? this.secondary.getIPrimitive().serialize() : null
+        };
     };
     Visual.deserialize = function (object) {
-        var retObject = object["primary"] != null ? new Visual(object["primary"].length) : new Visual(0);
+        var retObject = object["length"] == null ?
+            object["primary"] == null ? new Visual(0) :
+                new Visual(object["primary"]["length"]) : new Visual(object["length"]);
         if (object["primary"] != null)
             retObject.addPrimary(Primitives.getPrimitive(object["primary"]["name"], object["primary"]));
         if (object["secondary"] != null)

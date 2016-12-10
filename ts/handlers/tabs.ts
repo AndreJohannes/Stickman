@@ -19,7 +19,7 @@ class TabsHandler {
 		$("#iptFPS")["slider"]().on("slide", function() {
 			let value = $(this).data("slider").getValue();
 			that.controller.getPlayer().setFPS(value);
-		});
+		}).trigger("slide");
 
 		$("#iptLoop").on("click", function(){
 			that.controller.getPlayer().loop($(this).is(":checked"));
@@ -27,8 +27,8 @@ class TabsHandler {
 
 		$("#btnTabPlay").click(function() { that.play() });
 		$("#btnTabPause").click(function() { that.stop() });
-		$("#iptPlyFirstFrame").change(function(){that.playerFirstFrame($(this))});
-		$("#iptPlyLastFrame").change(function(){that.playerLastFrame($(this))});
+		$("#iptPlyFirstFrame").change(function(){that.playerFirstFrame($(this))}).trigger("change");
+		$("#iptPlyLastFrame").change(function(){that.playerLastFrame($(this))}).trigger("change");
 
 		/********** Download tab **********/
 		$("#btnTabDownload").click(function() { that.download() });

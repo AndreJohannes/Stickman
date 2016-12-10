@@ -44,6 +44,15 @@ class MouseHandler {
 		$("#tabDetach").click(function(event) { that.mode = MouseMode.DETACH_FROM_NODE; that.activeNode = that.detachNode(that.activeNode, event); $("#contextMenu").hide() });
 		$("#tabCopyFigure").click(function(){ that.mode = MouseMode.IDEL; that.controller.getProject().getFigures().push(that.activeNode.figure.copyFigure()); that.controller.update(); $("#contextMenu").hide() })
 		$("#tabDeleteFigure").click(function(){ that.mode = MouseMode.IDEL; that.controller.getProject().removeFigure(that.activeNode.figure); that.controller.update(); $("#contextMenu").hide() })
+		$("#tabAddLink").click(function(event) {
+			if(that.activeNode==null) {
+				that.mode = MouseMode.MOVE_FIGURE;
+				that.activeNode = that.getAndAddRoot(event);
+			}else
+				that.mode = MouseMode.IDEL;
+			that.activeNode.node.addChild(new Node_(50, -Math.PI * 1 / 4));
+			that.controller.update();
+			$("#contextMenu").hide() });
 
 		this.$canvas.click(function() {
 			$("#contextMenu").hide();
@@ -100,6 +109,7 @@ class MouseHandler {
 					that.activeNode.node.draw(frame);
 					that.renderer.update();
 					break;
+
 			}
 			
 			//that.timelineHandler.updateFrame(frame);
@@ -138,6 +148,7 @@ class MouseHandler {
 					}
 				case MouseMode.DETACH_FROM_NODE:
 					that.mode = MouseMode.IDEL;
+					break;	
 			}
 		}
 	}
@@ -167,6 +178,15 @@ class MouseHandler {
 				$("#tabDeleteFigure").parent().removeClass().addClass(isRoot ? "" : "disabled");
 				$("#tabAttach").parent().removeClass().addClass(isRoot ? "" : "disabled");
 				$("#tabDetach").parent().removeClass().addClass(!isRoot ? "" : "disabled");
+				$("#tabChangeLength").parent().removeClass().addClass("");
+			}else{
+				that.activeNode = null;
+				$("#contextMenu").show().css("left", event.clientX).css("top", event.clientY);
+				$("#tabCopyFigure").parent().removeClass().addClass("disabled");
+				$("#tabDeleteFigure").parent().removeClass().addClass("disabled");
+				$("#tabAttach").parent().removeClass().addClass("disabled");
+				$("#tabDetach").parent().removeClass().addClass("disabled");
+				$("#tabChangeLength").parent().removeClass().addClass("disabled");
 			}
 			return false;
 		}
@@ -182,6 +202,17 @@ class MouseHandler {
 		root.setPosition(position.x, position.y, frame);
 		this.controller.update();
 		return { "node": root, "pivot": { x: 0, y: 0 } };
+	}
+
+	private getAndAddRoot(event){
+		let position: THREE.Vector2 = this.getMousePosition(event);
+		let root = new Node_(position);
+		let frame = this.frameHandler.getFrame();
+		let pivotFigure: IFigure = new PivotFigure(root);
+		this.controller.getProject().addFigure(pivotFigure);
+		root.setPosition(position.x, position.y, frame);
+		this.controller.update();
+		return { "node": root, "pivot": { x: position.x, y: position.y } };
 	}
 
 }
